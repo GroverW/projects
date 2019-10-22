@@ -8,6 +8,10 @@
     box-sizing: border-box;
 }
 
+input:focus, select:focus, textarea:focus, button:focus {
+    outline: none;
+}
+
 a:hover {
     text-decoration: underline;
 }
@@ -20,8 +24,10 @@ a:hover {
 #about {
     display: block;
     position: relative;
-    top: 13px;
-    margin: 7px 0 0 10px;
+    float:left;
+    margin: 15px 0 0 10px;
+    min-width: 181px;
+    line-height: 30px;
 }
 
 #about a {
@@ -30,20 +36,20 @@ a:hover {
 
 #user_info {
     display: flex;
+    position: relative;
     flex-basis: auto;
     flex-grow: 0;
     flex-shrink: 1;
     float: right;
     justify-content: flex-end;
-    text-align: right;
-    vertical-align: middle; 
+    text-align: right; 
+    margin: 15px 10px 0px 0px;
     min-width: 181px;
-    padding: 0 30px 0 30px;
+    line-height: 30px;
 }
 
-#user_info div {
-    display: inline-block;
-    padding: 0 15px 0 15px;
+#user_info a {
+    margin: 0 15px 0 15px;
 }
 
 #google_apps {
@@ -57,12 +63,134 @@ a:hover {
     width: 30px;
 }
 
+#google_apps a {
+    display: block;
+    height: 30px;
+    width: 30px;
+}
+
+#user_profile {
+    display: block;
+    position: relative;
+    padding-left: 15px;
+    background-image: url(images/user_icon.png);
+    background-size: 30px 30px;
+    border-radius: 30px;
+    box-sizing: border-box;
+    height: 30px;
+    width: 30px;
+}
+
+#user_profile a {
+    display: block;
+    width: 30px;
+    height: 30px;
+}
+
 #main_content {
     display: block;
-    height: 233px;
+    padding: 0 0 35px;
+    height: 410px;
     width: 100%;
 }
 
 #main_logo {
     padding-top: 109px;
+}
+
+#search_bar {
+    display: flex;
+    margin-top: 20px;
+    background-origin: padding-box;
+    border: 1px solid rgb(223,225,229);
+    border-radius: 24px;
+    width: 582px;
+    height: 44px;
+}
+
+#search_bar:hover {
+    box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28);
+}
+
+#magnifying_glass {
+    margin: 12px 12px 0 12px;;
+    height: 20px;
+    width: 20px;
+}
+
+#search_input {
+    margin: 5px 0 0 0;
+    outline: none;
+    
+}
+
+#search_input input {
+    width: 487px;
+    height: 34px;
+    font-size: 16px;
+    border-style: none;
+    overflow-wrap: break-word;
+}
+
+#search_voice {
+    background: url(images/microphone.png);
+    background-size: 24px;
+    margin: 10px 0 0 10px;
+    height: 24px;
+    width: 24px;
+}
+
+#search_buttons {
+    height: 70px;
+    padding-top: 18px;
+}
+
+#search_buttons input {
+    margin: 11px 4px 11px 4px;
+    padding: 0 16px 0 16px;
+    background-color: #f2f2f2;
+    border: 1px solid #f2f2f2;
+    border-radius: 4px;
+    color: rgb(95,99,104);
+    font-size: 14px;
+    height: 36px;
+}
+
+#search_buttons input:hover {
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    border: 1px solid #c6c6c6;
+    color: #222;
+}
+
+#footer_bar {
+    display: block;
+    background-color: #f2f2f2;
+    position: absolute;
+    bottom: 0;
+    height: 40px;
+    width: 100%;
+}
+
+#footer_right {
+    display: block;
+    float: right;
+    height: 40px;
+    margin-right: 30px;
+    line-height: 40px;
+}
+
+#footer_right span {
+    padding-left: 27px;
+}
+
+#footer_left {
+    display: block;
+    float: left;
+    height: 40px;
+    margin-left: 30px;
+    line-height: 40px;
+}
+
+#footer_left span {
+    padding-right: 27px;
 }
