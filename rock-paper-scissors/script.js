@@ -142,8 +142,7 @@ class PlayerDecision {
     }
 
     computerPlay() {
-        //this.computerDecision = this.options[Math.floor(Math.random() * this.options.length)];
-        this.computerDecision = 'paper';
+        this.computerDecision = this.options[Math.floor(Math.random() * this.options.length)];
     }
 
     getComputerDecision() {
