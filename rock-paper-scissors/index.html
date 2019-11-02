@@ -1,9 +1,55 @@
 <!DOCTYPE html>
 <html>
     <head>
-
+        <link href="style.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-        <script src="script.js"></script>
+        <div id="nav_bar">
+
+        </div>
+        <div id="main_container">
+            <div id="character_topbar">
+                <div class="character rock"></div>
+                <div class="character paper"></div>
+                <div class="character scissors"></div>
+            </div>
+            <div id="character_selection">
+                <div id="character_captions">
+                    <div id="rock_caption" class="character_caption">Rock</div>
+                    <div id="paper_caption" class="character_caption">Paper</div>
+                    <div id="scissors_caption" class="character_caption">Scissors</div>
+                </div>
+                <div id="player_input_container">
+                    <form action="" method="get" id="play_form">
+                        <span>Enter Selection:</span>
+                        <input id="player_input" name="playerInput" type="text">
+                        <button id="play_round" name="playRound" type="submit" form="play_form">Play!</button>
+                    </form>
+                </div>
+                <div id="game_info_container">
+                    <div id="player_selection" class="player_select player_turn">
+                        ?
+                    </div>
+                    <div id="game_stats">
+                        <div id="versus">Vs.</div>
+                        <div id="player_stats">Player</div>
+                        <div id="computer_stats">Comp</div>
+                        <div id="player_score">0</div>
+                        <div id="computer_score">0</div>
+                    </div>
+                    <div id="computer_selection" class="player_select">?</div>
+                    <div id="win_lose">
+                        <div id='win_lose_message'></div>
+                        <div id="win_lose_sub_message"></div>
+                    </div>
+                </div>
+                
+            </div>
+            <div id="character_selection_bg"></div>
+        </div>
+        <div id="footer">
+
+        </div>
     </body>
+    <script src="script.js"></script>
 </html>
