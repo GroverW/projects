@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        
+        <title>Etch-a-Sketch</title>
+
+        <link href="../../style.css" type="text/css" rel="stylesheet">
+        <link href="etch-a-style.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="main_container">
+            <div id="header">
+                <div id="project_title">
+                    Etch-A-Sketch
+                </div>
+                <div id="logo">
+                    <a href="https://www.willgrover.com">Back</a>
+                </div>
+                <div id="nav_links">
+                    <a href="../../rock-paper-scissors/index.html">Rock Paper Scissors</a>
+                    <a href="">Etch-a-Sketch</a>
+                </div>
+                    
+            </div>
+            <div id="body_content">
+                <div id="etch_container">
+                        <div id="settings">
+                            <form action="" method="get" id="settings_form">
+                                <label for="board_size">Board Size:</label>
+                                <input id="board_size" name="boardSize" type="text" min=1 max=128 value=128>
+                                <button id="update_board" name="updateBoard" type="submit" form="settings_form">Update</button>
+
+                                <label for="redVal">R:</label>
+                                <input type="text" name="redVal" id="red_value" class="color_value" min=0 max=255 value=0>
+                                
+                                <label for="greenVal">G:</label>
+                                <input type="text" name="greenVal" id="green_value" class="color_value" min=0 max=255 value=0>
+                                
+                                <label for="blueVal">B:</label>
+                                <input type="text" name="blueVal" id="blue_value" class="color_value" min=0 max=255 value=0>
+                                
+                                <label for="alphaVal">Opacity:</label>
+                                <input type="text" name="alphaVal" id="alpha_value" class="color_value" min=0 max=100 value=100>
+                                
+                                <div id="color_preview"></div>
+                                
+                                <button id="reset_settings" name="resetSettings" type="submit" form="settings_form">Reset</button>
+                            </form>                                        
+                        </div>
+                        <div id="board">
+                    
+                        </div>
+                </div>
+            </div>
+            <div id="body_content_bg"></div>
+            <div id="footer">Some stuff here</div>
+        </div>
+    </body>
+    <script src="script.js"></script>
+</html>

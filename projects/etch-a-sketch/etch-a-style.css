@@ -1,0 +1,73 @@
+#project_title {
+    grid-area: 1 / 1 / span 1 / span 2;
+    font-size: 30px;
+    color: #EFEFEF;
+}
+
+#etch_container {
+    display: grid;
+    grid-template: 1fr 550px / 1fr 550px 1fr;
+    justify-content: center;
+    justify-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 10px 0 0 0;
+}
+
+#settings {
+    padding-top: 13px;
+    grid-area: 1 / 2 / span 1 / span 1;
+}
+
+#settings input {
+    outline: none;
+    width: 30px;
+    border-radius: 3px;
+    border: 1px solid #CCC;
+}
+
+#update_board, #reset_settings {
+    background-color: #DDD;
+    padding: 0 3px 0 3px;
+    border-radius: 3px;
+    font-size: 14px;
+    outline: none;
+}
+
+#update_board:hover, #reset_settings:hover {
+    background-color: rgba(38, 97, 38, 0.5);
+    color: white;
+    outline: none;
+}
+
+#color_preview {
+    display: inline-block;
+    margin-bottom: -3px;
+    width: 30px;
+    height: 16px;
+    background-color: black;
+}
+
+#board {
+    display: grid;
+    box-sizing: border-box;
+    grid-template: repeat(16,1fr) / repeat(16,1fr);
+    grid-auto-rows: 1fr;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
+    grid-area: 2 / 2 / span 1 / span 1;
+    width: 540px;
+    height: 540px;
+    border: 1px solid #999;
+    border-radius: 10px;
+
+}
+
+.board_cell {
+    width: 100%;
+    height: 100%;
+}
+
+.board_cell:hover {
+    background-color: black;
+}
