@@ -4,6 +4,7 @@ class EtchBoard {
         this.board = {};
         this.boardSize = 0;
         this.maxSize = maxSize;
+        this.lastCell = '';
     }
 
     drawBoard(id,size,cellClass) {
@@ -35,12 +36,16 @@ class EtchBoard {
 
     setCellEvents(cell,id) {
         cell.addEventListener('mouseover',(event) => {
-            if(event.buttons === 1 || event.buttons === 3)
+            if(event.buttons === 1 || event.buttons === 3) {
                 this.setCellColor(id);
+                this.lastCell = id;
+                
+            }
         });
         
         cell.addEventListener('mousedown',(event) => {
             this.setCellColor(id);
+            this.lastCell = id;
         });
     }
 
@@ -57,16 +62,23 @@ class EtchBoard {
 
     setCellColor(id) {
         let coords = id.split('_');
-        coords[0] = +coords[0];
-        coords[1] = +coords[1];
+        let indexY = +coords[0];
+        let indexX = +coords[1];
 
-        for(let row = Math.max(0,coords[0] - 1); row <= Math.min(coords[0] + 1,this.boardSize - 1); row++) {
-            for(let col = Math.max(0,+coords[1] - 1); col <= Math.min(+coords[1] + 1, this.boardSize - 1); col++) {
-                this.board[row+'_'+col].style.background = this.getPenColor(
-                    Math.max(0,this.penColor.alpha * .75 ** (Math.abs(coords[0] - row) + Math.abs(coords[1] - col))) 
-                );
+
+        for(let row = Math.max(0,indexY - 1); row <= Math.min(indexY + 1,this.boardSize - 1); row++) {
+            if(row+'_'+indexX !== this.lastCell && row+'_'+indexX !== id) {
+                this.board[row+'_'+indexX].style.background = this.getPenColor(this.penColor.alpha * .75);
             }
         }
+        
+        for(let col = Math.max(0,indexX - 1); col <= Math.min(indexX + 1,this.boardSize - 1); col++) {
+            if(indexY+'_'+col !== this.lastCell && indexY+'_'+col !== id) {
+                this.board[indexY+'_'+col].style.background = this.getPenColor(this.penColor.alpha * .75);
+            }
+        }
+        
+        this.board[id].style.background = this.getPenColor();
     }
 }
 
