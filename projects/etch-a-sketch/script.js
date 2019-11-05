@@ -119,5 +119,3 @@ resetSettings.addEventListener('click',() => {
     colorPreview.style.background = board.getPenColor();
     board.drawBoard(boardID,boardSize.value,cellClass);
 });
-
-
