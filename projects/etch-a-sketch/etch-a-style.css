@@ -31,9 +31,10 @@
 
 #settings input {
     outline: none;
-    width: 30px;
+    width: 31px;
     border-radius: 3px;
     border: 1px solid #CCC;
+    padding: 0 2px 0 2px;
 }
 
 #update_board, #reset_settings {
