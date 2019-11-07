@@ -1,0 +1,183 @@
+@font-face {
+    font-family: Magneto;
+    src: url(fonts/magnetob.ttf);
+}
+
+#project_title {
+    grid-area: 1 / 1 / span 1 / span 2;
+    font-size: 30px;
+    color: #EFEFEF;
+}
+
+#content_container {
+    display: grid;
+    grid-template: 20px 40px 550px / 1fr 550px 1fr;
+    justify-content: center;
+    justify-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 10px 0 0 0;
+}
+
+#instructions {
+    grid-area: 1 / 1 / span 1 / span 3;
+    padding: 0 0 0 10px;
+    justify-self: left;
+    color: #777;
+    font-size: 11px;
+}
+
+#settings {
+    padding-top: 13px;
+    height: 40px;
+    grid-area: 2 / 2 / span 1 / span 1;
+}
+
+#settings input {
+    outline: none;
+    width: 31px;
+    border-radius: 3px;
+    border: 1px solid #CCC;
+    padding: 0 2px 0 2px;
+}
+
+#reset_settings {
+    background-color: #DDD;
+    padding: 0 3px 0 3px;
+    border-radius: 3px;
+    font-size: 14px;
+    outline: none;
+}
+
+#reset_settings:hover {
+    background-color: rgba(38, 97, 38, 0.5);
+    color: white;
+    outline: none;
+}
+
+#calculator {
+    display: grid;
+    grid-template: 2fr 1fr 4fr / 2fr 3fr 1fr 3fr;
+    grid-area: 3 / 2 / span 1 / span 1;
+    width: 550px;
+    height: 400px;
+    box-shadow: 2px 2px 5px 3px rgba(0,0,0,0.2);
+    background-color: #DDD;
+    border: 1px solid #BBB;
+}
+
+#top_funcs {
+    display: grid;
+    grid-template: 1fr / repeat(3,1fr);
+    width: 100%;
+    height: 100%;
+    grid-area: 2 / 2 / span 1 / span 1;
+}
+
+#left_funcs {
+    display: grid;
+    grid-template: repeat(5,1fr) / repeat(2,1fr);
+    width: 100%;
+    height: 100%;
+    grid-area: 2 / 1 / span 2 / span 1;
+}
+
+#num_pad {
+    display: grid;
+    grid-template: repeat(4,1fr) / repeat(3,1fr);
+    width: 100%;
+    height: 100%;
+    grid-area: 3 / 2 / span 1 / span 1;
+}
+
+#right_funcs {
+    display:grid;
+    grid-template: repeat(5,1fr) / 1fr;
+    width: 100%;
+    height: 100%;
+    grid-area: 2 / 3 / span 2 / span 1;
+}
+
+#right_funcs .opButton {
+    background-color: rgb(255, 200, 81);
+}
+
+button {
+    font-size: 16px;
+}
+
+.numButton, .opButton {
+    border-radius: 5px;
+}
+
+.numButton:hover, .opButton:hover {
+    cursor: pointer;
+} 
+
+.numButton {
+    font-weight: bold;
+    background-color: white;
+}
+
+.opButton {
+    background-color: #EFEFEF;
+}
+
+.large {
+    font-size: 18px;
+}
+
+.small {
+    font-size: 11px;
+}
+
+#history {
+    display: grid;
+    grid-template: 24px auto / 1fr;
+    width: 100%;
+    height: 100%;
+    grid-area: 1 / 4 / span 3 / span 1;
+}
+
+#history_title {
+    width: 100%;
+    padding: 3px 5px 0 0;
+    text-align: right;
+    font-weight: bold;
+}
+
+#display {
+    display: grid;
+    grid-template: 24px 1fr 2fr / 1fr;
+    width: 100%;
+    height: 100%;
+    grid-area: 1 / 1 / span 1 / span 3;
+}
+
+#display_title {
+    width: 100%;
+    padding: 3px 0 0 5px;
+    text-align: left;
+    font-weight: bold;
+    font-family: Magneto, Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: rgb(52, 99, 201);
+}
+
+#current_calc {
+    width: 100%;
+    padding: 3px 5px 0 5px;
+    text-align: right;
+    align-self: end;
+}
+
+#result {
+    width: 100%;
+    padding: 3px 5px 0 5px;
+    text-align: right;
+    color: black;
+    font-weight: bold;
+    font-size: 24px;
+    overflow: auto;
+    align-self: top;
+}
