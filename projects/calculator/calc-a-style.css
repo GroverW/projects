@@ -182,5 +182,6 @@ button {
     font-weight: bold;
     font-size: 24px;
     overflow: auto;
+    scrollbar-width: 5px;
     align-self: top;
 }
