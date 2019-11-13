@@ -1,126 +1,125 @@
-function convertToPolish(inputArr) {
-    let precedence = {
-        "log": 6, "ln": 6, 'neg': 6, "√": 6, "^": 5, 
-        "*": 4, "/": 4, "%": 3, "+": 2, "-": 2, "(": 1
-    };
-
-    let polishList = [];
-    let opStack = [];
-
-    for(let val of inputArr) {
-        if(typeof val === 'number') {
-            polishList.push(+val)
-
-        } else if (val === '(') {
-            opStack.push(val);
-
-        } else if (val === ')') {
-            let next = opStack.pop();
-            
-            while(next !== '(') {
-                polishList.push(next);
-                next = opStack.pop();
+class Calculator {
+    constructor() {
+        this.polishList = [];
+        this.precedence = {
+            "log": 6, "ln": 6, 'neg': 6, "√": 6, "^": 5, 
+            "*": 4, "/": 4, "%": 3, "+": 2, "-": 2, "(": 1
+        };
+        this.functions = {
+            "oneVar": {
+                "log":  (a) => Math.log10(a),
+                "ln":   (a) => Math.log(a),
+                "neg":  (a) => -a,
+                "√":    (a) => Math.sqrt(a),
+            },
+            "twoVar": {
+                "^":    (a,b) => a ** b,
+                "*":    (a,b) => a * b,
+                "/":    (a,b) => a / b,
+                "%":    (a,b) => a % b,
+                "+":    (a,b) => a + b,
+                "-":    (a,b) => a - b,
             }
-        } else {
-            while(opStack.length > 0 && precedence[opStack[opStack.length - 1]] >= precedence[val]) {
-                polishList.push(opStack.pop());
+        };
+    }
+    
+    convertToPolish(inputArr) {
+        let opStack = [];
+    
+        for(let val of inputArr) {
+            if(typeof val === 'number') {
+                this.polishList.push(+val)
+    
+            } else if (val === '(') {
+                opStack.push(val);
+    
+            } else if (val === ')') {
+                let next = opStack.pop();
+                
+                while(next !== '(') {
+                    this.polishList.push(next);
+                    next = opStack.pop();
+                }
+            } else {
+                while(opStack.length > 0 && this.precedence[opStack[opStack.length - 1]] >= this.precedence[val]) {
+                    this.polishList.push(opStack.pop());
+                }
+    
+                opStack.push(val);
             }
-
-            opStack.push(val);
+    
         }
-
-    }
-
-    while(opStack.length > 0) {
-        polishList.push(opStack.pop());
-    }
-
-    return polishList;
-}
-
-function evaluatePolish(polishList) {
-    let evalStack = [];
-    let functions = getFunctions();
-    let current = 0;
-
-    while(current < polishList.length) {
-        if(polishList[current] in functions["oneVar"]) {
-            evalStack.push(functions["oneVar"][current](evalStack.pop()));
-        } else if(polishList[current] in functions["twoVar"]) {
-            let b = evalStack.pop();
-            evalStack.push(functions["twoVar"][polishList[current]](evalStack.pop(),b));
-        } else {
-            evalStack.push(polishList[current]);
+    
+        while(opStack.length > 0) {
+            this.polishList.push(opStack.pop());
         }
-
-        current++;
+    
+        return this;
     }
-
-    return evalStack.pop();
-}
-
-function getFunctions() {
-    return {
-        "oneVar": {
-            "log":  (a) => Math.log10(a),
-            "ln":   (a) => Math.log(a),
-            "neg":  (a) => -a,
-            "√":    (a) => Math.sqrt(a),
-        },
-        "twoVar": {
-            "^":    (a,b) => a ** b,
-            "*":    (a,b) => a * b,
-            "/":    (a,b) => a / b,
-            "%":    (a,b) => a % b,
-            "+":    (a,b) => a + b,
-            "-":    (a,b) => a - b,
+    
+    evaluatePolish() {
+        let evalStack = [];
+        let current = 0;
+    
+        while(current < this.polishList.length) {
+            if(this.polishList[current] in this.functions["oneVar"]) {
+                evalStack.push(this.functions["oneVar"][current](evalStack.pop()));
+            } else if(this.polishList[current] in this.functions["twoVar"]) {
+                let b = evalStack.pop();
+                evalStack.push(this.functions["twoVar"][this.polishList[current]](evalStack.pop(),b));
+            } else {
+                evalStack.push(this.polishList[current]);
+            }
+    
+            current++;
         }
+    
+        return evalStack.pop();
     }
 }
 
 class calculatorInputProcessor {
     constructor(funcFormats,oneVarOps) {
         this.inputList = [];
-        this.inputBuffer = []
         this.funcFormats = funcFormats;
         this.oneVarOps = oneVarOps;
+        this.specialRuleOps = new Set(['±','1/x','del','clear','.']);
         this.lastInput = false;
         this.currInput = false;
+        this.displayInput = '0';
         this.lastInputType = '';
         this.currInputType = '';
+        this.calculator = new Calculator;
+    }
+
+    peakInputList() {
+        return this.inputList.length > 0 ? this.inputList[this.inputList.length - 1] : null;
     }
 
     setCurrInput(val) {
         this.currInput = val.toString();
     }
 
-    setLastInput() {
-        if(this.inputBuffer.length === 0) {
-            if(this.inputList.length === 0) this.lastInput = this.currInput;
+    setLastInput(val) {
+        this.lastInput = val;
+    }
 
-            this.lastInput =  this.inputList[this.inputList.length - 1];
-        } else {
-            this.lastInput =  this.inputBuffer[this.inputBuffer.length - 1];
-        }
+    resetDisplayInput() {
+        this.displayInput = '0';
     }
 
     getInputTypes(val) {
-        if(typeof +val === 'number') return 'value';
+        let numCheck = /^-{0,1}\d*\.{0,1}\d+$/;
+
+        if(numCheck.test(val)) return 'value';
         if(val === '(' || val === ')') return 'paren';
+        if(val in this.oneVarOps) return 'shortop';
         return 'operator';
     }
 
     setInputTypes() {
         this.lastInputType = this.getInputTypes(this.lastInput);
         this.currInputType = this.getInputTypes(this.currInput);
-    }
-
-    validParenType() {
-        if(this.currInput === ')' && this.lastInputType === 'operator') return false;
-        if(this.currInput === ')' && this.lastInput === '(') return false;
-        if(!this.completeParens([...this.inputBuffer,this.currInput])) return false;
-
-        return true;
     }
 
     completeParens(arr) {
@@ -135,131 +134,163 @@ class calculatorInputProcessor {
     }
 
     findLeftParen() {
-        if(this.lastInput === ')') {
-            let leftParens = 1, rightParens = 0;
+        let leftParens = 0, rightParens = 0;
 
-            for(let index = this.inputBuffer.length - 2; index >= 0; index--) {
-                if(this.inputBuffer[index] === ')') rightParens++;
-                if(this.inputBuffer[index] === '(') leftParens++;
-                if(rightParens === leftParens) return index;
-            }
+        for(let index = this.inputBuffer.length - 1; index >= 0; index--) {
+            if(this.inputList[index] === ')') rightParens++;
+            if(this.inputList[index] === '(') leftParens++;
+            if(leftParens > 0 && leftParens === rightParens) return index;
         }
 
         return false;
+    }
+
+    validRightParen() {
+        let leftParens = 0, rightParens = 0;
+
+        for(let val of this.inputList) {
+            if(val === ')') rightParens++;
+            if(val === '(') leftParens++;
+        }
+
+        return leftParens > rightParens;
     }
 
     fixParens() {
         let leftParens = 0, rightParens = 0;
 
         for(let index = 0; index < this.inputBuffer.length; index++) {
-            if(this.inputBuffer[index] === ')') rightParens++;
-            if(this.inputBuffer[index] === '(') leftParens++;
+            if(this.inputList[index] === ')') rightParens++;
+            if(this.inputList[index] === '(') leftParens++;
         }
 
         for(let numParens = 0; numParens < leftParens - rightParens; numParens++) {
-            this.inputBuffer.push(')');
+            this.inputList.push(')');
         }
     }
 
-    validEntryType() {
-        if(this.inputList.length === 0) {
-            return this.currInputType === 'value' || this.currInput === '(';
-        } else if(this.currInputType === 'paren') {
-            return this.validParenType(this.currInput);
-        } else if(this.lastInputType === 'operator') {
-            return this.currInputType === 'value' || this.currInput === '(';
-        } else if(this.lastInput === '(') {
-            return this.currInputType === 'value';
-        }
+    pushSpecialRules() {
+        if(this.currInput === '±') {
+            if(this.lastInput === ')') {
+                this.inputList.splice(this.findLeftParen(),0,...this.funcFormats('±'));
 
-        return true;
-    }
+            } else {
+                this.displayInput = (-1 * +this.displayInput).toString();
+            }
+            
+            this.displayInput = this.evaluate(this.inputList);
 
-    pushInputToBuffer() {
-        if(this.lastInputType === 'value' && this.currInputType === 'value') {
-            this.inputBuffer.push(this.inputBuffer.pop()+this.currInput);
+        } else if(this.currInput === '1/x') {
+            if(this.lastInput === ')') {
+                this.inputList.splice(this.findLeftParen(),0,...this.funcFormats('1/x'),')');
+            } else {
+                this.inputList.push(...this.funcFormats['1/x'],this.displayInput,')');
+            }
+        } else if (this.currInput === 'del') {
+            if(this.displayInput.length === 1) {
+                this.resetDisplayInput();
+            } else {
+                this.displayInput.length = this.displayInput.length - 1;
+            }
+        } else if(this.currInput === 'clear') {
+            this.resetDisplayInput();
         } else if(this.currInput === '.') {
-            if(this.lastInputType === 'value') {
-                if(this.lastInput.indexOf('.') < 0) {
-                    this.inputBuffer.push(this.inputBuffer.pop()+this.currInput);
-                }
-            } else {
-                this.inputBuffer.push('0.');
+            if(this.displayInput.indexOf('.') < 0) {
+                this.displayInput += '.';
             }
-        } else if(this.currInputType === 'value' && this.lastInput === ')') {
-            this.inputBuffer.push('*',this.currInput);
-        } else if (this.currInput === '(') {
-            if(this.lastInputType === 'value' || this.lastInput === ')')
-                this.inputBuffer.push('*',this.currInput);
-        } else if(this.currInput === '±') {
-            if(this.lastInput === ')') {
-                this.inputBuffer.splice(this.findLeftParen(),0,...this.funcFormats[this.currInput]);
-            } else {
-                this.inputBuffer.push(this.inputBuffer.pop() * -1);
-            }
-        } else if(this.oneVarOps.has(this.currInput)) {
-            if(this.lastInput === ')') {
-                this.inputBuffer.splice(this.findLeftParen(),0,...this.funcFormats[this.currInput]);
-            } else {
-                this.inputBuffer.push(...this.funcFormats[this.currInput],'(',this.inputBuffer.pop(),')');
-            }
-        } else if(this.currInput === '1/') {
-            if(this.lastInput === ')') {
-                this.inputBuffer.splice(this.findLeftParen(),0,...this.funcFormats[this.currInput]);
-                this.inputBuffer.push(')');
-            } else {
-                this.inputBuffer.push(...this.funcFormats[this.currInput],this.inputBuffer.pop(),')');
-            }
-        } else if(this.currInput in this.funcFormats) {
-            this.inputBuffer.push(this.funcFormats[this.currInput]);
         }
     }
 
-    pushInputToStack(val) {
-        this.setCurrInput(val);
-        this.setLastInput();
+    pushInputToList() {
+        if(this.currInput in this.specialRuleOps) {
+            this.pushSpecialRules();
+        } else if(this.currInputType === 'operator') {
+            if(this.lastInputType === 'operator') {
+                this.inputList.pop();
+                this.inputList.push(this.currInput);
 
-        if(this.currInput === 'π') this.currInput = Math.PI;
-        if(this.currInput === 'clear') this.clearInputBuffer();
+            } else if(this.lastInputType === 'value' || this.lastInput === '(') {
+                this.inputList.push(this.displayInput);
+                this.displayInput = this.evaluate(this.inputList);
+
+            } else if(this.lastInput === ')') {
+                this.inputList.push(this.currInput);
+            }
+
+            this.setLastInput(this.currInput);
+
+        } else if(this.currInputType = 'shortop') {
+            if(this.peakInputList() === ')') {
+                if(this.lastInputType === 'shortop') {
+                    this.inputList.splice(this.inputList.lastIndexOf(this.lastInput,this.findLeftParen()),0,...this.funcFormats[this.currInut]);
+                    this.inputList.push(')');
+                } else {
+                    this.inputList.splice(this.findLeftParen(),0,...this.funcFormats[this.currInput]);
+                    this.inputList.push(')');
+                }
+
+            } else {
+                this.inputList.push(...this.funcFormats[this.currInput],this.displayInput,')');
+            }
+
+            this.displayInput = this.evaluate(this.inputList);
+            this.setLastInput(this.currInput);
+
+        } else if(this.currInputType === 'paren') {
+            if(this.currInput === '(') {
+                if(this.lastInput === ')' || this.lastInputType === 'value') {
+                    this.inputList.push('*',this.currInput);
+                } else {
+                    this.inputList.push(this.currInput);
+                }
+
+            } else if(this.currInput === ')' && this.validRightParen()) {
+                if(this.lastInput === '(' || this.lastInputType === 'operator') {
+                    this.inputList.push(this.displayInput,this.currInput);
+                } else {
+                    this.inputList.push(this.currInput);
+                }
+                
+                if(this.completeParens()) {
+                    this.displayInput = this.evaluate(this.inputList);
+                } else {
+                    this.displayInput = this.evaluate(this.inputList.slice(this.findLeftParen()));
+                }
+            }
+
+            this.setLastInput(this.currInput);
+
+        } else if(this.currInputType === 'value') {
+            if(this.displayInput === '0') {
+                this.displayInput = this.currInput;
+            } else {
+                this.displayInput += this.currInput;
+            }
+        }
+
+        
+    }
+
+    getInput(val) {
+        if(!this.lastInput) this.setLastInput(val);
+        this.setCurrInput(val);
 
         this.setInputTypes();
 
-        if(this.validEntryType(this.currInput)) {
-            if(this.currInput === '=') {
-                if(!this.completeParens()) {
-                    this.fixParens();
-                }
-                this.inputListpush(...this.inputBuffer);
-                this.clearInputBuffer();
-            }
-            if(this.inputTypeChange() && this.completeParens()) {
-                this.inputList.push(...this.inputBuffer);
-                this.clearInputBuffer();
-            } else {
-                this.pushInputToBuffer();
-            }
-        }
-    }
-
-    inputTypeChange() {
-        return this.lastInputType !== this.currInputType;
+        return this;
     }
 
     getInputList() {
         return this.inputList;
     }
 
-    getInputBuffer() {
-        return this.inputBuffer;
-    }
-
-    clearInputBuffer() {
-        this.inputBuffer.length = 0;
+    evaluate() {
+        return this.calculator.convertToPolish(this.inputList).evaluatePolish()
     }
 }
 
 let keyPresses = {
-    46: 'clear', 13: '=', 187: '=', 107: '+', 109: '-', 106: '*',
+    8: 'del', 46: 'clear', 13: '=', 187: '=', 107: '+', 109: '-', 106: '*',
     111: '/', 191: '/', 110: '.', 189: '±', 48: 0, 96: 0,
     49: 1, 97: 1, 50: 2, 98: 2, 51: 3, 99: 3, 52: 4, 100: 4, 53: 5, 101: 5,
     54: 6, 102: 6, 55: 7, 103: 7, 56: 8, 104: 8, 57: 9, 105: 9
@@ -267,16 +298,16 @@ let keyPresses = {
 
 let keyWithShift = {
     53: '%', 54: '^', 56: '*', 57: '(', 48: ')', 187: '+',
-    46: 'clear', 13: '=', 107: '+', 109: '-', 106: '*',
+    8: 'del', 46: 'clear', 13: '=', 107: '+', 109: '-', 106: '*',
     111: '/', 191: '/', 110: '.', 189: '±', 96: 0,
     49: 1, 97: 1, 50: 2, 98: 2, 51: 3, 99: 3, 52: 4, 100: 4, 101: 5,
     102: 6,103: 7, 104: 8, 105: 9
 }
 
 let funcFormats = {
-    '±': 'neg', '^2': ['^',2],'√': ['√','('], 'log': ['log','('], 'ln': ['ln','('], '1/x': ['(','1','/'], 'e^': ['e','^']
+    '±': 'neg', '^2': ['^',2],'√': ['√','('], 'log': ['log','('], 'ln': ['ln','('], '1/x': ['(','1','/'], 'e^': [Math.E,'^']
 }
-let oneVarOps = new Set(['√','e^','log'],'ln');
+let oneVarOps = new Set(['√','neg','log','ln']);
 
 let calcTest = new calculatorInputProcessor(funcFormats,oneVarOps);
 
