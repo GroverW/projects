@@ -1,6 +1,6 @@
 function convertToPolish(inputArr) {
     let precedence = {
-        "log": 6, "ln": 6, 'neg': 6, "√": 5, "^": 5, 
+        "log": 6, "ln": 6, 'neg': 6, "√": 6, "^": 5, 
         "*": 4, "/": 4, "%": 3, "+": 2, "-": 2, "(": 1
     };
 
@@ -9,7 +9,7 @@ function convertToPolish(inputArr) {
 
     for(let val of inputArr) {
         if(typeof val === 'number') {
-            polishList.push(val)
+            polishList.push(+val)
 
         } else if (val === '(') {
             opStack.push(val);
@@ -44,9 +44,11 @@ function evaluatePolish(polishList) {
     let current = 0;
 
     while(current < polishList.length) {
-        if(polishList[current] in functions) {
+        if(polishList[current] in functions["oneVar"]) {
+            evalStack.push(functions["oneVar"][current](evalStack.pop()));
+        } else if(polishList[current] in functions["twoVar"]) {
             let b = evalStack.pop();
-            evalStack.push(functions[polishList[current]](evalStack.pop(),b));
+            evalStack.push(functions["twoVar"][polishList[current]](evalStack.pop(),b));
         } else {
             evalStack.push(polishList[current]);
         }
@@ -59,51 +61,69 @@ function evaluatePolish(polishList) {
 
 function getFunctions() {
     return {
-        "log": (a,b) => Math.log10(a * b),
-        "ln": (a,b) => Math.log(a * b),
-        "neg": (a,b) => -1 * a,
-        "√": (a,b) => Math.sqrt(a),
-        "^": (a,b) => a ** b,
-        "*": (a,b) => a * b,
-        "/": (a,b) => a / b,
-        "%": (a,b) => a % b,
-        "+": (a,b) => a + b,
-        "-": (a,b) => a - b,
+        "oneVar": {
+            "log":  (a) => Math.log10(a),
+            "ln":   (a) => Math.log(a),
+            "neg":  (a) => -a,
+            "√":    (a) => Math.sqrt(a),
+        },
+        "twoVar": {
+            "^":    (a,b) => a ** b,
+            "*":    (a,b) => a * b,
+            "/":    (a,b) => a / b,
+            "%":    (a,b) => a % b,
+            "+":    (a,b) => a + b,
+            "-":    (a,b) => a - b,
+        }
     }
 }
 
 class calculatorInputProcessor {
-    constructor(funcFormats) {
+    constructor(funcFormats,oneVarOps) {
         this.inputList = [];
         this.inputBuffer = []
         this.funcFormats = funcFormats;
-        this.lastEntryType = '';
-        this.currEntryType = '';
+        this.oneVarOps = oneVarOps;
+        this.lastInput = false;
+        this.currInput = false;
+        this.lastInputType = '';
+        this.currInputType = '';
     }
 
-    getLastInput() {
+    setCurrInput(val) {
+        this.currInput = val.toString();
+    }
+
+    setLastInput() {
         if(this.inputBuffer.length === 0) {
-            return this.inputList[this.inputList.length - 1];
+            if(this.inputList.length === 0) this.lastInput = this.currInput;
+
+            this.lastInput =  this.inputList[this.inputList.length - 1];
         } else {
-            return this.inputBuffer[this.inputBuffer.length - 1];
+            this.lastInput =  this.inputBuffer[this.inputBuffer.length - 1];
         }
     }
 
-    getEntryType(val) {
-        if(typeof val === 'number') return 'value';
+    getInputTypes(val) {
+        if(typeof +val === 'number') return 'value';
         if(val === '(' || val === ')') return 'paren';
         return 'operator';
     }
 
-    validParenType(val) {
-        if(val === ')' && this.lastEntryType === 'operator') return false;
-        if(val === ')' && this.getLastInput() === '(') return false;
-        if(!this.validParens([...this.inputBuffer,val])) return false;
+    setInputTypes() {
+        this.lastInputType = this.getInputTypes(this.lastInput);
+        this.currInputType = this.getInputTypes(this.currInput);
+    }
+
+    validParenType() {
+        if(this.currInput === ')' && this.lastInputType === 'operator') return false;
+        if(this.currInput === ')' && this.lastInput === '(') return false;
+        if(!this.completeParens([...this.inputBuffer,this.currInput])) return false;
 
         return true;
     }
 
-    validParens(arr) {
+    completeParens(arr) {
         let parenStack = [];
 
         for(let val of arr) {
@@ -115,7 +135,7 @@ class calculatorInputProcessor {
     }
 
     findLeftParen() {
-        if(this.getLastInput() === ')') {
+        if(this.lastInput === ')') {
             let leftParens = 1, rightParens = 0;
 
             for(let index = this.inputBuffer.length - 2; index >= 0; index--) {
@@ -128,64 +148,101 @@ class calculatorInputProcessor {
         return false;
     }
 
-    validEntryType(val) {
+    fixParens() {
+        let leftParens = 0, rightParens = 0;
+
+        for(let index = 0; index < this.inputBuffer.length; index++) {
+            if(this.inputBuffer[index] === ')') rightParens++;
+            if(this.inputBuffer[index] === '(') leftParens++;
+        }
+
+        for(let numParens = 0; numParens < leftParens - rightParens; numParens++) {
+            this.inputBuffer.push(')');
+        }
+    }
+
+    validEntryType() {
         if(this.inputList.length === 0) {
-            return this.currEntryType === 'value' || val === '(';
-        } else if(this.currEntryType === 'paren') {
-            return this.validParenType(val);
-        } else if(this.lastEntryType === 'operator') {
-            return this.currEntryType === 'value' || val === '(';
-        } else if(this.getLastInput() === '(') {
-            return this.currEntryType === 'value';
+            return this.currInputType === 'value' || this.currInput === '(';
+        } else if(this.currInputType === 'paren') {
+            return this.validParenType(this.currInput);
+        } else if(this.lastInputType === 'operator') {
+            return this.currInputType === 'value' || this.currInput === '(';
+        } else if(this.lastInput === '(') {
+            return this.currInputType === 'value';
         }
 
         return true;
     }
 
-    pushInputToBuffer(val) {
-        if(this.lastEntryType === 'value' && this.currEntryType === 'value') {
-            this.inputBuffer.push(+''+this.inputBuffer.pop()+val)
-        } else if(this.currEntryType === 'value' && this.getLastInput() === ')') {
-            this.inputBuffer.push('*',val);
-        } else if (val === '(') {
-            if(this.lastEntryType === 'value' || this.getLastInput() === ')')
-                this.inputBuffer.push('*',val);
-        } else if(val === '±') {
-            if(this.getLastInput() === ')') {
-                this.inputBuffer.splice(this.findLeftParen(),0,...this.funcFormats[val])
+    pushInputToBuffer() {
+        if(this.lastInputType === 'value' && this.currInputType === 'value') {
+            this.inputBuffer.push(this.inputBuffer.pop()+this.currInput);
+        } else if(this.currInput === '.') {
+            if(this.lastInputType === 'value') {
+                if(this.lastInput.indexOf('.') < 0) {
+                    this.inputBuffer.push(this.inputBuffer.pop()+this.currInput);
+                }
             } else {
-                this.inputBuffer.push(this.inputBuffer.pop() * -1)
+                this.inputBuffer.push('0.');
             }
-        } else if(val === 'e^') {
-            if(this.getLastInput() === ')') {
-                this.inputBuffer.splice(this.findLeftParen(),0,...this.funcFormats[val])
+        } else if(this.currInputType === 'value' && this.lastInput === ')') {
+            this.inputBuffer.push('*',this.currInput);
+        } else if (this.currInput === '(') {
+            if(this.lastInputType === 'value' || this.lastInput === ')')
+                this.inputBuffer.push('*',this.currInput);
+        } else if(this.currInput === '±') {
+            if(this.lastInput === ')') {
+                this.inputBuffer.splice(this.findLeftParen(),0,...this.funcFormats[this.currInput]);
             } else {
-                this.inputBuffer.push(...this.funcFormats[val],this.inputBuffer.pop())
+                this.inputBuffer.push(this.inputBuffer.pop() * -1);
             }
-        } else if(val in this.funcFormats) {
-            this.inputBuffer.push(this.funcFormats[val]);
+        } else if(this.oneVarOps.has(this.currInput)) {
+            if(this.lastInput === ')') {
+                this.inputBuffer.splice(this.findLeftParen(),0,...this.funcFormats[this.currInput]);
+            } else {
+                this.inputBuffer.push(...this.funcFormats[this.currInput],'(',this.inputBuffer.pop(),')');
+            }
+        } else if(this.currInput === '1/') {
+            if(this.lastInput === ')') {
+                this.inputBuffer.splice(this.findLeftParen(),0,...this.funcFormats[this.currInput]);
+                this.inputBuffer.push(')');
+            } else {
+                this.inputBuffer.push(...this.funcFormats[this.currInput],this.inputBuffer.pop(),')');
+            }
+        } else if(this.currInput in this.funcFormats) {
+            this.inputBuffer.push(this.funcFormats[this.currInput]);
         }
     }
 
     pushInputToStack(val) {
-        if(val === 'π') val = Math.PI;
-        if(val === 'clear') this.clearInputBuffer();
+        this.setCurrInput(val);
+        this.setLastInput();
 
-        this.getEntryType(this.getLastInput());
-        this.getEntryType(val);
+        if(this.currInput === 'π') this.currInput = Math.PI;
+        if(this.currInput === 'clear') this.clearInputBuffer();
 
-        if(this.validEntryType(val)) {
-            if(this.inputTypeChange() && this.validParens()) {
+        this.setInputTypes();
+
+        if(this.validEntryType(this.currInput)) {
+            if(this.currInput === '=') {
+                if(!this.completeParens()) {
+                    this.fixParens();
+                }
+                this.inputListpush(...this.inputBuffer);
+                this.clearInputBuffer();
+            }
+            if(this.inputTypeChange() && this.completeParens()) {
                 this.inputList.push(...this.inputBuffer);
                 this.clearInputBuffer();
             } else {
-                this.pushInputToBuffer(val);
+                this.pushInputToBuffer();
             }
         }
     }
 
     inputTypeChange() {
-        return this.lastEntryType !== this.currEntryType;
+        return this.lastInputType !== this.currInputType;
     }
 
     getInputList() {
@@ -217,10 +274,11 @@ let keyWithShift = {
 }
 
 let funcFormats = {
-    '√': ['√',1], '±': 'neg', '^2': ['^',2], 'e^': [Math.exp(),'^'], 'log': ['log','*',1], 'ln': ['ln','*',1],
+    '±': 'neg', '^2': ['^',2],'√': ['√','('], 'log': ['log','('], 'ln': ['ln','('], '1/x': ['(','1','/'], 'e^': ['e','^']
 }
+let oneVarOps = new Set(['√','e^','log'],'ln');
 
-let calcTest = new calculatorInputProcessor(funcFormats);
+let calcTest = new calculatorInputProcessor(funcFormats,oneVarOps);
 
 let form = document.querySelector('#display_form');
 
