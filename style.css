@@ -34,7 +34,7 @@
     width: 100%;
     min-height: 100vh;
     background-color: rgb(11, 121, 199);
-    grid-template: 220px 30px 1fr 20px / 2fr 1fr 660px 1fr 2fr;
+    grid-template: 220px 30px 1fr / 2fr 1fr 660px 1fr 2fr;
     align-content: space-evenly;
     justify-content: space-around;
 }
@@ -116,6 +116,30 @@
     text-align: left;
 }
 
+#home_headings {
+    background-image: none;
+    padding: 100px 60px 100px 60px;
+    width: 100%;
+    height: 300px;
+    text-align: center;
+}
+
+#home_main_heading {
+    font-size: 48px;
+    font-family: Adequate;
+    background-image: linear-gradient(to right, rgb(150,150,150), transparent 50%);
+    background-position: 0 1.27em;
+    background-repeat: repeat-x;
+    background-size: 2px 1px;
+}
+
+#home_sub_heading {
+    margin: 0;
+    font-family: Adequate;
+    letter-spacing: .05em;
+
+}
+
 header, footer {
     width: 100%;
     margin: 20px 0 20px 0;
@@ -186,7 +210,7 @@ main a:hover {
 
 
 
-#updates {
+#body_nav_links {
     display: grid;
     grid-template: 200px / 1fr 1fr 1fr;
     grid-gap: 20px;
@@ -198,6 +222,22 @@ main a:hover {
     grid-template: 1fr 20px / 1fr 1fr;
     height: 150px;
     width: 100%;
+}
+
+.update:hover {
+    
+}
+
+.home_link {
+    border-top: 1px solid rgb(65, 177, 0);
+    padding-top: 7px;
+    grid-area: 1 / 1 / span 1 / span 2;
+    text-align: center;
+    font-family: Ageo;
+}
+
+.home_link:hover {
+    background: radial-gradient(65% 8% at top center,rgba(184, 233, 7, 0.4),transparent 90%)
 }
 
 .update_image {
