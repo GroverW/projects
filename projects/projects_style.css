@@ -1,0 +1,6 @@
+#projects_grid {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-auto-flow: column dense;
+}
