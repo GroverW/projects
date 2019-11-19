@@ -234,7 +234,7 @@ main a:hover {
     margin-bottom: 30px;
 }
 
-.update {
+.update_preview {
     display: grid;
     grid-template: 1fr 20px / 1fr 1fr;
     height: 100%;
@@ -254,7 +254,7 @@ main a:hover {
     background: radial-gradient(65% 30% at top center,rgba(219, 243, 113, 1),transparent 50%)
 }
 
-.update_image {
+.update_preview_image {
     width: 100%;
     height: 150px;
     border: 1px solid #BBB;
@@ -262,16 +262,16 @@ main a:hover {
     grid-area: 1 / 1 / span 1 / span 2;
 }
 
-.update_date, .update_title {
+.update_preview_date, .update_preview_title {
     padding: 3px 5px 0 5px;
     font-size: 12px;
 }
 
-.update_date {
+.update_preview_date {
     text-align: left;
 }
 
-.update_title {
+.update_preview_title {
     text-align: right;
 }
 
