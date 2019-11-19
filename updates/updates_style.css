@@ -1,3 +1,17 @@
+.update {
+    padding-bottom: 30px;
+}
+
+.update img {
+    box-shadow: 0 0 3px 1px rgba(0,0,0,0.15);
+    border-radius: 5px;
+    max-width: 50%;
+}
+
+.update p {
+    padding-bottom: 10px;
+}
+
 #update_content {
     grid-area: 3 / 2 / span 1 / span 3;
     width: 100%;
@@ -23,10 +37,12 @@
     font-family: Ageo;
     font-size: 26px;
     float: left;
+    color: rgb(65, 177, 0);
 }
 
 .update_date {
     margin-top: 10px;
     font-size: 14px;
     float: right;
+    color: rgb(65, 177, 0);
 }
