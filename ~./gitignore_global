@@ -1,0 +1,12 @@
+# Added at Rithm School; things to always ignore in Git
+
+*~
+.*.sw[nop]
+.DS_Store
+.env
+__pycache__
+env/
+venv/
+node_modules/
+build/
+.vscode/
