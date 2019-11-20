@@ -23,11 +23,21 @@ class Calculator {
         };
     }
     
+    isNum(val) {
+        let numCheck = /^-{0,1}\d*\.{0,1}\d+$/;
+
+        return numCheck.test(val);
+    }
+
+    resetPolishList() {
+        this.polishList.length = 0;
+    }
+
     convertToPolish(inputArr) {
         let opStack = [];
     
         for(let val of inputArr) {
-            if(typeof val === 'number') {
+            if(this.isNum(val)) {
                 this.polishList.push(+val)
     
             } else if (val === '(') {
@@ -59,31 +69,34 @@ class Calculator {
     
     evaluatePolish() {
         let evalStack = [];
-        let current = 0;
-    
-        while(current < this.polishList.length) {
-            if(this.polishList[current] in this.functions["oneVar"]) {
-                evalStack.push(this.functions["oneVar"][current](evalStack.pop()));
-            } else if(this.polishList[current] in this.functions["twoVar"]) {
+        
+        for(let val of this.polishList) {
+            if(val in this.functions["oneVar"]) {
+                evalStack.push(this.functions["oneVar"][val](evalStack.pop()));
+
+            } else if(val in this.functions["twoVar"]) {
                 let b = evalStack.pop();
-                evalStack.push(this.functions["twoVar"][this.polishList[current]](evalStack.pop(),b));
+                evalStack.push(this.functions["twoVar"][val](evalStack.pop(),b));
+
             } else {
-                evalStack.push(this.polishList[current]);
+                evalStack.push(val);
             }
-    
-            current++;
         }
+
+        this.resetPolishList();
     
         return evalStack.pop();
     }
 }
 
 class calculatorInputProcessor {
-    constructor(funcFormats,oneVarOps) {
+    constructor(funcFormats,oneVarOps,maxMemory = 10) {
         this.inputList = [];
+        this.maxMemory = maxMemory;
+        this.memory = new Array(0).fill(null).map(() => Object());
         this.funcFormats = funcFormats;
         this.oneVarOps = oneVarOps;
-        this.specialRuleOps = new Set(['±','1/x','del','clear','.']);
+        this.specialRuleOps = new Set(['±','1/x','delete','clear','.']);
         this.lastInput = false;
         this.currInput = false;
         this.displayInput = '0';
@@ -94,6 +107,10 @@ class calculatorInputProcessor {
 
     peakInputList() {
         return this.inputList.length > 0 ? this.inputList[this.inputList.length - 1] : null;
+    }
+
+    resetInputList() {
+        this.inputList.length = 0;
     }
 
     setCurrInput(val) {
@@ -108,12 +125,16 @@ class calculatorInputProcessor {
         this.displayInput = '0';
     }
 
+    setDisplayInput(val) {
+        this.displayInput = val.toString();
+    }
+
     getInputTypes(val) {
         let numCheck = /^-{0,1}\d*\.{0,1}\d+$/;
 
         if(numCheck.test(val)) return 'value';
         if(val === '(' || val === ')') return 'paren';
-        if(val in this.oneVarOps) return 'shortop';
+        if(this.oneVarOps.has(val)) return 'shortop';
         return 'operator';
     }
 
@@ -136,13 +157,20 @@ class calculatorInputProcessor {
     findLeftParen() {
         let leftParens = 0, rightParens = 0;
 
-        for(let index = this.inputBuffer.length - 1; index >= 0; index--) {
+        for(let index = this.inputList.length - 1; index >= 0; index--) {
             if(this.inputList[index] === ')') rightParens++;
             if(this.inputList[index] === '(') leftParens++;
+            if(leftParens > 0 && rightParens === 0) return index + 1;
             if(leftParens > 0 && leftParens === rightParens) return index;
         }
 
         return false;
+    }
+
+    removeLastParenStatement() {
+        let start = this.findLeftParen();
+        let elementsToDelete = this.inputList.length - start;
+        this.inputList.splice(start,elementsToDelete);
     }
 
     validRightParen() {
@@ -172,13 +200,11 @@ class calculatorInputProcessor {
     pushSpecialRules() {
         if(this.currInput === '±') {
             if(this.lastInput === ')') {
-                this.inputList.splice(this.findLeftParen(),0,...this.funcFormats('±'));
+                this.inputList.splice(this.findLeftParen(),0,...this.funcFormats[this.currInput]);
 
             } else {
-                this.displayInput = (-1 * +this.displayInput).toString();
+                this.setDisplayInput(-1 * +this.displayInput);
             }
-            
-            this.displayInput = this.evaluate(this.inputList);
 
         } else if(this.currInput === '1/x') {
             if(this.lastInput === ')') {
@@ -186,155 +212,271 @@ class calculatorInputProcessor {
             } else {
                 this.inputList.push(...this.funcFormats['1/x'],this.displayInput,')');
             }
-        } else if (this.currInput === 'del') {
-            if(this.displayInput.length === 1) {
+
+            this.setDisplayInput(this.evaluateCurrent());
+
+        } else if (this.currInput === 'delete') {
+            if(Math.abs(+this.displayInput).toString().length === 1) {
                 this.resetDisplayInput();
             } else {
-                this.displayInput.length = this.displayInput.length - 1;
+                this.setDisplayInput(this.displayInput.slice(0,this.displayInput.length - 1));
             }
+
         } else if(this.currInput === 'clear') {
+            this.resetInputList();
             this.resetDisplayInput();
+
         } else if(this.currInput === '.') {
             if(this.displayInput.indexOf('.') < 0) {
-                this.displayInput += '.';
+                this.setDisplayInput(this.displayInput + '.');
             }
         }
     }
 
     pushInputToList() {
-        if(this.currInput in this.specialRuleOps) {
+        if(this.specialRuleOps.has(this.currInput)) {
             this.pushSpecialRules();
         } else if(this.currInputType === 'operator') {
-            if(this.lastInputType === 'operator') {
+            if(this.inputList.length === 0) {
+                this.inputList.push(this.displayInput,this.currInput);
+            } else if(this.lastInputType === 'operator') {
                 this.inputList.pop();
                 this.inputList.push(this.currInput);
 
             } else if(this.lastInputType === 'value' || this.lastInput === '(') {
                 this.inputList.push(this.displayInput);
-                this.displayInput = this.evaluate(this.inputList);
+                this.setDisplayInput(this.evaluateCurrent());
+                this.inputList.push(this.currInput);
 
             } else if(this.lastInput === ')') {
                 this.inputList.push(this.currInput);
+            
             }
 
             this.setLastInput(this.currInput);
 
-        } else if(this.currInputType = 'shortop') {
+        } else if(this.currInputType === 'shortop') {
             if(this.peakInputList() === ')') {
                 if(this.lastInputType === 'shortop') {
                     this.inputList.splice(this.inputList.lastIndexOf(this.lastInput,this.findLeftParen()),0,...this.funcFormats[this.currInut]);
                     this.inputList.push(')');
                 } else {
-                    this.inputList.splice(this.findLeftParen(),0,...this.funcFormats[this.currInput]);
-                    this.inputList.push(')');
+                    this.inputList.splice(this.findLeftParen(),0,this.currInput);
                 }
 
             } else {
                 this.inputList.push(...this.funcFormats[this.currInput],this.displayInput,')');
             }
 
-            this.displayInput = this.evaluate(this.inputList);
+            this.setDisplayInput(this.evaluateCurrent());
             this.setLastInput(this.currInput);
 
         } else if(this.currInputType === 'paren') {
             if(this.currInput === '(') {
-                if(this.lastInput === ')' || this.lastInputType === 'value') {
-                    this.inputList.push('*',this.currInput);
-                } else {
-                    this.inputList.push(this.currInput);
-                }
-
-            } else if(this.currInput === ')' && this.validRightParen()) {
-                if(this.lastInput === '(' || this.lastInputType === 'operator') {
-                    this.inputList.push(this.displayInput,this.currInput);
-                } else {
-                    this.inputList.push(this.currInput);
+                if(this.peakInputList() === ')') {
+                    this.inputList.push('*');
                 }
                 
-                if(this.completeParens()) {
-                    this.displayInput = this.evaluate(this.inputList);
+                this.inputList.push(this.currInput);
+                this.resetDisplayInput();
+
+                this.setLastInput(this.currInput);
+
+            } else if(this.currInput === ')' && this.validRightParen()) {
+                if(this.lastInput === ')') {
+                    this.inputList.push(this.currInput);
                 } else {
-                    this.displayInput = this.evaluate(this.inputList.slice(this.findLeftParen()));
+                    this.inputList.push(this.displayInput,this.currInput);
                 }
+                
+                this.setDisplayInput(this.evaluateCurrent());
+                this.setLastInput(this.currInput);
+            }
+
+        } else if(this.currInputType === 'value') {
+            if(this.lastInputType === 'value') {
+                if(this.displayInput === '0') {
+                    this.setDisplayInput(this.currInput);  
+                } else {
+                    this.setDisplayInput(this.displayInput + this.currInput);
+                }
+
+            } else {
+                if(this.lastInput === ')') {
+                    this.removeLastParenStatement();
+                }
+                
+                this.setDisplayInput(this.currInput);
             }
 
             this.setLastInput(this.currInput);
-
-        } else if(this.currInputType === 'value') {
-            if(this.displayInput === '0') {
-                this.displayInput = this.currInput;
-            } else {
-                this.displayInput += this.currInput;
-            }
         }
-
-        
     }
 
-    getInput(val) {
+    pushToMemory() {
+        if(this.memory.length === this.maxMemory) {
+            this.memory.pop();
+        }
+
+        let memObject = {
+            'result': this.displayInput,
+            'calc': [...this.inputList]
+        }
+
+        this.memory.unshift(memObject);
+
+        console.log(this.memory);
+    }
+
+    getMemory() {
+        return this.memory;
+    }
+
+    finishProcessing() {
+        if(this.peakInputList() === '=') {
+            this.inputList.pop();
+        }
+
+        if(!this.completeParens(this.inputList)) {
+            this.fixParens();
+        }
+
+        this.setDisplayInput(this.evaluate(this.inputList));
+        
+        this.inputList.push('=');
+
+        this.pushToMemory();
+
+        this.resetInputList();
+    }
+
+    processInput(val) {
         if(!this.lastInput) this.setLastInput(val);
         this.setCurrInput(val);
 
         this.setInputTypes();
 
-        return this;
+        this.pushInputToList();
+
+        if(this.currInput === '=') {
+            this.finishProcessing();
+        }
     }
 
     getInputList() {
         return this.inputList;
     }
 
-    evaluate() {
-        return this.calculator.convertToPolish(this.inputList).evaluatePolish()
+    getDisplayInput() {
+        return this.displayInput;
+    }
+
+    evaluate(arr) {
+        return this.calculator.convertToPolish(arr).evaluatePolish();
+    }
+
+    evaluateCurrent() {
+        return this.completeParens(this.inputList) ? this.evaluate(this.inputList) : this.evaluate(this.inputList.slice(this.findLeftParen()));
     }
 }
 
 let keyPresses = {
-    8: 'del', 46: 'clear', 13: '=', 187: '=', 107: '+', 109: '-', 106: '*',
-    111: '/', 191: '/', 110: '.', 189: '±', 48: 0, 96: 0,
+    8: 'delete', 46: 'clear', 13: '=', 187: '=', 107: '+', 109: '-', 189: '-',
+    106: '*', 111: '/', 191: '/', 110: '.', 48: 0, 96: 0,
     49: 1, 97: 1, 50: 2, 98: 2, 51: 3, 99: 3, 52: 4, 100: 4, 53: 5, 101: 5,
     54: 6, 102: 6, 55: 7, 103: 7, 56: 8, 104: 8, 57: 9, 105: 9
 };
 
 let keyWithShift = {
     53: '%', 54: '^', 56: '*', 57: '(', 48: ')', 187: '+',
-    8: 'del', 46: 'clear', 13: '=', 107: '+', 109: '-', 106: '*',
-    111: '/', 191: '/', 110: '.', 189: '±', 96: 0,
+    8: 'delete', 46: 'clear', 13: '=', 107: '+', 109: '-', 189: '-',
+    106: '*', 111: '/', 191: '/', 110: '.', 96: 0,
     49: 1, 97: 1, 50: 2, 98: 2, 51: 3, 99: 3, 52: 4, 100: 4, 101: 5,
     102: 6,103: 7, 104: 8, 105: 9
 }
 
 let funcFormats = {
-    '±': 'neg', '^2': ['^',2],'√': ['√','('], 'log': ['log','('], 'ln': ['ln','('], '1/x': ['(','1','/'], 'e^': [Math.E,'^']
+    '±': ['neg'], '^2': ['^',2], '√': ['√','('], 'log': ['log','('], 'ln': ['ln','('], '1/x': ['(','1','/'], 'e^': [Math.E,'^']
 }
 let oneVarOps = new Set(['√','neg','log','ln']);
 
 let calcTest = new calculatorInputProcessor(funcFormats,oneVarOps);
 
-let form = document.querySelector('#display_form');
+let primaryDisplay = document.querySelector('#result');
+let secondaryDisplay = document.querySelector('#current_calc');
+let historyDisplay = document.querySelector('#history_events');
 
+let form = document.querySelector('#display_form');
 form.addEventListener('submit',(event) => {
     event.preventDefault();
 })
 
-let calcButttons = document.querySelectorAll('.opButton, .numButton');
 
+
+let calcButttons = document.querySelectorAll('.opButton, .numButton');
 calcButttons.forEach((obj) => {
-    obj.addEventListener('click',() => console.log(obj.value));
+    obj.addEventListener('click',() => {
+        console.log(obj.value);
+
+        calcTest.processInput(obj.value);
+        primaryDisplay.innerText = calcTest.getDisplayInput();
+        secondaryDisplay.innerText = calcTest.getInputList().join(' ');
+
+        if(obj.value === '=') {
+            historyDisplay.innerText = "";
+
+            let memory = calcTest.getMemory();
+
+            for(let element of memory) {
+                let calcElement = document.createElement('div');
+                calcElement.setAttribute('class','calc_history');
+                calcElement.innerText = element['calc'].join(' ');
+                
+                let resultElement = document.createElement('div');
+                resultElement.setAttribute('class','result_history')
+                resultElement.innerText = element['result'];
+
+                historyDisplay.appendChild(calcElement);
+                historyDisplay.appendChild(resultElement);
+            }
+        }
+        
+    });
 });
 
 addEventListener('keydown',(event) => {
     let keyMap = event.shiftKey ? keyWithShift : keyPresses;
 
     if(event.which in keyMap) {
-        console.log(keyMap[event.which]);
+        calcTest.processInput(keyMap[event.which]);
+        primaryDisplay.innerText = calcTest.getDisplayInput();
+        secondaryDisplay.innerText = calcTest.getInputList().join(' ');
+        
+        if(keyMap[event.which] === '=') {
+            historyDisplay.innerText = "";
+
+            let memory = calcTest.getMemory();
+
+            for(let element of memory) {
+                let calcElement = document.createElement('div');
+                calcElement.setAttribute('class','calc_history');
+                calcElement.innerText = element['calc'].join(' ');
+                
+                let resultElement = document.createElement('div');
+                resultElement.setAttribute('class','result_history')
+                resultElement.innerText = element['result'];
+
+                historyDisplay.appendChild(calcElement);
+                historyDisplay.appendChild(resultElement);
+            }
+        }
     }
 });
 
 
-let validtest = [4,"*",5,"+","(","(",13,"-",3,")","/",5,"+",14,")","√",2];
+let validtest = [4,"*",5,"+","(","(",1,3,"-",3,")","/",5,"+",14,")","√",2];
 for(let val of validtest) {
-    calcTest.pushInputToStack(val);
+//    calcTest.getInput(val).pushInputToList();
 }
 
 console.log(calcTest.getInputList());
