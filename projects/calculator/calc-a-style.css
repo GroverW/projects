@@ -152,6 +152,7 @@ button {
 #history_events {
     text-align: right;
     font-size: 13px;
+    overflow: auto;
 }
 
 .calc_history {
