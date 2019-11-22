@@ -2,19 +2,22 @@ class Calculator {
     constructor() {
         this.polishList = [];
         this.precedence = {
-            "log": 6, "ln": 6, 'neg': 6, "√": 6, "^": 5, 
-            "*": 4, "/": 4, "%": 3, "+": 2, "-": 2, "(": 1
+            "log": 6, "ln": 6, 'neg': 6, "√": 6, 'sqr': 6, '1/': 6, 'e^': 6,
+            "^": 5, "×": 4, "/": 4, "%": 3, "+": 2, "-": 2, "(": 1
         };
         this.functions = {
             "oneVar": {
                 "log":  (a) => Math.log10(a),
                 "ln":   (a) => Math.log(a),
                 "neg":  (a) => -a,
+                "sqr":  (a) => a ** 2,
                 "√":    (a) => Math.sqrt(a),
+                "1/":  (a) => 1 / a,
+                "e^":  (a) => Math.E ** a,
             },
             "twoVar": {
                 "^":    (a,b) => a ** b,
-                "*":    (a,b) => a * b,
+                "×":    (a,b) => a * b,
                 "/":    (a,b) => a / b,
                 "%":    (a,b) => a % b,
                 "+":    (a,b) => a + b,
@@ -24,7 +27,7 @@ class Calculator {
     }
     
     isNum(val) {
-        let numCheck = /^-{0,1}\d*\.{0,1}\d+$/;
+        let numCheck = /^-{0,1}\d+\.{0,1}\d{0,}$/;
 
         return numCheck.test(val);
     }
@@ -96,7 +99,7 @@ class calculatorInputProcessor {
         this.memory = new Array(0).fill(null).map(() => Object());
         this.funcFormats = funcFormats;
         this.oneVarOps = oneVarOps;
-        this.specialRuleOps = new Set(['±','1/x','delete','clear','.','π']);
+        this.specialRuleOps = new Set(['±','delete','clear','.','π']);
         this.lastInput = false;
         this.currInput = false;
         this.displayInput = '0';
@@ -121,8 +124,12 @@ class calculatorInputProcessor {
         this.lastInput = val;
     }
 
+    getLastInput() {
+        return this.lastInput;
+    }
+
     resetDisplayInput() {
-        this.displayInput = '0';
+        this.setDisplayInput(0);
     }
 
     setDisplayInput(val) {
@@ -154,21 +161,21 @@ class calculatorInputProcessor {
         return parenStack.length === 0;
     }
 
-    findLeftParen() {
+    findLeftParen(type = 'matching') {
         let leftParens = 0, rightParens = 0;
 
         for(let index = this.inputList.length - 1; index >= 0; index--) {
             if(this.inputList[index] === ')') rightParens++;
             if(this.inputList[index] === '(') leftParens++;
-            if(leftParens > 0 && rightParens === 0) return index + 1;
-            if(leftParens > 0 && leftParens === rightParens) return index;
+            if(type === 'firstOpen' && leftParens > rightParens) return index + 1;
+            if(type === 'matching' && leftParens > 0 && leftParens === rightParens) return index;
         }
 
         return false;
     }
 
     findLastOp() {
-        return this.inputList.lastIndexOf(this.lastInput,this.findLeftParen());
+        return this.inputList.lastIndexOf(this.funcFormats[this.lastInput][0],this.findLeftParen());
     }
 
     removeLast(type = '') {
@@ -181,11 +188,7 @@ class calculatorInputProcessor {
             start = this.findLastOp();
 
         } else if(type === 'operator') {
-            if(this.lastInput in this.funcFormats) {
-                start = this.inputList.lastIndexOf(this.funcFormats[this.lastInput][0]);
-            } else {
-                start = this.inputList.lastIndexOf(this.lastInput);
-            }
+            start = this.inputList.lastIndexOf(this.lastInput);
         }
 
         let elementsToDelete = this.inputList.length - start;
@@ -216,17 +219,16 @@ class calculatorInputProcessor {
         }
     }
 
-    pushSpecialRules() {
+    processSpecialRules() {
         if(this.currInput === '±') {
-            if(this.lastInput === ')') {
-                this.inputList.splice(this.findLeftParen(),0,...this.funcFormats[this.currInput]);
+            if(this.lastInputType === 'shortop') {
+                this.pushShortOpToList();
 
                 this.setDisplayInput(this.evaluateCurrent());
                 this.setLastInput(this.currInput);
 
-            } else if(this.lastInputType === 'shortop') {
-                this.inputList.splice(this.findLastOp(),0,...this.funcFormats[this.currInut],'(');
-                this.inputList.push(')');
+            } else if(this.lastInput === ')') {
+                this.inputList.splice(this.findLeftParen(),0,this.funcFormats[this.currInput][0]);
 
                 this.setDisplayInput(this.evaluateCurrent());
                 this.setLastInput(this.currInput);
@@ -235,22 +237,6 @@ class calculatorInputProcessor {
                 this.setDisplayInput(-(+this.displayInput));
                 this.setLastInput(this.displayInput);
             }
-
-        } else if(this.currInput === '1/x') {
-            if(this.lastInput === ')') {
-                this.inputList.splice(this.findLeftParen(),0,...this.funcFormats('1/x'));
-                this.inputList.push(')');
-
-            } else if(this.lastInputType === 'shortop') {
-                this.inputList.splice(this.findLastOp(),0,...this.funcFormats[this.currInut],'(');
-                this.inputList.push(')');
-
-            } else {
-                this.inputList.push(...this.funcFormats['1/x'],this.displayInput,')');
-            }
-
-            this.setDisplayInput(this.evaluateCurrent());
-            this.setLastInput(this.peakInputList());
 
         } else if (this.currInput === 'delete') {
             if(Math.abs(+this.displayInput).toString().length === 1) {
@@ -263,64 +249,57 @@ class calculatorInputProcessor {
             this.resetInputList();
             this.resetDisplayInput();
 
-        } else if(this.currInput === '.') {
-            if(this.displayInput.indexOf('.') < 0) {
-                this.setDisplayInput(this.displayInput + '.');
-                this.setLastInput(this.displayInput);
+        } else if(this.currInput === '.' && this.displayInput.indexOf('.') < 0) {
+            if(this.lastInput === '=') {
+                this.resetDisplayInput();
             }
+
+            this.setDisplayInput(this.displayInput + '.');
+            this.setLastInput(this.displayInput);
+
         } else if(this.currInput === 'π') {
             this.setDisplayInput(Math.PI);
             this.setLastInput(this.displayInput);
         }
     }
 
-    pushOperatorToList(val) {
-        if(val in this.funcFormats) {
-            this.inputList.push(...this.funcFormats[val]);
-        } else {
-            this.inputList.push(val);
-        }
+    pushShortOpToList() {
+        this.inputList.splice(this.findLastOp(),0,...this.funcFormats[this.currInput]);
+        this.inputList.push(')');
     }
 
     pushInputToList() {
-        if(this.specialRuleOps.has(this.currInput)) {
-            this.pushSpecialRules();
-
-        } else if(this.currInputType === 'operator') {
+        if(this.currInputType === 'operator') {
 
             if(this.inputList.length === 0) {
                 this.inputList.push(this.displayInput);
-                this.pushOperatorToList(this.currInput)
+                this.inputList.push(this.currInput);
 
             } else if(this.lastInputType === 'operator') {
-                if(this.getInputType(this.peakInputList()) === 'operator') {
-                    this.inputList.pop();
-                }
-                
-                this.pushOperatorToList(this.currInput)
+                this.inputList.pop();
+                this.inputList.push(this.currInput);
 
             } else if(this.lastInputType === 'value' || this.lastInput === '(') {
                 this.inputList.push(this.displayInput);
                 this.setDisplayInput(this.evaluateCurrent());
-                this.pushOperatorToList(this.currInput)
+                this.inputList.push(this.currInput);
 
             } else if(this.peakInputList() === ')') {
-                this.pushOperatorToList(this.currInput)
+                this.inputList.push(this.currInput);
             
-            } else if(this.getInputType(this.peakInputList()) === 'value') {
-                this.pushOperatorToList(this.currInput);
             }
 
             this.setLastInput(this.currInput);
 
         } else if(this.currInputType === 'shortop') {
-            if(this.peakInputList() === ')') {
-                if(this.lastInputType === 'shortop') {
-                    this.inputList.splice(this.findLastOp(),0,...this.funcFormats[this.currInut]);
-                    this.inputList.push(')');
-                } else {
-                    this.inputList.splice(this.findLeftParen(),0,this.currInput);
-                }
+            if (this.inputList.length === 0) {
+                this.inputList.push(...this.funcFormats[this.currInput],this.displayInput,')');
+
+            } else if (this.lastInputType === 'shortop') {
+                this.pushShortOpToList();
+
+            } else if(this.lastInput === ')') {
+                this.inputList.splice(this.findLeftParen(),0,this.currInput);
 
             } else {
                 this.inputList.push(...this.funcFormats[this.currInput],this.displayInput,')');
@@ -332,7 +311,7 @@ class calculatorInputProcessor {
         } else if(this.currInputType === 'paren') {
             if(this.currInput === '(') {
                 if(this.peakInputList() === ')') {
-                    this.inputList.push('*');
+                    this.inputList.push('×');
                 }
                 
                 this.inputList.push(this.currInput);
@@ -341,7 +320,7 @@ class calculatorInputProcessor {
                 this.setLastInput(this.currInput);
 
             } else if(this.currInput === ')' && this.validRightParen()) {
-                if(this.lastInput === ')') {
+                if(this.peakInputList() === ')') {
                     this.inputList.push(this.currInput);
                 } else {
                     this.inputList.push(this.displayInput,this.currInput);
@@ -361,11 +340,6 @@ class calculatorInputProcessor {
 
             } else if(this.lastInputType === 'shortop') {
                 this.removeLast('shortop');
-
-            } else if(this.lastInputType === 'operator' && this.getInputType(this.peakInputList()) !== 'operator') {
-                this.removeLast('operator');
-                this.inputList.pop();
-                this.setDisplayInput(this.currInput);
 
             } else {
                 if(this.lastInput === ')') {
@@ -396,10 +370,40 @@ class calculatorInputProcessor {
         return this.memory;
     }
 
-    finishProcessing() {
-        if(this.peakInputList() === '=') {
-            this.inputList.pop();
+    generateErrorMessage() {
+        let errorMessages = [
+            "Mmmmm no.",
+            "Yea I don't think so...",
+            "Are you trying to destroy me?",
+            "Does Not Compute.",
+            "No u!",
+            "Stop it!",
+            "Processing... NOPE!",
+            "Uhhhhhh, eleventy or something"
+        ];
+
+        return errorMessages[Math.floor(Math.random() * (errorMessages.length - 1))];
+    }
+
+    processError() {
+        if(!this.completeParens(this.inputList)) {
+            this.fixParens();
         }
+
+        this.inputList.push('=');
+
+        this.setLastInput(false);
+
+        this.pushToMemory();
+
+        this.resetInputList();
+
+        this.setDisplayInput(this.generateErrorMessage());
+
+    }
+
+    finishProcessing() {
+        this.inputList.pop();
 
         if(!this.completeParens(this.inputList)) {
             this.fixParens();
@@ -415,15 +419,24 @@ class calculatorInputProcessor {
     }
 
     processInput(val) {
-        if(!this.lastInput) this.setLastInput(val);
+        if(!this.getLastInput()) {
+            this.resetDisplayInput();
+            this.setLastInput(val);
+        }
 
         this.setCurrInput(val);
 
         this.setInputTypes();
 
-        this.pushInputToList();
-
-        if(this.currInput === '=') {
+        if(this.specialRuleOps.has(this.currInput)) {
+            this.processSpecialRules();
+        } else {
+            this.pushInputToList();
+        }
+        
+        if(this.displayInput === 'error') {
+            this.processError();
+        } else if(this.peakInputList() === '=') {
             this.finishProcessing();
         }
     }
@@ -437,33 +450,36 @@ class calculatorInputProcessor {
     }
 
     evaluate(arr) {
-        return this.calculator.convertToPolish(arr).evaluatePolish();
+        let badResponses = new Set([Infinity,-Infinity,NaN,undefined])
+        let result = this.calculator.convertToPolish(arr).evaluatePolish();;
+
+        return badResponses.has(result) ? 'error' : result;
     }
 
     evaluateCurrent() {
-        return this.completeParens(this.inputList) ? this.evaluate(this.inputList) : this.evaluate(this.inputList.slice(this.findLeftParen()));
+        return this.completeParens(this.inputList) ? this.evaluate(this.inputList) : this.evaluate(this.inputList.slice(this.findLeftParen('firstOpen')));
     }
 }
 
 let keyPresses = {
     8: 'delete', 46: 'clear', 13: '=', 187: '=', 107: '+', 109: '-', 189: '-',
-    106: '*', 111: '/', 191: '/', 110: '.', 190: '.', 48: 0, 96: 0,
+    106: '×', 111: '/', 191: '/', 110: '.', 190: '.', 48: 0, 96: 0,
     49: 1, 97: 1, 50: 2, 98: 2, 51: 3, 99: 3, 52: 4, 100: 4, 53: 5, 101: 5,
     54: 6, 102: 6, 55: 7, 103: 7, 56: 8, 104: 8, 57: 9, 105: 9
 };
 
 let keyWithShift = {
-    53: '%', 54: '^', 56: '*', 57: '(', 48: ')', 187: '+',
+    53: '%', 54: '^', 56: '×', 57: '(', 48: ')', 187: '+',
     8: 'delete', 46: 'clear', 13: '=', 107: '+', 109: '-', 189: '-',
-    106: '*', 111: '/', 191: '/', 110: '.', 190: '.', 96: 0,
+    106: '×', 111: '/', 191: '/', 110: '.', 190: '.', 96: 0,
     49: 1, 97: 1, 50: 2, 98: 2, 51: 3, 99: 3, 52: 4, 100: 4, 101: 5,
     102: 6,103: 7, 104: 8, 105: 9
 }
 
 let funcFormats = {
-    '±': ['neg'], '^2': ['^','2'], '√': ['√','('], 'log': ['log','('], 'ln': ['ln','('], '1/x': ['(','1','/'], 'e^': [Math.E,'^']
+    '±': ['neg','('], '^2': ['sqr','('], '√': ['√','('], 'log': ['log','('], 'ln': ['ln','('], '1/': ['1/','('], 'e^': ['e^','(']
 }
-let oneVarOps = new Set(['√','neg','log','ln','±']);
+let oneVarOps = new Set(['√','neg','log','ln','±','^2','1/','e^']);
 let calcTest = new calculatorInputProcessor(funcFormats,oneVarOps);
 
 let primaryDisplay = document.querySelector('#result');
@@ -497,7 +513,7 @@ calcButttons.forEach((obj) => {
 
         secondaryDisplay.innerText = calcTest.getInputList().join(' ');
 
-        if(obj.value === '=') {
+        if(obj.value === '=' || !(calcTest.getLastInput())) {
             updateHistory(historyDisplay,calcTest);
         }
         
@@ -513,20 +529,22 @@ addEventListener('keydown',(event) => {
         primaryDisplay.innerText = calcTest.getDisplayInput();
         secondaryDisplay.innerText = calcTest.getInputList().join(' ');
         
-        if(keyMap[event.which] === '=') {
+        if(keyMap[event.which] === '=' || !(calcTest.getLastInput())) {
             updateHistory(historyDisplay,calcTest);
         }
     }
 });
 
 
-
-/*let tests = [
+/*
+let tests = [
+    [2,7,'-',4,'^2','='],
+    [4,'log','log','ln','=','log','log'],
     [1,2,'-',4,'.',7,'delete',6,2,'='],
     [2,3,'.',4,5,'-','±',9,'.','.','.',2,3,'='],
     [1,2,'-',3,'^',4,'='],
-    [4,"*",5,"+","(","(",1,3,"-",3,")","/",5,"+",14,")","√",'*',2,'='],
-    [2,'-','(',1,3,'*',7,')','±','=']
+    [4,"×",5,"+","(","(",1,3,"-",3,")","/",5,"+",14,")","√",'×',2,'='],
+    [2,'-','(',1,3,'×',7,')','±','=']
 ];
 
 for(let test of tests) {
