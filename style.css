@@ -19,7 +19,7 @@
     top: 0;
     left: 0;
     font-family: Helvetica, Arial sans-serif;
-    color: #ABABAB;
+    color: #888;
     box-sizing: border-box;
     text-decoration: none;
 }
@@ -174,7 +174,7 @@ footer {
 
 main {
     margin-top: 10px;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 h1 {
