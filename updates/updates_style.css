@@ -6,6 +6,7 @@
     box-shadow: 0 0 3px 1px rgba(0,0,0,0.15);
     border-radius: 5px;
     max-width: 50%;
+    max-height: 300px;
 }
 
 .update p {
@@ -45,4 +46,19 @@
     font-size: 14px;
     float: right;
     color: rgb(65, 177, 0);
+}
+
+code {
+    display:block;
+    background-color: #DEDEDE;
+}
+
+.small_code {
+    font-size: 11px;
+}
+
+.numbers {
+    font-family: helvetica, arial, sans-serif;
+    font-size: 14;
+    color: #555;
 }
