@@ -119,7 +119,6 @@ memeForm.addEventListener('submit',(event) => {
     memeDelButton.id = `del_meme${currMemeNum}`;
     memeDelButton.classList.add('delete');
     memeDelButton.setAttribute('href','#');
-    memeDelButton.innerText = 'X';
 
     memeDelButton.addEventListener('click',() => memeDelButton.parentNode.parentNode.remove());
 
