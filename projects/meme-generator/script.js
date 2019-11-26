@@ -4,8 +4,11 @@ let memeGrid = document.querySelector('#meme_grid');
 let topText = document.querySelector('#top_text');
 let bottomText = document.querySelector('#bottom_text');
 
-let memeImage = document.querySelector('#meme_image')
-memeImage.addEventListener('change', handleImage,false);
+/*let memeImageUpload = document.querySelector('#meme_image_upload')
+memeImageUpload.addEventListener('change', handleImage, false);*/
+
+let memeImageLink = document.querySelector('#meme_image_link');
+memeImageLink.addEventListener('input', handleImage, false);
 
 let currMemeNum = 1;
 let currMeme = document.querySelector(`#meme${currMemeNum}`);
@@ -13,7 +16,7 @@ let memeCanvas = document.querySelector(`#meme${currMemeNum}_canvas`);
 let ctx = memeCanvas.getContext('2d');
 
 let img = new Image();
-img.crossOrigin='anoynymous';
+img.crossOrigin = 'anoynymous';
 
 let memeText = {'top': '', 'bottom': ''};
 
@@ -88,26 +91,27 @@ function dynamicText(img) {
 }
 
 function handleImage(e) {
-    let reader = new FileReader();
-    let img = "";
-    let src = "";
+    let img = new Image();
     
-    reader.onload = function(event) {
-        img = new Image();
-        img.onload = function() {
-            memeCanvas.width = img.width;
-            memeCanvas.height = img.height;
-            ctx.drawImage(img,0,0);
-            currMeme.style.width = `${img.width}px`;
-            currMeme.style.height =`${img.height}px`;
-        }
-        img.src = event.target.result;
-        src = event.target.result;
+    img.onload = function() {
+        memeCanvas.width = img.width;
+        memeCanvas.height = img.height;
+
         ctx.drawImage(img,0,0);
+        
+        currMeme.style.width = `${img.width}px`;
+        currMeme.style.height =`${img.height}px`;
+
         dynamicText(img);
     }
 
-    reader.readAsDataURL(e.target.files[0]); 
+    img.onerror = function() {
+        console.log("well that didn't work");
+    }
+
+    img.src = memeImageLink.value;
+    
+    
 }
 
 memeForm.addEventListener('submit',(event) => {
@@ -141,29 +145,7 @@ memeForm.addEventListener('submit',(event) => {
 
 });
 
-console.log(memeGrid);
-
 /*
-function DrawOverlay(img) {
-    ctx.drawImage(img,0,0);
-    ctx.fillStyle = 'rgba(30, 144, 255, 0.4)';
-    ctx.fillRect(0, 0, memeCanvas.width, memeCanvas.height);
-}
-function DrawText() {
-    ctx.fillStyle = "white";
-    ctx.textBaseline = 'middle';
-    ctx.font = "50px 'Impact'";
-    ctx.fillText(text_title, 50, 50);
-}
-function DynamicText(img) {
-    document.getElementById('top_text').addEventListener('keyup', function() {
-        ctx.clearRect(0, 0, memeCanvas.width, memeCanvas.height);
-        DrawOverlay(img);
-        DrawText(); 
-        text_title = this.value;
-        ctx.fillText(text_title, 50, 50);
-    });
-}
 function handleImage(e) {
     let reader = new FileReader();
     let img = "";
@@ -171,22 +153,23 @@ function handleImage(e) {
     
     reader.onload = function(event) {
         img = new Image();
+        
         img.onload = function() {
             memeCanvas.width = img.width;
             memeCanvas.height = img.height;
+
             ctx.drawImage(img,0,0);
+            
+            currMeme.style.width = `${img.width}px`;
+            currMeme.style.height =`${img.height}px`;
         }
+
         img.src = event.target.result;
         src = event.target.result;
-        memeCanvas.classList.add("show");
-        DrawOverlay(img);
-        DrawText(); 
-        DynamicText(img);   
+        ctx.drawImage(img,0,0);
+        dynamicText(img);
     }
-
+    
     reader.readAsDataURL(e.target.files[0]); 
 }
-
-function convertToImage() {
-	window.open(memeCanvas.toDataURL('png'));
-}*/
+*/
