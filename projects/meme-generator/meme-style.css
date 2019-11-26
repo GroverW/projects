@@ -1,28 +1,25 @@
-#meme1 {
-    width: 400px;
-}
-
 .meme {
     position: relative;
 }
 
-.meme .controls {
+.meme .delete {
     transition: .2s ease-in-out;
     opacity: 0;
 }
 
-.meme:hover .controls {
+.meme:hover .delete {
     opacity: 1;
 }
 
-.controls {
-    width: 100%;
-    position: absolute;
-    display: inline-block;
-    text-align: right;
-}
-
 .delete {
-    top: 0;
-    right: 0;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    background-image: url(images/delete_button.png);
+    background-size: 32px 32px; 
+    background-color: rgba(83, 0, 0, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 0 3px 1px rgba(0,0,0,0.4);
 }
