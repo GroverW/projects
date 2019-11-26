@@ -17,8 +17,6 @@ img.crossOrigin='anoynymous';
 
 let memeText = {'top': '', 'bottom': ''};
 
-let needsDeleteButton = true;
-
 
 
 function drawText(text_val,xOffset = 10, yOffset = 10) {
@@ -100,23 +98,6 @@ function handleImage(e) {
             memeCanvas.width = img.width;
             memeCanvas.height = img.height;
             ctx.drawImage(img,0,0);
-
-            if(needsDeleteButton) {
-                let memeControls = document.createElement('div');
-                memeControls.classList.add('controls');
-
-                let memeDelButton = document.createElement('a');
-                memeDelButton.id = `del_meme${currMemeNum}`;
-                memeDelButton.classList.add('delete');
-                memeDelButton.setAttribute('href','#');
-                memeDelButton.innerText = 'X';
-
-                memeControls.appendChild(memeDelButton);
-
-                currMeme.appendChild(memeControls);
-
-                needsDeleteButton = false;
-            }
         }
         img.src = event.target.result;
         src = event.target.result;
@@ -130,6 +111,22 @@ function handleImage(e) {
 memeForm.addEventListener('submit',(event) => {
     event.preventDefault();
     memeForm.reset();
+
+    let memeControls = document.createElement('div');
+    memeControls.classList.add('controls');
+
+    let memeDelButton = document.createElement('a');
+    memeDelButton.id = `del_meme${currMemeNum}`;
+    memeDelButton.classList.add('delete');
+    memeDelButton.setAttribute('href','#');
+    memeDelButton.innerText = 'X';
+
+    memeDelButton.addEventListener('click',() => memeDelButton.parentNode.parentNode.remove());
+
+    memeControls.appendChild(memeDelButton);
+
+    currMeme.appendChild(memeControls);
+
 
     currMemeNum++;
     let nextMeme = document.createElement('div');
@@ -145,8 +142,6 @@ memeForm.addEventListener('submit',(event) => {
     currMeme = document.querySelector(`#meme${currMemeNum}`);
     memeCanvas = document.querySelector(`#meme${currMemeNum}_canvas`);
     ctx = memeCanvas.getContext('2d');
-
-    needsDeleteButton = true;
 
 });
 
