@@ -98,6 +98,8 @@ function handleImage(e) {
             memeCanvas.width = img.width;
             memeCanvas.height = img.height;
             ctx.drawImage(img,0,0);
+            currMeme.style.width = `${img.width}px`;
+            currMeme.style.height =`${img.height}px`;
         }
         img.src = event.target.result;
         src = event.target.result;
@@ -112,19 +114,14 @@ memeForm.addEventListener('submit',(event) => {
     event.preventDefault();
     memeForm.reset();
 
-    let memeControls = document.createElement('div');
-    memeControls.classList.add('controls');
-
     let memeDelButton = document.createElement('a');
     memeDelButton.id = `del_meme${currMemeNum}`;
     memeDelButton.classList.add('delete');
     memeDelButton.setAttribute('href','#');
 
-    memeDelButton.addEventListener('click',() => memeDelButton.parentNode.parentNode.remove());
+    memeDelButton.addEventListener('click',() => memeDelButton.parentNode.remove());
 
-    memeControls.appendChild(memeDelButton);
-
-    currMeme.appendChild(memeControls);
+    currMeme.appendChild(memeDelButton);
 
 
     currMemeNum++;
