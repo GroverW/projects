@@ -7,14 +7,17 @@ let bottomText = document.querySelector('#bottom_text');
 let memeImage = document.querySelector('#meme_image')
 memeImage.addEventListener('change', handleImage,false);
 
-let currMeme = 1;
-let memeCanvas = document.querySelector(`#meme${currMeme}_canvas`);
+let currMemeNum = 1;
+let currMeme = document.querySelector(`#meme${currMemeNum}`);
+let memeCanvas = document.querySelector(`#meme${currMemeNum}_canvas`);
 let ctx = memeCanvas.getContext('2d');
 
 let img = new Image();
 img.crossOrigin='anoynymous';
 
 let memeText = {'top': '', 'bottom': ''};
+
+let needsDeleteButton = true;
 
 
 
@@ -60,12 +63,10 @@ function drawLines(text_val,canvasWidth,canvasHeight) {
     ctx.font = `${fontSize}px 'Impact'`;
 
     let topWords = text_val.top.split(' ')
-
     processText(canvasWidth,topWords,fontSize,lineHeight,(line,word) => line + word + ' ');
     
     let bottomWords = text_val.bottom.split(' ').reverse();
-
-    processText(canvasWidth,bottomWords,canvasHeight - 10,-lineHeight,(line,word) => ' ' + line + word);
+    processText(canvasWidth,bottomWords,canvasHeight - 10,-lineHeight,(line,word) => ' ' + word + line);
 }
 
 function dynamicText(img) {
@@ -100,7 +101,22 @@ function handleImage(e) {
             memeCanvas.height = img.height;
             ctx.drawImage(img,0,0);
 
+            if(needsDeleteButton) {
+                let memeControls = document.createElement('div');
+                memeControls.classList.add('controls');
 
+                let memeDelButton = document.createElement('a');
+                memeDelButton.id = `del_meme${currMemeNum}`;
+                memeDelButton.classList.add('delete');
+                memeDelButton.setAttribute('href','#');
+                memeDelButton.innerText = 'X';
+
+                memeControls.appendChild(memeDelButton);
+
+                currMeme.appendChild(memeControls);
+
+                needsDeleteButton = false;
+            }
         }
         img.src = event.target.result;
         src = event.target.result;
@@ -113,36 +129,24 @@ function handleImage(e) {
 
 memeForm.addEventListener('submit',(event) => {
     event.preventDefault();
+    memeForm.reset();
 
-    memeImage.value = "";
-    topText.value = "";
-
-    currMeme++;
+    currMemeNum++;
     let nextMeme = document.createElement('div');
-    nextMeme.id = `meme${currMeme}`;
+    nextMeme.id = `meme${currMemeNum}`;
     nextMeme.classList.add('meme');
     
     let nextMemeCanvas = document.createElement('canvas');
-    nextMemeCanvas.id = `meme${currMeme}_canvas`;
+    nextMemeCanvas.id = `meme${currMemeNum}_canvas`;
     nextMeme.appendChild(nextMemeCanvas);
-
-    let nextMemeControls = document.createElement('div');
-    nextMemeControls.classList.add('controls');
-
-    let nextMemeDelete = document.createElement('a');
-    nextMemeDelete.id = `del_meme${currMeme}`;
-    nextMemeDelete.classList.add('delete');
-    nextMemeDelete.setAttribute('href','#');
-    nextMemeDelete.innerText = 'X';
-
-    nextMemeControls.appendChild(nextMemeDelete);
-
-    nextMeme.appendChild(nextMemeControls);
 
     memeGrid.prepend(nextMeme);
 
-    memeCanvas = document.querySelector(`#meme${currMeme}_canvas`);
+    currMeme = document.querySelector(`#meme${currMemeNum}`);
+    memeCanvas = document.querySelector(`#meme${currMemeNum}_canvas`);
     ctx = memeCanvas.getContext('2d');
+
+    needsDeleteButton = true;
 
 });
 
