@@ -1,8 +1,10 @@
 let memeForm = document.querySelector('#meme_form');
 let memeGrid = document.querySelector('#meme_grid');
-let memeImage = document.querySelector('#meme_image')
+
 let topText = document.querySelector('#top_text');
 let bottomText = document.querySelector('#bottom_text');
+
+let memeImage = document.querySelector('#meme_image')
 memeImage.addEventListener('change', handleImage,false);
 
 let currMeme = 1;
@@ -14,57 +16,7 @@ img.crossOrigin='anoynymous';
 
 let memeText = {'top': '', 'bottom': ''};
 
-function drawLines(text_val,canvasWidth,canvasHeight) {
-    let topWords = text_val.top.split(' ')
-    let bottomWords = text_val.bottom.split(' ').reverse();
-    console.log(topWords,bottomWords);
-    let line = '';
-    let maxWidth = canvasWidth - 20;
-    let fontRatio = 50 / 450;
-    let fontSize = Math.ceil(canvasWidth * fontRatio);
-    let yOffset = fontSize;
-    let lineHeight = fontSize + 10;
 
-    ctx.miterLimit = 2;
-    ctx.textBaseLine = 'middle';
-    ctx.textAlign = 'center';
-    ctx.font = `${fontSize}px 'Impact'`;
-
-    for(let word of topWords) {
-        let tempLine = line + word + ' ';
-        
-        let textWidth = ctx.measureText(tempLine.trim()).width;
-        
-        if(textWidth > maxWidth) {
-            drawText(line.trim(), canvasWidth / 2, yOffset)
-            yOffset += lineHeight;
-            line = word + ' ';
-        } else {
-            line = tempLine;
-        }
-    }
-
-    drawText(line.trim(), canvasWidth / 2, yOffset)
-
-    yOffset = canvasHeight - 10;
-    line = '';
-
-    for(let word of bottomWords) {
-        let tempLine = ' ' + word + line;
-
-        let textWidth = ctx.measureText(tempLine.trim()).width;
-
-        if(textWidth > maxWidth) {
-            drawText(line.trim(),canvasWidth / 2, yOffset);
-            yOffset -= lineHeight;
-            line = ' ' + word;
-        } else {
-            line = tempLine;
-        }
-    }
-
-    drawText(line.trim(), canvasWidth / 2, yOffset)
-}
 
 function drawText(text_val,xOffset = 10, yOffset = 10) {
     ctx.fillStyle = "white";
@@ -75,6 +27,47 @@ function drawText(text_val,xOffset = 10, yOffset = 10) {
     ctx.strokeText(text_val, xOffset, yOffset);
 }
 
+function processText(canvasWidth,words,yStart,yChange,combineWords) {
+    let maxWidth = canvasWidth - 20;
+    let line = '';
+    let yOffset = yStart;
+    
+    for(let word of words) {
+        let tempLine = combineWords(line,word);
+
+        let textWidth = ctx.measureText(tempLine.trim()).width;
+
+        if(textWidth > maxWidth) {
+            drawText(line.trim(),canvasWidth / 2, yOffset);
+            yOffset += yChange;
+            line = combineWords('',word);
+        } else {
+            line = tempLine;
+        }
+    }
+
+    drawText(line.trim(), canvasWidth / 2, yOffset)
+}
+
+function drawLines(text_val,canvasWidth,canvasHeight) {
+    let fontRatio = 50 / 450;
+    let fontSize = Math.ceil(canvasWidth * fontRatio);
+    let lineHeight = fontSize + 10;
+
+    ctx.miterLimit = 2;
+    ctx.textBaseLine = 'middle';
+    ctx.textAlign = 'center';
+    ctx.font = `${fontSize}px 'Impact'`;
+
+    let topWords = text_val.top.split(' ')
+
+    processText(canvasWidth,topWords,fontSize,lineHeight,(line,word) => line + word + ' ');
+    
+    let bottomWords = text_val.bottom.split(' ').reverse();
+
+    processText(canvasWidth,bottomWords,canvasHeight - 10,-lineHeight,(line,word) => ' ' + line + word);
+}
+
 function dynamicText(img) {
     topText.addEventListener('input', () => {
         ctx.clearRect(0, 0, memeCanvas.width, memeCanvas.height);
@@ -83,7 +76,6 @@ function dynamicText(img) {
         memeText.top = topText.value.toUpperCase();
         
         drawLines(memeText,memeCanvas.width,memeCanvas.height)
-        console.log(memeText);
     });
 
     bottomText.addEventListener('input', () => {
@@ -93,7 +85,6 @@ function dynamicText(img) {
         memeText.bottom = bottomText.value.toUpperCase();
         
         drawLines(memeText,memeCanvas.width,memeCanvas.height)
-        console.log(memeText);
     });
 }
 
@@ -108,6 +99,8 @@ function handleImage(e) {
             memeCanvas.width = img.width;
             memeCanvas.height = img.height;
             ctx.drawImage(img,0,0);
+
+
         }
         img.src = event.target.result;
         src = event.target.result;
@@ -135,14 +128,6 @@ memeForm.addEventListener('submit',(event) => {
 
     let nextMemeControls = document.createElement('div');
     nextMemeControls.classList.add('controls');
-    
-    let nextMemeDownload = document.createElement('a');
-    nextMemeDownload.id = `dl_meme${currMeme}`;
-    nextMemeDownload.classList.add('download');
-    nextMemeDownload.setAttribute('href','#');
-    nextMemeDownload.innerText = 'D';
-
-    nextMemeControls.appendChild(nextMemeDownload);
 
     let nextMemeDelete = document.createElement('a');
     nextMemeDelete.id = `del_meme${currMeme}`;
