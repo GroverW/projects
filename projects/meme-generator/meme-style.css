@@ -1,0 +1,28 @@
+#meme1 {
+    width: 400px;
+}
+
+.meme {
+    position: relative;
+}
+
+.meme .controls {
+    transition: .2s ease-in-out;
+    opacity: 0;
+}
+
+.meme:hover .controls {
+    opacity: 1;
+}
+
+.controls {
+    width: 100%;
+    position: absolute;
+    display: inline-block;
+    text-align: right;
+}
+
+.delete {
+    top: 0;
+    right: 0;
+}

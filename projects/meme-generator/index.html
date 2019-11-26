@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        
+        <title>Meme Generator</title>
+
+        <link href="../../style.css" type="text/css" rel="stylesheet">
+        <link href="meme-style.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="main_container">
+            <div id="header">
+                    <div id="page_title">
+                        Meme Generator<br>
+                        <a class="back_arrow" href="../index.html"><span class="large_symbol">←</span> Back</a>
+                    </div>
+                <div id="logo">
+                    <a href="https://www.willgrover.com"></a>
+                </div>
+                <div id="nav_links">
+                        <a href=",,.../index.html">Home</a>
+                        <a href="../../updates/index.html">Updates</a>
+                        <a href="../index.html" class="selected">Projects</a>
+                        <a href="../../about/index.html">About</a>
+                        <a class="image_link" href="https://github.com/GroverW" target="blank">
+                            <img src="../../images/gitHub.png" width="20" height="20">
+                        </a>
+                        <a class="image_link" href="https://www.linkedin.com/in/willgrover/" target="blank">
+                            <img src="../../images/linkedIn.png" width="20" height="20">
+                        </a>
+                </div>
+                    
+            </div>
+            <div id="body_content">
+                <div id="content_container">
+                        <div id="instructions">
+                                <strong>Instructions:</strong> Link or upload file, enter text, press go, BAM! Memelord.
+                        </div>
+                        <div id="settings">
+                            <form name="meme_form" id="meme_form">
+                                <input type="file" name="meme_image" id="meme_image">
+                                <input type="text" name="top_text" id="top_text">
+                                <input type="text" name="bottom_text"  id="bottom_text">
+                                <button type="submit" form="meme_form">More!</button>
+                            </form>                                            
+                        </div>
+                        <div id="meme_grid">
+                            <div id="meme1" class="meme">
+                                <canvas id="meme1_canvas" class="meme_canvas"></canvas>
+                                <div class='controls'>
+                                    <a id="del_meme1" class="delete" href="#">X</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                </div>
+            </div>
+            <div id="body_content_bg"></div>
+            <div id="footer">Some stuff here</div>
+        </div>
+    </body>
+    <script src="script.js"></script>
+</html>
