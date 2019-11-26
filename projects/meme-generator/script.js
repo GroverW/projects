@@ -93,6 +93,10 @@ function dynamicText(img) {
 function handleImage(e) {
     let img = new Image();
     
+    img.onerror = function() {
+        img.src = 'images/error.png';
+    }
+
     img.onload = function() {
         memeCanvas.width = img.width;
         memeCanvas.height = img.height;
@@ -105,13 +109,9 @@ function handleImage(e) {
         dynamicText(img);
     }
 
-    img.onerror = function() {
-        console.log("well that didn't work");
-    }
+    
 
     img.src = memeImageLink.value;
-    
-    
 }
 
 memeForm.addEventListener('submit',(event) => {
