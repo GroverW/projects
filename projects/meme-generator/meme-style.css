@@ -1,3 +1,11 @@
+#meme_grid {
+    width: 660px;
+    min-height: 400px;
+    display: grid;
+    grid-auto-flow: row dense;
+    grid-template: repeat(auto-fill, minmax(200px, 1fr)) / repeat(auto-fill, minmax(200px, 1fr));
+}
+
 .meme {
     position: relative;
 }
@@ -18,8 +26,10 @@
     width: 32px;
     height: 32px;
     background-image: url(images/delete_button.png);
+    background-position: -1px -1px;
     background-size: 32px 32px; 
-    background-color: rgba(83, 0, 0, 0.3);
+    background-color: rgba(83, 0, 0, 0.1);
     border-radius: 16px;
     box-shadow: 0 0 3px 1px rgba(0,0,0,0.4);
+    border: 1px solid black;
 }
