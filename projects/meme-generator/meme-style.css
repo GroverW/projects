@@ -28,6 +28,7 @@
     background-color: rgb(60, 139, 241);
     color: white;
     cursor: pointer;
+    outline: none;
 }
 
 #meme_grid {
