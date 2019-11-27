@@ -22,6 +22,8 @@ let memeText = {'top': '', 'bottom': ''};
 
 let isMemeReady = false;
 
+let addBtnStyle = document.querySelector('#add_btn');
+
 
 function drawText(text_val,xOffset = 10, yOffset = 10) {
     ctx.fillStyle = "white";
@@ -104,15 +106,18 @@ function handleImage(e) {
         currMeme.style.height =`${img.height}px`;
 
         dynamicText(img);
-        
+
         if(img.src.split('/').pop() !== "error.png") {
             isMemeReady = true;
+            addBtnStyle.classList.add('active');
         }
         
     }
 
     img.onerror = function() {
         img.src = "images/error.png"
+        isMemeReady = false;
+        addBtnStyle.classList.remove('active');
     }
 
     img.src = memeImageLink.value;
