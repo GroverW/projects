@@ -1,13 +1,13 @@
 #meme_grid {
     width: 660px;
     min-height: 400px;
-    display: grid;
-    grid-auto-flow: row dense;
-    grid-template: repeat(auto-fill, minmax(200px, 1fr)) / repeat(auto-fill, minmax(200px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .meme {
     position: relative;
+    margin: 10px 10px 0 0;
 }
 
 .meme .delete {
@@ -21,6 +21,7 @@
 
 .delete {
     position: absolute;
+    cursor: pointer;
     top: 5px;
     right: 10px;
     width: 32px;
