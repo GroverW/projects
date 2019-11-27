@@ -1,3 +1,35 @@
+#instructions, #instructions strong {
+    font-size: 13px;
+}
+
+#meme_form {
+    width: 100%;
+    height: 100px;
+    display: grid;
+    grid-template: 15px repeat(2,25px) / repeat(3,1fr) 80px;
+    grid-gap: 5px;
+    margin-top: 20px;;
+}
+
+#meme_form span {
+    font-size: 14px;
+}
+
+#meme_form input {
+    border-radius: 3px;
+    border: 1px solid #999;
+    outline: none;
+    padding: 0 3px 0 3px;
+}
+
+#meme_form button {
+    border-radius: 3px;
+    border: 1px solid rgb(18, 57, 107);
+    background-color: rgb(60, 139, 241);
+    color: white;
+    cursor: pointer;
+}
+
 #meme_grid {
     width: 660px;
     min-height: 400px;
