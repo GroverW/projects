@@ -20,6 +20,7 @@ img.crossOrigin = 'anoynymous';
 
 let memeText = {'top': '', 'bottom': ''};
 
+let isMemeReady = false;
 
 
 function drawText(text_val,xOffset = 10, yOffset = 10) {
@@ -92,10 +93,6 @@ function dynamicText(img) {
 
 function handleImage(e) {
     let img = new Image();
-    
-    img.onerror = function() {
-        img.src = 'images/error.png';
-    }
 
     img.onload = function() {
         memeCanvas.width = img.width;
@@ -107,41 +104,53 @@ function handleImage(e) {
         currMeme.style.height =`${img.height}px`;
 
         dynamicText(img);
+        
+        if(img.src.split('/').pop() !== "error.png") {
+            isMemeReady = true;
+        }
+        
     }
 
-    
+    img.onerror = function() {
+        img.src = "images/error.png"
+    }
 
     img.src = memeImageLink.value;
+    
 }
 
 memeForm.addEventListener('submit',(event) => {
     event.preventDefault();
-    memeForm.reset();
-
-    let memeDelButton = document.createElement('a');
-    memeDelButton.id = `del_meme${currMemeNum}`;
-    memeDelButton.classList.add('delete');
-    memeDelButton.setAttribute('href','#');
-
-    memeDelButton.addEventListener('click',() => memeDelButton.parentNode.remove());
-
-    currMeme.appendChild(memeDelButton);
-
-
-    currMemeNum++;
-    let nextMeme = document.createElement('div');
-    nextMeme.id = `meme${currMemeNum}`;
-    nextMeme.classList.add('meme');
     
-    let nextMemeCanvas = document.createElement('canvas');
-    nextMemeCanvas.id = `meme${currMemeNum}_canvas`;
-    nextMeme.appendChild(nextMemeCanvas);
+    if(isMemeReady) {
+        memeForm.reset();
 
-    memeGrid.prepend(nextMeme);
+        let memeDelButton = document.createElement('a');
+        memeDelButton.id = `del_meme${currMemeNum}`;
+        memeDelButton.classList.add('delete');
 
-    currMeme = document.querySelector(`#meme${currMemeNum}`);
-    memeCanvas = document.querySelector(`#meme${currMemeNum}_canvas`);
-    ctx = memeCanvas.getContext('2d');
+        memeDelButton.addEventListener('click',(event) => memeDelButton.parentNode.remove());
+
+        currMeme.appendChild(memeDelButton);
+
+        currMemeNum++;
+        let nextMeme = document.createElement('div');
+        nextMeme.id = `meme${currMemeNum}`;
+        nextMeme.classList.add('meme', 'first');
+        
+        let nextMemeCanvas = document.createElement('canvas');
+        nextMemeCanvas.id = `meme${currMemeNum}_canvas`;
+        nextMeme.appendChild(nextMemeCanvas);
+
+        memeGrid.prepend(nextMeme);
+
+        currMeme = document.querySelector(`#meme${currMemeNum}`);
+        memeCanvas = document.querySelector(`#meme${currMemeNum}_canvas`);
+        ctx = memeCanvas.getContext('2d');
+
+        isMemeReady = false;
+    }
+    
 
 });
 
