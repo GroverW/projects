@@ -73,10 +73,10 @@ function drawLines(text_val,canvasWidth,canvasHeight) {
     processText(canvasWidth,bottomWords,canvasHeight - 10,-lineHeight,(line,word) => ' ' + word + line);
 }
 
-function dynamicText(img) {
+function dynamicText(img,scaledWidth,scaledHeight) {
     topText.addEventListener('input', () => {
         ctx.clearRect(0, 0, memeCanvas.width, memeCanvas.height);
-        ctx.drawImage(img,0,0);
+        ctx.drawImage(img,0,0,img.width,img.height,0,0,scaledWidth,scaledHeight);
         
         memeText.top = topText.value.toUpperCase();
         
@@ -85,7 +85,7 @@ function dynamicText(img) {
 
     bottomText.addEventListener('input', () => {
         ctx.clearRect(0, 0, memeCanvas.width, memeCanvas.height);
-        ctx.drawImage(img,0,0);
+        ctx.drawImage(img,0,0,img.width,img.height,0,0,scaledWidth,scaledHeight);
         
         memeText.bottom = bottomText.value.toUpperCase();
         
@@ -97,15 +97,18 @@ function handleImage(e) {
     let img = new Image();
 
     img.onload = function() {
-        memeCanvas.width = img.width;
-        memeCanvas.height = img.height;
+        let scaleFactor = img.width > 660 ? 660 / img.width : 1;
+        let scaledWidth = img.width * scaleFactor, scaledHeight = img.height * scaleFactor;
 
-        ctx.drawImage(img,0,0);
+        memeCanvas.width = scaledWidth;
+        memeCanvas.height = scaledHeight;
+
+        ctx.drawImage(img,0,0,img.width,img.height,0,0,scaledWidth,scaledHeight);
         
-        currMeme.style.width = `${img.width}px`;
-        currMeme.style.height =`${img.height}px`;
+        currMeme.style.width = `${scaledWidth}px`;
+        currMeme.style.height =`${scaledHeight}px`;
 
-        dynamicText(img);
+        dynamicText(img,scaledWidth,scaledHeight);
 
         if(img.src.split('/').pop() !== "error.png") {
             isMemeReady = true;
@@ -154,6 +157,7 @@ memeForm.addEventListener('submit',(event) => {
         ctx = memeCanvas.getContext('2d');
 
         isMemeReady = false;
+        addBtnStyle.classList.remove('active');
     }
     
 
