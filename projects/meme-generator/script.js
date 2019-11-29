@@ -132,6 +132,8 @@ memeForm.addEventListener('submit',(event) => {
     
     if(isMemeReady) {
         memeForm.reset();
+        memeText.top = '';
+        memeText.bottom = '';
 
         let memeDelButton = document.createElement('a');
         memeDelButton.id = `del_meme${currMemeNum}`;
