@@ -57,7 +57,7 @@ function processText(canvasWidth,words,yStart,yChange,combineWords) {
 }
 
 function drawLines(text_val,canvasWidth,canvasHeight) {
-    let fontRatio = 50 / 450;
+    let fontRatio = 50 / 500;
     let fontSize = Math.ceil(canvasWidth * fontRatio);
     let lineHeight = fontSize + 10;
 
