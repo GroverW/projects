@@ -30,26 +30,103 @@
     height: 260px;
     width: 235px;
     vertical-align: bottom;
+    transition: .2s ease-in-out;
+    background-image: linear-gradient(to bottom,rgb(58, 39, 15),rgb(92, 63, 25) 50%);
+}
+
+.shelf_col:hover {
+    filter: saturate(170%);
+    cursor: pointer;
 }
 
 .book1, .book2, .book3, .book4 {
     height: 65px;
     width: 235px;
     background: url(images/books.png) no-repeat;
+    transition: .2s ease-in-out;
+}
+
+.book1:hover, .book2:hover, .book3:hover, .book4:hover {
+    cursor: pointer;
+    filter: brightness(1.2);
 }
 
 .book1 {
     background-position: 0px -195px;
+    display: grid;
+    grid-template: 1fr 20px / 1fr 40px;
 }
 
 .book2 {
     background-position: 0px -130px;
+    display: grid;
+    grid-template: 1fr 25px / 1fr 40px;
 }
 
 .book3 {
     background-position: 0px -65px;
+    display: grid;
+    grid-template: 1fr / 1fr 40px 33px;
 }
 
 .book4 {
     background-position: 0px 0px;
+    display: grid;
+    grid-template: 1fr / 1fr 40px 33px;
+}
+
+.book1 *, .book2 * {
+    color: rgb(253, 240, 168);
+    text-shadow:    -1px -1px 0 rgb(71, 71, 71),
+                    1px -1px 0 rgb(71, 71, 71),
+                    -1px 1px 0 rgb(71, 71, 71),
+                    1px 1px 0 rgb(71, 71, 71);
+}
+
+.book1 booktitle, .book2 booktitle {
+    grid-area: 1 / 1 / span 1 / span 1;
+    line-height: 12px;
+    padding-left: 10px;
+    align-self: center;
+}
+
+.book1 subtitle, .book2 subtitle {
+    font-size: 10px;
+}
+
+.book1 author, .book2 author {
+    padding-left: 10px;
+    font-size: 11px;
+    grid-area: 2 / 1 / span 1 / span 1;
+    align-self: center;
+}
+
+.book3 *, .book4 * {
+    color: rgb(207, 207, 207);
+    text-shadow:    -1px -1px 0 rgb(71, 71, 71),
+                    1px -1px 0 rgb(71, 71, 71),
+                    -1px 1px 0 rgb(71, 71, 71),
+                    1px 1px 0 rgb(71, 71, 71);
+}
+
+.book3 booktitle, .book4 booktitle {
+    grid-area: 1 / 1 / span 1 / span 1;
+    line-height: 12px;
+    padding-left: 20px;
+    align-self: center;
+}
+
+.book3 subtitle, .book4 subtitle {
+    font-size: 10px;
+    line-height: 10px;
+}
+
+.book3 author, .book4 author {
+    width: 65px;
+    font-size: 11px;
+    grid-area: 1 / 2 / span 1 / span 1;
+    transform: rotate(-90deg);
+    text-align: center;
+    align-self: center;
+    justify-self: center;
 }
