@@ -18,11 +18,11 @@ class BookAuthor extends HTMLElement {
 customElements.define('book-title',BookTitle);
 customElements.define('book-author',BookAuthor);
 
-var Book = function(title,author,numPages,isRead,summary,rating) {
+var Book = function(title,author,numPages = '',hasRead = false,summary = '',rating) {
     this.title = title;
     this.author = author;
     this.numPages = numPages;
-    this.hasRead = isRead;
+    this.hasRead = hasRead;
     this.summary = summary;
     this.rating = rating;
 }
@@ -52,23 +52,47 @@ var addBookToShelf = function(book,stackID) {
         let bookType = randomizeBookType([1,2,3,4],[.15,.15,.35,.35]);
 
         let newBook = document.createElement('div');
-        newBook.id = 'b-' + stackID + '_' + bookShelf[stackID].length;
+        let newBookID = bookShelf[stackID].length - 1;
+
+        newBook.id = 'b-' + stackID + '_' + newBookID;
         newBook.classList.add(`book${bookType}`);
 
         let newBookTitle = document.createElement('book-title');
-        console.log(newBook.title);
         newBookTitle.innerText = book.title;
 
         let newBookAuthor = document.createElement('book-author');
-        console.log(newBook.author);
         newBookAuthor.innerText = book.author;
 
         newBook.appendChild(newBookTitle);
         newBook.appendChild(newBookAuthor);
 
+        newBook.addEventListener('click',(event) => {
+            event.stopPropagation();
+            editFormTitle.innerText = 'Update Book';
+            selectedElement.value = newBook.id;
+    
+            bookTitle.value = book.title;
+            bookAuthor.value = book.author;
+            bookPages.value = book.numPages;
+            bookSummary.value = book.summary;
+            hasRead.checked = book.hasRead;
+    
+            editForm.classList.add('show');
+        });
+
         let stack = document.querySelector(`#s-${stackID}`);
         stack.prepend(newBook);
     }
+}
+
+var updateBook = function(book,bookID) {
+    let bookSelector = document.querySelector(`#${bookID}`);
+
+    let bookTitle = bookSelector.getElementsByTagName('book-title')[0];
+    bookTitle.innerText = book.title;
+
+    let bookAuthor = bookSelector.getElementsByTagName('book-author')[0];
+    bookAuthor.innerText = book.author;
 }
 
 
@@ -97,18 +121,6 @@ stacks.forEach((stack) => {
     });
 });
 
-console.log(stacks);
-
-let books = document.querySelectorAll('.book1, .book2, .book3, .book4');
-books.forEach((book) => {
-    book.addEventListener('click',(event) => {
-        event.stopPropagation();
-        editFormTitle.innerText = 'Update Book';
-        selectedElement.value = book.id;
-        editForm.classList.add('show');
-    });
-});
-
 editForm.addEventListener('submit',(event) => {
     event.preventDefault();
     let instructions = selectedElement.value.split('-');
@@ -121,14 +133,14 @@ editForm.addEventListener('submit',(event) => {
             let newBook = new Book(bookTitle.value,
                                 bookAuthor.value,
                                 bookPages.value,
-                                hasRead.value,
+                                hasRead.checked,
                                 bookSummary.value,
                                 5);
 
+            bookShelf[+actionID].push(newBook);
+
             addBookToShelf(newBook,+actionID)
 
-            editForm.reset();
-            editForm.classList.remove('show');
         } else if(action === 'b') {
             let bookLocation = actionID.split('_');
             let shelfID = bookLocation[0];
@@ -137,10 +149,31 @@ editForm.addEventListener('submit',(event) => {
             bookShelf[shelfID][bookID].title = bookTitle.value;
             bookShelf[shelfID][bookID].author = bookAuthor.value;
             bookShelf[shelfID][bookID].numPages = bookPages.value;
-            bookShelf[shelfID][bookID].hasRead = hasRead.value;
+            bookShelf[shelfID][bookID].hasRead = hasRead.checked;
             bookShelf[shelfID][bookID].summary = bookSummary.value;
+
+            updateBook(bookShelf[shelfID][bookID],`b-${shelfID}_${bookID}`);
         }
+
+        editForm.reset();
+        editForm.classList.remove('show');
     }
 
 });
+
+let bookTest = new Book('Code: The Hidden Language of Computer Hardware and Software and a bunch of','Charles Petzold');
+bookShelf[0].push(bookTest);
+addBookToShelf(bookTest,0);
+bookTest = new Book('The Hidden Language of Computer','Robert C. Martin',340,true);
+bookShelf[0].push(bookTest);
+addBookToShelf(bookTest,0);
+bookTest = new Book('Clean Code','Robert C. Martin');
+bookShelf[1].push(bookTest);
+addBookToShelf(bookTest,1);
+bookTest = new Book('Clean Code','Robert C. Martin');
+bookShelf[1].push(bookTest);
+addBookToShelf(bookTest,1);
+bookTest = new Book('Code:','Robert C. Martin');
+bookShelf[2].push(bookTest);
+addBookToShelf(bookTest,2);
 
