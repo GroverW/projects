@@ -3,11 +3,26 @@ const BOOKS_PER_STACK = 4;
 
 let bookShelf = new Array(BOOK_STACKS).fill(null).map((v) => Array(0));
 
+class BookTitle extends HTMLElement {
+    constructor() {
+        super();
+    }
+}
+
+class BookAuthor extends HTMLElement {
+    constructor() {
+        super();
+    }
+}
+
+customElements.define('book-title',BookTitle);
+customElements.define('book-author',BookAuthor);
+
 var Book = function(title,author,numPages,isRead,summary,rating) {
     this.title = title;
     this.author = author;
     this.numPages = numPages;
-    this.isRead = isRead;
+    this.hasRead = isRead;
     this.summary = summary;
     this.rating = rating;
 }
@@ -30,14 +45,31 @@ var randomizeBookType = function(types,weights) {
     }
 }
 
-var addBookToShelf = function(book,shelfID) {
-    if(bookShelf[shelfID].length === BOOKS_PER_STACK) {
+var addBookToShelf = function(book,stackID) {
+    if(bookShelf[stackID].length === BOOKS_PER_STACK) {
         console.log('Stack is full!');
     } else {
-        let bookType = randomizeBookType([1,2,3,4],[.15,.15,.35,.35]); 
+        let bookType = randomizeBookType([1,2,3,4],[.15,.15,.35,.35]);
+
+        let newBook = document.createElement('div');
+        newBook.id = 'b-' + stackID + '_' + bookShelf[stackID].length;
+        newBook.classList.add(`book${bookType}`);
+
+        let newBookTitle = document.createElement('book-title');
+        console.log(newBook.title);
+        newBookTitle.innerText = book.title;
+
+        let newBookAuthor = document.createElement('book-author');
+        console.log(newBook.author);
+        newBookAuthor.innerText = book.author;
+
+        newBook.appendChild(newBookTitle);
+        newBook.appendChild(newBookAuthor);
+
+        let stack = document.querySelector(`#s-${stackID}`);
+        stack.prepend(newBook);
     }
 }
-
 
 
 let selectedElement = document.querySelector('#selected');
@@ -59,7 +91,7 @@ let stacks = document.querySelectorAll('.shelf_stack');
 stacks.forEach((stack) => {
     stack.addEventListener('click',() => {
         editForm.reset();
-        selectedElement.value = 's.' + stack.id;
+        selectedElement.value = stack.id;
         editFormTitle.innerText = 'New Book';
         editForm.classList.add('show');
     });
@@ -72,28 +104,41 @@ books.forEach((book) => {
     book.addEventListener('click',(event) => {
         event.stopPropagation();
         editFormTitle.innerText = 'Update Book';
-        selectedElement.value = 'b.' + book.id;
+        selectedElement.value = book.id;
         editForm.classList.add('show');
     });
 });
 
 editForm.addEventListener('submit',(event) => {
     event.preventDefault();
-    let instructions = selectedElement.value.split('.');
+    let instructions = selectedElement.value.split('-');
     
     if(instructions.length > 0) {
         let action = instructions[0];
         let actionID = instructions[1];
 
-        if(action[0] === 's') {
-            let book = new Book(bookTitle.value,
+        if(action === 's') {
+            let newBook = new Book(bookTitle.value,
                                 bookAuthor.value,
                                 bookPages.value,
                                 hasRead.value,
                                 bookSummary.value,
                                 5);
 
-            addBookToShelf(book,+actionID)
+            addBookToShelf(newBook,+actionID)
+
+            editForm.reset();
+            editForm.classList.remove('show');
+        } else if(action === 'b') {
+            let bookLocation = actionID.split('_');
+            let shelfID = bookLocation[0];
+            let bookID = bookLocation[1];
+
+            bookShelf[shelfID][bookID].title = bookTitle.value;
+            bookShelf[shelfID][bookID].author = bookAuthor.value;
+            bookShelf[shelfID][bookID].numPages = bookPages.value;
+            bookShelf[shelfID][bookID].hasRead = hasRead.value;
+            bookShelf[shelfID][bookID].summary = bookSummary.value;
         }
     }
 
