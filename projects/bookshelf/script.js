@@ -7,29 +7,30 @@ var Book = function(title,author,numPages,isRead,summary,rating) {
     this.rating = rating;
 }
 
-const SHELVES = 2;
-const STACKS_PER_SHELF = 3;
+const BOOK_STACKS = 6;
 const BOOKS_PER_STACK = 4;
 
-let bookShelf = new Array(SHELVES).fill(null)
-                    .map((v) => Array(STACKS_PER_SHELF).fill(null)
-                    .map((v) => Array(0)));
+let bookShelf = new Array(BOOK_STACKS).fill(null).map((v) => Array(0));
 
 let stacks = document.querySelectorAll('.shelf_stack');
-
 stacks.forEach((shelf) => {
     shelf.addEventListener('click',() => {
-        let coords = shelf.id.split('_');
-
-        console.log(coords[0],coords[1]);
+        console.log(shelf.id);
     });
 });
+
+let editForm = document.querySelector('#edit_form');
 
 let books = document.querySelectorAll('.book1, .book2, .book3, .book4');
 
 books.forEach((book) => {
     book.addEventListener('click',(event) => {
         event.stopPropagation();
+        editForm.classList.add('show');
         console.log('book!');
     });
 });
+
+let selectedBook = document.querySelector('#selected');
+
+selectedBook.value = 'hellu';
