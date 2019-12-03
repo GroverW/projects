@@ -21,7 +21,9 @@
     border-radius: 10px;
 }
 
-
+#edit_form.show {
+    visibility: visible;
+}
 
 #edit_form label {
     color: rgb(75, 63, 42);
@@ -59,6 +61,8 @@ input#has_read {
     width: 80px;
     height: 25px;
     border-radius: 3px;
+    cursor: pointer;
+    outline: none;
 }
 
 #cancel {
