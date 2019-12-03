@@ -1,9 +1,48 @@
 #bookshelf {
+    position: relative;
     width: 850px;
     height: 600px;
     display: grid;
     grid-template: 30px 260px 30px 260px 30px / 30px 790px 30px;
     background-color: rgb(121, 95, 62);
+}
+
+#edit_form {
+    width: 250px;
+    padding: 12px;
+    position: absolute;
+    display: grid;
+    grid-template: repeat(auto-fill,minmax(25px,1fr)) / 1fr;
+        grid-gap: 10px;
+    left: 300px;
+    top: 75px;
+    background-color: rgb(224, 218, 208);
+    border-radius: 10px;
+}
+
+
+
+#edit_form label {
+    color: rgb(75, 63, 42);
+}
+
+#edit_form input, #edit_form textarea {
+    padding: 0 5px 0 5px;
+    background: none;
+    border: 2px solid rgb(153,132,97);
+    color: rgb(116, 93, 54);
+    border-radius: 5px;
+    line-height: 16px;
+    font-size: 14px;
+}
+
+#edit_form input {
+    height: 25px;
+
+}
+
+#edit_form textarea {
+    height: 75px;
 }
 
 #shelf1 {
@@ -91,7 +130,7 @@
 }
 
 .book1 subtitle, .book2 subtitle {
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .book1 author, .book2 author {
@@ -117,8 +156,7 @@
 }
 
 .book3 subtitle, .book4 subtitle {
-    font-size: 10px;
-    line-height: 10px;
+    font-size: 11px;
 }
 
 .book3 author, .book4 author {
