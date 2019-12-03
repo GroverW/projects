@@ -1,19 +1,20 @@
 #bookshelf {
     position: relative;
     width: 850px;
-    height: 600px;
     display: grid;
     grid-template: 30px 260px 30px 260px 30px / 30px 790px 30px;
+    height: 600px;
     background-color: rgb(121, 95, 62);
 }
 
 #edit_form {
+    visibility: hidden;
     width: 250px;
     padding: 12px;
     position: absolute;
     display: grid;
     grid-template: repeat(auto-fill,minmax(25px,1fr)) / 1fr;
-        grid-gap: 10px;
+    grid-gap: 10px;
     left: 300px;
     top: 75px;
     background-color: rgb(224, 218, 208);
@@ -38,12 +39,20 @@
     outline: none;
 }
 
+#edit_form input:focus, #edit_form textarea:focus {
+    background-color: white;
+}
+
 #edit_form input {
     height: 25px;
 }
 
 #edit_form textarea {
     height: 75px;
+}
+
+input#has_read {
+    width: 20px;
 }
 
 #cancel, #save {
@@ -102,6 +111,8 @@
 .book1, .book2, .book3, .book4 {
     height: 65px;
     width: 235px;
+    display: grid;
+    grid-template: 1fr 20px / 1fr 40px;
     background: url(images/books.png) no-repeat;
     transition: .2s ease-in-out;
 }
@@ -113,26 +124,18 @@
 
 .book1 {
     background-position: 0px -195px;
-    display: grid;
-    grid-template: 1fr 20px / 1fr 40px;
 }
 
 .book2 {
     background-position: 0px -130px;
-    display: grid;
-    grid-template: 1fr 25px / 1fr 40px;
 }
 
 .book3 {
     background-position: 0px -65px;
-    display: grid;
-    grid-template: 1fr / 1fr 40px 33px;
 }
 
 .book4 {
     background-position: 0px 0px;
-    display: grid;
-    grid-template: 1fr / 1fr 40px 33px;
 }
 
 .book1 *, .book2 * {
@@ -143,24 +146,6 @@
                     1px 1px 0 rgb(71, 71, 71);
 }
 
-.book1 booktitle, .book2 booktitle {
-    grid-area: 1 / 1 / span 1 / span 1;
-    line-height: 12px;
-    padding-left: 10px;
-    align-self: center;
-}
-
-.book1 subtitle, .book2 subtitle {
-    font-size: 11px;
-}
-
-.book1 author, .book2 author {
-    padding-left: 10px;
-    font-size: 11px;
-    grid-area: 2 / 1 / span 1 / span 1;
-    align-self: center;
-}
-
 .book3 *, .book4 * {
     color: rgb(207, 207, 207);
     text-shadow:    -1px -1px 0 rgb(71, 71, 71),
@@ -169,23 +154,17 @@
                     1px 1px 0 rgb(71, 71, 71);
 }
 
-.book3 booktitle, .book4 booktitle {
+booktitle {
     grid-area: 1 / 1 / span 1 / span 1;
-    line-height: 12px;
-    padding-left: 20px;
+    font-size: 14px;
+    line-height: 14px;
+    padding-left: 10px;
     align-self: center;
 }
 
-.book3 subtitle, .book4 subtitle {
+author {
+    padding-left: 10px;
     font-size: 11px;
-}
-
-.book3 author, .book4 author {
-    width: 65px;
-    font-size: 11px;
-    grid-area: 1 / 2 / span 1 / span 1;
-    transform: rotate(-90deg);
-    text-align: center;
+    grid-area: 2 / 1 / span 1 / span 1;
     align-self: center;
-    justify-self: center;
 }
