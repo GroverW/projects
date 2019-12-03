@@ -1,3 +1,8 @@
+const BOOK_STACKS = 6;
+const BOOKS_PER_STACK = 4;
+
+let bookShelf = new Array(BOOK_STACKS).fill(null).map((v) => Array(0));
+
 var Book = function(title,author,numPages,isRead,summary,rating) {
     this.title = title;
     this.author = author;
@@ -7,10 +12,34 @@ var Book = function(title,author,numPages,isRead,summary,rating) {
     this.rating = rating;
 }
 
-const BOOK_STACKS = 6;
-const BOOKS_PER_STACK = 4;
+var createRandomNum = function(min,max) {
+    return Math.random() * (max - min) + min;
+}
 
-let bookShelf = new Array(BOOK_STACKS).fill(null).map((v) => Array(0));
+var randomizeBookType = function(types,weights) {
+    let totalWeight = weights.reduce((sum,currVal) => sum += currVal,0);
+    let weightSum = 0;
+    let randomNum = createRandomNum(0,totalWeight);
+
+    for(let i = 0; i < weights.length; i++) {
+        weightSum += +weights[i].toFixed(2);
+
+        if(randomNum <= weightSum) {
+            return types[i];
+        }
+    }
+}
+
+var addBookToShelf = function(book,shelfID) {
+    if(bookShelf[shelfID].length === BOOKS_PER_STACK) {
+        console.log('Stack is full!');
+    } else {
+        let bookType = randomizeBookType([1,2,3,4],[.15,.15,.35,.35]); 
+    }
+}
+
+
+
 let selectedElement = document.querySelector('#selected');
 let editForm = document.querySelector('#edit_form');
 let editFormTitle = document.querySelector('#edit_form_title');
@@ -36,6 +65,8 @@ stacks.forEach((stack) => {
     });
 });
 
+console.log(stacks);
+
 let books = document.querySelectorAll('.book1, .book2, .book3, .book4');
 books.forEach((book) => {
     book.addEventListener('click',(event) => {
@@ -48,15 +79,21 @@ books.forEach((book) => {
 
 editForm.addEventListener('submit',(event) => {
     event.preventDefault();
-    let action = selectedElement.value.split('.');
-    if(action.length > 0) {
+    let instructions = selectedElement.value.split('.');
+    
+    if(instructions.length > 0) {
+        let action = instructions[0];
+        let actionID = instructions[1];
+
         if(action[0] === 's') {
-            bookShelf[+action[1]] = new Book(bookTitle.value,
-                                            bookAuthor.value,
-                                            bookPages.value,
-                                            hasRead.value,
-                                            bookSummary.value,
-                                            5);
+            let book = new Book(bookTitle.value,
+                                bookAuthor.value,
+                                bookPages.value,
+                                hasRead.value,
+                                bookSummary.value,
+                                5);
+
+            addBookToShelf(book,+actionID)
         }
     }
 
