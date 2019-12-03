@@ -41,47 +41,43 @@
                         </div>
                         <div id="bookshelf">
                             <div id="shelf1" class="shelf">
-                                <div id="1_1" class="shelf_stack">
-                                    <div class="book4">
+                                <div id="1" class="shelf_stack">
+                                    <div id="1_1" class="book4">
                                         <booktitle>Code: The Hidden Language of Computer Hardware and Software and a bunch of</booktitle>
                                         <author>Charles Petzold</author>
                                     </div>
-                                    <div class="book2">
+                                    <div id="1_2" class="book2">
                                         <booktitle>Code:  <subtitle>The Hidden Language of Computer</subtitle></booktitle>
                                         <author>Robert C. Martin</author>
                                     </div>
                                 </div>
-                                <div id="1_2" class="shelf_stack">
-                                    <div class="book3">
+                                <div id="2" class="shelf_stack">
+                                    <div id="2_1" class="book3">
                                         <booktitle>Clean Code</booktitle>
                                         <author>Robert C. Martin</author>
                                     </div>
-                                    <div class="book4">
+                                    <div id="2_2" class="book4">
                                         <booktitle>Clean Code</booktitle>
                                         <author>Robert C. Martin</author>
                                     </div>
                                 </div>
-                                <div id="1_3" class="shelf_stack">
-                                    <div class="book1">
+                                <div id="3" class="shelf_stack">
+                                    <div id="3_1" class="book1">
                                             <booktitle>Code: <subtitle>The Hidden Language of Computer</subtitle></booktitle>
                                         <author>Robert C. Martin</author>
                                     </div>
                                 </div>
                             </div>
                             <div id="shelf2" class="shelf">
-                                <div id="2_1" class="shelf_stack"></div>
-                                <div id="2_2" class="shelf_stack"></div>
-                                <div id="2_3" class="shelf_stack"></div>
+                                <div id="4" class="shelf_stack"></div>
+                                <div id="5" class="shelf_stack"></div>
+                                <div id="6" class="shelf_stack"></div>
                             </div>
 
                             <form id="edit_form" name="edit_form">
                                 <div>
                                     <label for="book_title">Title</label><br>
                                     <input type="text" id="book_title" name="book_title">
-                                </div>
-                                <div>
-                                    <label for="book_subtitle">Subtitle</label><br>
-                                    <input type="text" id="book_subtitle" name="book_subtitle">
                                 </div>
                                 <div>
                                     <label for="book_author">Author</label><br>
@@ -100,7 +96,7 @@
                                     <label for="has_read">Have Read</label>
                                 </div>
                                 <div>
-                                    <button type="submit" id="cancel" form="edit_form">Cancel</button>
+                                    <button type="reset" id="cancel" form="edit_form">Cancel</button>
                                     <button type="submit" id="save" form="edit_form">Save</button>
                                 </div>
                                 <input type="hidden" id="selected">
