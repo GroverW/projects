@@ -57,54 +57,77 @@ var getBookRating = function(rating_selectors) {
     return 1;
 }
 
-var addBookToShelf = function(book,stackID) {
-    if(bookShelf[stackID].length === BOOKS_PER_STACK) {
-        console.log('Stack is full!');
+var parseID = function(idString) {
+    let location = {type: null, stack: null, book: null};
+
+    let temp = idString.split('-');
+
+    if(temp[0] === 's') {
+        location.type = 's';
+        location.stack = temp[1];
     } else {
-        let bookType = randomizeBookType([1,2,3,4],[.15,.15,.35,.35]);
+        location.type = 'b';
 
-        let newBook = document.createElement('div');
-        let newBookID = bookShelf[stackID].length - 1;
-
-        newBook.id = 'b-' + stackID + '_' + newBookID;
-        newBook.classList.add(`book${bookType}`);
-
-        let newBookTitle = document.createElement('book-title');
-        newBookTitle.innerText = book.title;
-
-        let newBookAuthor = document.createElement('book-author');
-        newBookAuthor.innerText = book.author;
-
-        let newBookOuterStars = document.createElement('div');
-        newBookOuterStars.classList.add('stars_wrapper');
-        let newBookInnerStars = document.createElement('div');
-        newBookInnerStars.classList.add('stars_inner');
-        newBookOuterStars.appendChild(newBookInnerStars);
-
-        newBook.appendChild(newBookTitle);
-        newBook.appendChild(newBookAuthor);
-        newBook.appendChild(newBookOuterStars);
-
-        newBook.addEventListener('click',(event) => {
-            event.stopPropagation();
-            editFormTitle.innerText = 'Update Book';
-            selectedElement.value = newBook.id;
-    
-            bookTitle.value = book.title;
-            bookAuthor.value = book.author;
-            bookPages.value = book.numPages;
-            bookSummary.value = book.summary;
-            hasRead.checked = book.hasRead;
-            bookRating[book.rating - 1].checked = true;
-    
-            editForm.classList.add('show');
-        });
-
-        let stack = document.querySelector(`#s-${stackID}`);
-        stack.prepend(newBook);
-
-        newBookInnerStars.style.height = OUTER_STARS_HEIGHT * book.rating / MAX_RATING + 'px';
+        temp = temp[1].split('_');
+        location.stack = temp[0];
+        location.book = temp[1];
     }
+
+    return location;
+}
+
+var addBookToShelf = function(book,stackID) {
+    let bookType = randomizeBookType([1,2,3,4],[.15,.15,.35,.35]);
+
+    let newBook = document.createElement('div');
+    let newBookID = bookShelf[stackID].length - 1;
+
+    newBook.id = 'b-' + stackID + '_' + newBookID;
+    newBook.classList.add(`book${bookType}`);
+
+    let newBookTitle = document.createElement('book-title');
+    let newBookAuthor = document.createElement('book-author');
+    newBookTitle.innerText = book.title;
+    newBookAuthor.innerText = book.author;
+
+    let newBookOuterStars = document.createElement('div');
+    let newBookInnerStars = document.createElement('div');
+    newBookOuterStars.classList.add('stars_wrapper');
+    newBookInnerStars.classList.add('stars_inner');
+    newBookOuterStars.appendChild(newBookInnerStars);
+
+    let bookDelButton = document.createElement('a');
+    bookDelButton.classList.add('delete_book');
+    bookDelButton.addEventListener('click',(event) => {
+        event.stopPropagation();
+        bookDelButton.parentNode.remove();
+        bookShelf[stackID].splice(newBookID,1);
+    });
+
+    newBook.appendChild(newBookTitle);
+    newBook.appendChild(newBookAuthor);
+    newBook.appendChild(newBookOuterStars);
+    newBook.appendChild(bookDelButton);
+
+    newBook.addEventListener('click',(event) => {
+        event.stopPropagation();
+        editFormTitle.innerText = 'Update Book';
+        selectedElement.value = newBook.id;
+
+        bookTitle.value = book.title;
+        bookAuthor.value = book.author;
+        bookPages.value = book.numPages;
+        bookSummary.value = book.summary;
+        hasRead.checked = book.hasRead;
+        bookRating[book.rating - 1].checked = true;
+
+        editForm.classList.add('show');
+    });
+
+    let stack = document.querySelector(`#s-${stackID}`);
+    stack.prepend(newBook);
+
+    newBookInnerStars.style.height = OUTER_STARS_HEIGHT * book.rating / MAX_RATING + 'px';
 }
 
 var updateBook = function(book,bookID) {
@@ -157,17 +180,20 @@ editForm.addEventListener('submit',(event) => {
         let actionID = instructions[1];
 
         if(action === 's') {
-            let newBook = new Book(bookTitle.value,
-                                bookAuthor.value,
-                                bookPages.value,
-                                hasRead.checked,
-                                bookSummary.value,
-                                getBookRating(bookRating));
+            if(bookShelf[+actionID].length === BOOKS_PER_STACK) {
+                console.log('Stack is full!');
+            } else {
+                let newBook = new Book(bookTitle.value,
+                    bookAuthor.value,
+                    bookPages.value,
+                    hasRead.checked,
+                    bookSummary.value,
+                    getBookRating(bookRating));
 
-            bookShelf[+actionID].push(newBook);
+                bookShelf[+actionID].push(newBook);
 
-            addBookToShelf(newBook,+actionID)
-
+                addBookToShelf(newBook,+actionID)
+            }
         } else if(action === 'b') {
             let bookLocation = actionID.split('_');
             let shelfID = bookLocation[0];
