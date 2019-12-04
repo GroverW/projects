@@ -27,16 +27,17 @@ var Book = function(title,author,numPages = '',hasRead = false,summary = '',rati
     this.hasRead = hasRead;
     this.summary = summary;
     this.rating = rating;
+    this.type = this.randomizeBookType([1,2,3,4],[.15,.15,.35,.35]);
 }
 
-var createRandomNum = function(min,max) {
+Book.prototype.createRandomNum = function(min,max) {
     return Math.random() * (max - min) + min;
 }
 
-var randomizeBookType = function(types,weights) {
+Book.prototype.randomizeBookType = function(types,weights) {
     let totalWeight = weights.reduce((sum,currVal) => sum += currVal,0);
     let weightSum = 0;
-    let randomNum = createRandomNum(0,totalWeight);
+    let randomNum = this.createRandomNum(0,totalWeight);
 
     for(let i = 0; i < weights.length; i++) {
         weightSum += +weights[i].toFixed(2);
@@ -47,8 +48,8 @@ var randomizeBookType = function(types,weights) {
     }
 }
 
-var getBookRating = function(rating_selectors) {
-    for(let rating of rating_selectors) {
+var getBookRating = function(ratingButtons) {
+    for(let rating of ratingButtons) {
         if(rating.checked === true) {
             return rating.value;
         }
@@ -64,71 +65,85 @@ var parseID = function(idString) {
 
     if(temp[0] === 's') {
         location.type = 's';
-        location.stack = temp[1];
+        location.stack = +temp[1];
     } else {
         location.type = 'b';
 
         temp = temp[1].split('_');
-        location.stack = temp[0];
-        location.book = temp[1];
+        location.stack = +temp[0];
+        location.book = +temp[1];
     }
 
     return location;
 }
 
-var addBookToShelf = function(book,stackID) {
-    let bookType = randomizeBookType([1,2,3,4],[.15,.15,.35,.35]);
-
-    let newBook = document.createElement('div');
-    let newBookID = bookShelf[stackID].length - 1;
-
-    newBook.id = 'b-' + stackID + '_' + newBookID;
-    newBook.classList.add('book');
-    newBook.classList.add(`book_type${bookType}`);
-
+var addBookDetails = function(bookElement,book) {
     let newBookTitle = document.createElement('book-title');
     let newBookAuthor = document.createElement('book-author');
     newBookTitle.innerText = book.title;
     newBookAuthor.innerText = book.author;
 
+    bookElement.appendChild(newBookTitle);
+    bookElement.appendChild(newBookAuthor);
+}
+
+var addRatingToBook = function(bookElement,bookRating) {
     let newBookOuterStars = document.createElement('div');
     let newBookInnerStars = document.createElement('div');
+
     newBookOuterStars.classList.add('stars_wrapper');
     newBookInnerStars.classList.add('stars_inner');
+    newBookInnerStars.style.height = OUTER_STARS_HEIGHT * bookRating / MAX_RATING + 'px';
     newBookOuterStars.appendChild(newBookInnerStars);
+    bookElement.appendChild(newBookOuterStars);
+}
 
+var addDeleteButtonToBook = function(bookElement,bookLocation) {
     let bookDelButton = document.createElement('a');
     bookDelButton.classList.add('delete_book');
     bookDelButton.addEventListener('click',(event) => {
         event.stopPropagation();
         bookDelButton.parentNode.remove();
-        bookShelf[stackID].splice(newBookID,1);
+        bookShelf[bookLocation.stack].splice(bookLocation.book,1);
     });
 
-    newBook.appendChild(newBookTitle);
-    newBook.appendChild(newBookAuthor);
-    newBook.appendChild(newBookOuterStars);
-    newBook.appendChild(bookDelButton);
+    bookElement.appendChild(bookDelButton);
+}
 
-    newBook.addEventListener('click',(event) => {
+var addBookClickEvent = function(bookElement,newBookDetails) {
+    bookElement.addEventListener('click',(event) => {
         event.stopPropagation();
         editFormTitle.innerText = 'Update Book';
-        selectedElement.value = newBook.id;
+        selectedElement.value = bookElement.id;
 
-        bookTitle.value = book.title;
-        bookAuthor.value = book.author;
-        bookPages.value = book.numPages;
-        bookSummary.value = book.summary;
-        hasRead.checked = book.hasRead;
-        bookRating[book.rating - 1].checked = true;
+        bookDetails.title.value = newBookDetails.title;
+        bookDetails.author.value = newBookDetails.author;
+        bookDetails.numPages.value = newBookDetails.numPages;
+        bookDetails.summary.value = newBookDetails.summary;
+        bookDetails.hasRead.checked = newBookDetails.hasRead;
+        bookDetails.rating[newBookDetails.rating - 1].checked = true;
 
         editForm.classList.add('show');
     });
+}
 
-    let stack = document.querySelector(`#s-${stackID}`);
-    stack.prepend(newBook);
+var addBookToShelf = function(newBookDetails,bookLocation) {
+    let newBookElement = document.createElement('div');
 
-    newBookInnerStars.style.height = OUTER_STARS_HEIGHT * book.rating / MAX_RATING + 'px';
+    newBookElement.id = 'b-' + bookLocation.stack + '_' + bookLocation.book;
+    newBookElement.classList.add('book');
+    newBookElement.classList.add(`book_type${newBookDetails.type}`);
+
+    addBookDetails(newBookElement,newBookDetails);
+
+    addRatingToBook(newBookElement,newBookDetails.rating);
+
+    addDeleteButtonToBook(newBookElement,bookLocation);
+
+    addBookClickEvent(newBookElement,newBookDetails);
+
+    let bookStack = document.querySelector(`#s-${bookLocation.stack}`);
+    bookStack.prepend(newBookElement);
 }
 
 var updateBook = function(book,bookID) {
@@ -148,14 +163,14 @@ var updateBook = function(book,bookID) {
 let selectedElement = document.querySelector('#selected');
 let editForm = document.querySelector('#edit_form');
 let editFormTitle = document.querySelector('#edit_form_title');
-let bookTitle = document.querySelector('#book_title');
-let bookAuthor = document.querySelector('#book_author');
-let bookPages = document.querySelector('#book_pages');
-let bookSummary = document.querySelector('#book_summary');
-let bookRating = document.getElementsByName('book_rating');
-let hasRead = document.querySelector('#has_read');
 
-
+let bookDetails = {};
+bookDetails.title = document.querySelector('#book_title');
+bookDetails.author = document.querySelector('#book_author');
+bookDetails.numPages = document.querySelector('#book_pages');
+bookDetails.summary = document.querySelector('#book_summary');
+bookDetails.rating = document.getElementsByName('book_rating');
+bookDetails.hasRead = document.querySelector('#has_read');
 
 let cancelButton = document.querySelector('#cancel');
 cancelButton.addEventListener('click',() => {
@@ -174,40 +189,36 @@ stacks.forEach((stack) => {
 
 editForm.addEventListener('submit',(event) => {
     event.preventDefault();
-    let instructions = selectedElement.value.split('-');
+
+    let location = parseID(selectedElement.value);
     
-    if(instructions.length > 0) {
-        let action = instructions[0];
-        let actionID = instructions[1];
-
-        if(action === 's') {
-            if(bookShelf[+actionID].length === BOOKS_PER_STACK) {
-                alert('Sorry, that stack is full.');
+    if(location.type !== null) {
+        if(location.type === 's') {
+            if(bookShelf[location.stack].length === BOOKS_PER_STACK) {
+                alert("Sorry, that stack is full. Try another one, or delete some if there's no room.");
             } else {
-                let newBook = new Book(bookTitle.value,
-                    bookAuthor.value,
-                    bookPages.value,
-                    hasRead.checked,
-                    bookSummary.value,
-                    getBookRating(bookRating));
+                let newBook = new Book(bookDetails.title.value,
+                    bookDetails.author.value,
+                    bookDetails.numPages.value,
+                    bookDetails.hasRead.checked,
+                    bookDetails.summary.value,
+                    getBookRating(bookDetails.rating)
+                );
 
-                bookShelf[+actionID].push(newBook);
+                bookShelf[location.stack].push(newBook);
+                location.book = bookShelf[location.stack].length - 1;
 
-                addBookToShelf(newBook,+actionID)
+                addBookToShelf(newBook,location)
             }
-        } else if(action === 'b') {
-            let bookLocation = actionID.split('_');
-            let shelfID = bookLocation[0];
-            let bookID = bookLocation[1];
+        } else if(location.type === 'b') {
+            bookShelf[location.stack][location.book].title = bookDetails.title.value;
+            bookShelf[location.stack][location.book].author = bookDetails.author.value;
+            bookShelf[location.stack][location.book].numPages = bookDetails.numPages.value;
+            bookShelf[location.stack][location.book].hasRead = bookDetails.hasRead.checked;
+            bookShelf[location.stack][location.book].summary = bookDetails.summary.value;
+            bookShelf[location.stack][location.book].rating = getBookRating(bookDetails.rating);
 
-            bookShelf[shelfID][bookID].title = bookTitle.value;
-            bookShelf[shelfID][bookID].author = bookAuthor.value;
-            bookShelf[shelfID][bookID].numPages = bookPages.value;
-            bookShelf[shelfID][bookID].hasRead = hasRead.checked;
-            bookShelf[shelfID][bookID].summary = bookSummary.value;
-            bookShelf[shelfID][bookID].rating = getBookRating(bookRating);
-
-            updateBook(bookShelf[shelfID][bookID],`b-${shelfID}_${bookID}`);
+            updateBook(bookShelf[location.stack][location.book],`b-${location.stack}_${location.book}`);
         }
 
         editForm.reset();
@@ -216,19 +227,30 @@ editForm.addEventListener('submit',(event) => {
 
 });
 
-let bookTest = new Book('Code: The Hidden Language of Computer Hardware and Software and a bunch of','Charles Petzold');
-bookShelf[0].push(bookTest);
-addBookToShelf(bookTest,0);
+let bookTest = new Book('Code: The Hidden Language of Computer Hardware and Software and a bunch of','Charles Petzold',401,false,'',1);
+let bookLocation = {type: 'b', stack: 0, book: 0};
+bookShelf[bookLocation.stack].push(bookTest);
+addBookToShelf(bookTest,bookLocation);
+
 bookTest = new Book('The Hidden Language of Computer','Robert C. Martin',340,true,'',5);
-bookShelf[0].push(bookTest);
-addBookToShelf(bookTest,0);
+bookLocation.book = 1;
+bookShelf[bookLocation.stack].push(bookTest);
+addBookToShelf(bookTest,bookLocation);
+
 bookTest = new Book('Clean Code','Robert C. Martin',200,false,'',1);
-bookShelf[1].push(bookTest);
-addBookToShelf(bookTest,1);
+bookLocation.stack = 1;
+bookLocation.book = 0;
+bookShelf[bookLocation.stack].push(bookTest);
+addBookToShelf(bookTest,bookLocation);
+
 bookTest = new Book('Clean Code','Robert C. Martin',500,true,'so boring',5);
-bookShelf[1].push(bookTest);
-addBookToShelf(bookTest,1);
+bookLocation.book = 1;
+bookShelf[bookLocation.stack].push(bookTest);
+addBookToShelf(bookTest,bookLocation);
+
 bookTest = new Book('Code:','Robert C. Martin');
-bookShelf[2].push(bookTest);
-addBookToShelf(bookTest,2);
+bookLocation.stack = 2;
+bookLocation.book = 0;
+bookShelf[bookLocation.stack].push(bookTest);
+addBookToShelf(bookTest,bookLocation);
 
