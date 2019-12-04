@@ -83,7 +83,8 @@ var addBookToShelf = function(book,stackID) {
     let newBookID = bookShelf[stackID].length - 1;
 
     newBook.id = 'b-' + stackID + '_' + newBookID;
-    newBook.classList.add(`book${bookType}`);
+    newBook.classList.add('book');
+    newBook.classList.add(`book_type${bookType}`);
 
     let newBookTitle = document.createElement('book-title');
     let newBookAuthor = document.createElement('book-author');
@@ -181,7 +182,7 @@ editForm.addEventListener('submit',(event) => {
 
         if(action === 's') {
             if(bookShelf[+actionID].length === BOOKS_PER_STACK) {
-                console.log('Stack is full!');
+                alert('Sorry, that stack is full.');
             } else {
                 let newBook = new Book(bookTitle.value,
                     bookAuthor.value,
