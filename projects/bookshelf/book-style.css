@@ -53,6 +53,11 @@
     height: 75px;
 }
 
+#edit_form_title {
+    color: rgb(78, 54, 13);
+    font-weight: 400;
+}
+
 input#has_read {
     width: 20px;
 }
@@ -150,6 +155,14 @@ input#has_read {
                     1px 1px 0 rgb(71, 71, 71);
 }
 
+.book1 .stars_wrapper, .book2 .stars_wrapper {
+    margin: 6px 0 0 12px;
+}
+
+.book3 .stars_wrapper, .book4 .stars_wrapper {
+    margin: 6px 0 0 17px;
+}
+
 .book3 *, .book4 * {
     color: rgb(207, 207, 207);
     text-shadow:    -1px -1px 0 rgb(71, 71, 71),
@@ -171,4 +184,27 @@ book-author {
     font-size: 11px;
     grid-area: 2 / 1 / span 1 / span 1;
     align-self: center;
+}
+
+.stars_wrapper, .stars_inner {
+    width: 10px;
+    
+    -webkit-mask: url(images/star-solid.svg);
+    -webkit-mask-size: 10px 10px;
+    mask-image: url(images/star-solid.svg);
+    mask-size: 10px 10px;
+}
+
+.stars_wrapper {
+    position: relative;
+    grid-area: 1 / 2 / span 2 / span 1;
+    height: 50px;
+    background-color: black;
+}
+
+.stars_inner {
+    position: absolute;
+    height: 20px;
+    bottom: 0;
+    background-color: yellow;
 }
