@@ -45,6 +45,14 @@ var randomizeBookType = function(types,weights) {
     }
 }
 
+var generateRating = function(rating,maxRating) {
+    let outerStars = document.createElement('div');
+    outerStars.id = 'stars_wrapper';
+
+    let innerStars = document.createElement('div');
+    innerStars.id = 'inner_stars';
+}
+
 var addBookToShelf = function(book,stackID) {
     if(bookShelf[stackID].length === BOOKS_PER_STACK) {
         console.log('Stack is full!');
@@ -63,8 +71,15 @@ var addBookToShelf = function(book,stackID) {
         let newBookAuthor = document.createElement('book-author');
         newBookAuthor.innerText = book.author;
 
+        let newBookOuterStars = document.createElement('div');
+        newBookOuterStars.classList.add('stars_wrapper');
+        let newBookInnerStars = document.createElement('div');
+        newBookInnerStars.classList.add('stars_inner');
+        newBookOuterStars.appendChild(newBookInnerStars);
+
         newBook.appendChild(newBookTitle);
         newBook.appendChild(newBookAuthor);
+        newBook.appendChild(newBookOuterStars);
 
         newBook.addEventListener('click',(event) => {
             event.stopPropagation();
