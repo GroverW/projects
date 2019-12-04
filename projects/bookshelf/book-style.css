@@ -190,11 +190,19 @@ input#has_read {
     position: absolute;
     top: 5px;
     right: 5px;
-    width: 10px;
-    height: 10px;
-    background-color: red;
-    cursor: pointer;    
+    background-image: url(images/delete-icon.png);
+    background-size: 15px 15px;
+    background-position: -1px -1px;
+    width: 13px;
+    height: 13px;
+    border-radius: 7px;
+    box-shadow: 0 0 2px 1px rgba(0,0,0,.4);
+    opacity: 0;
+    color: red;
+    cursor: pointer;
 }
+
+
 
 book-title {
     grid-area: 1 / 1 / span 1 / span 1;
