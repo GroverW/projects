@@ -55,11 +55,17 @@
 
 #edit_form_title {
     color: rgb(78, 54, 13);
-    font-weight: 400;
+    font-weight: 600;
 }
 
 input#has_read {
     width: 20px;
+    height: 16px;
+}
+
+#has_read {
+    line-height: 20px;
+    text-align: center;
 }
 
 #rating_grid {
@@ -91,11 +97,29 @@ input#has_read {
     float: left;
 }
 
+#cancel:hover {
+    background-color: #999;
+    color: white;
+}
+
+#cancel:active {
+    background-color: #666;
+    color: white;
+}
+
 #save {
     border: 1px solid rgb(12, 69, 110);
     background-color: rgb(24, 141, 224);
     color: white;
     float: right;
+}
+
+#save:hover {
+    background-color: rgb(9, 103, 170);
+}
+
+#save:active {
+    background-color: rgb(8, 81, 133);
 }
 
 #shelf1 {
@@ -131,7 +155,7 @@ input#has_read {
     cursor: pointer;
 }
 
-.book1, .book2, .book3, .book4 {
+.book {
     position: relative;
     height: 65px;
     width: 235px;
@@ -141,28 +165,28 @@ input#has_read {
     transition: .2s ease-in-out;
 }
 
-.book1:hover, .book2:hover, .book3:hover, .book4:hover {
+.book:hover {
     cursor: pointer;
     filter: brightness(1.2);
 }
 
-.book1 {
+.book_type1 {
     background-position: 0px -195px;
 }
 
-.book2 {
+.book_type2 {
     background-position: 0px -130px;
 }
 
-.book3 {
+.book_type3 {
     background-position: 0px -65px;
 }
 
-.book4 {
+.book_type4 {
     background-position: 0px 0px;
 }
 
-.book1 *, .book2 * {
+.book_type1 *, .book_type2 * {
     color: rgb(253, 240, 168);
     text-shadow:    -1px -1px 0 rgb(71, 71, 71),
                     1px -1px 0 rgb(71, 71, 71),
@@ -170,15 +194,15 @@ input#has_read {
                     1px 1px 0 rgb(71, 71, 71);
 }
 
-.book1 .stars_wrapper, .book2 .stars_wrapper {
+.book_type1 .stars_wrapper, .book_type2 .stars_wrapper {
     margin: 6px 0 0 12px;
 }
 
-.book3 .stars_wrapper, .book4 .stars_wrapper {
+.book_type3 .stars_wrapper, .book_type4 .stars_wrapper {
     margin: 6px 0 0 17px;
 }
 
-.book3 *, .book4 * {
+.book_type3 *, .book_type4 * {
     color: rgb(207, 207, 207);
     text-shadow:    -1px -1px 0 rgb(71, 71, 71),
                     1px -1px 0 rgb(71, 71, 71),
@@ -200,9 +224,16 @@ input#has_read {
     opacity: 0;
     color: red;
     cursor: pointer;
+    transition: .2s ease-in-out;
 }
 
+.delete_book:hover {
+    background-image: url(images/delete-icon-hover.png);
+}
 
+.book:hover .delete_book {
+    opacity: 100%;
+}
 
 book-title {
     grid-area: 1 / 1 / span 1 / span 1;
