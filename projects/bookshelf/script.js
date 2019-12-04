@@ -1,5 +1,7 @@
 const BOOK_STACKS = 6;
 const BOOKS_PER_STACK = 4;
+const OUTER_STARS_HEIGHT = 50;
+const MAX_RATING = 5;
 
 let bookShelf = new Array(BOOK_STACKS).fill(null).map((v) => Array(0));
 
@@ -18,7 +20,7 @@ class BookAuthor extends HTMLElement {
 customElements.define('book-title',BookTitle);
 customElements.define('book-author',BookAuthor);
 
-var Book = function(title,author,numPages = '',hasRead = false,summary = '',rating) {
+var Book = function(title,author,numPages = '',hasRead = false,summary = '',rating = 1) {
     this.title = title;
     this.author = author;
     this.numPages = numPages;
@@ -45,12 +47,14 @@ var randomizeBookType = function(types,weights) {
     }
 }
 
-var generateRating = function(rating,maxRating) {
-    let outerStars = document.createElement('div');
-    outerStars.id = 'stars_wrapper';
+var getBookRating = function(rating_selectors) {
+    for(let rating of rating_selectors) {
+        if(rating.checked === true) {
+            return rating.value;
+        }
+    }
 
-    let innerStars = document.createElement('div');
-    innerStars.id = 'inner_stars';
+    return 1;
 }
 
 var addBookToShelf = function(book,stackID) {
@@ -91,12 +95,15 @@ var addBookToShelf = function(book,stackID) {
             bookPages.value = book.numPages;
             bookSummary.value = book.summary;
             hasRead.checked = book.hasRead;
+            bookRating[book.rating - 1].checked = true;
     
             editForm.classList.add('show');
         });
 
         let stack = document.querySelector(`#s-${stackID}`);
         stack.prepend(newBook);
+
+        newBookInnerStars.style.height = OUTER_STARS_HEIGHT * book.rating / MAX_RATING + 'px';
     }
 }
 
@@ -108,6 +115,9 @@ var updateBook = function(book,bookID) {
 
     let bookAuthor = bookSelector.getElementsByTagName('book-author')[0];
     bookAuthor.innerText = book.author;
+
+    let bookRating = bookSelector.querySelector('.stars_inner');
+    bookRating.style.height = OUTER_STARS_HEIGHT * book.rating / MAX_RATING + 'px';
 }
 
 
@@ -118,7 +128,9 @@ let bookTitle = document.querySelector('#book_title');
 let bookAuthor = document.querySelector('#book_author');
 let bookPages = document.querySelector('#book_pages');
 let bookSummary = document.querySelector('#book_summary');
+let bookRating = document.getElementsByName('book_rating');
 let hasRead = document.querySelector('#has_read');
+
 
 
 let cancelButton = document.querySelector('#cancel');
@@ -150,7 +162,7 @@ editForm.addEventListener('submit',(event) => {
                                 bookPages.value,
                                 hasRead.checked,
                                 bookSummary.value,
-                                5);
+                                getBookRating(bookRating));
 
             bookShelf[+actionID].push(newBook);
 
@@ -166,6 +178,7 @@ editForm.addEventListener('submit',(event) => {
             bookShelf[shelfID][bookID].numPages = bookPages.value;
             bookShelf[shelfID][bookID].hasRead = hasRead.checked;
             bookShelf[shelfID][bookID].summary = bookSummary.value;
+            bookShelf[shelfID][bookID].rating = getBookRating(bookRating);
 
             updateBook(bookShelf[shelfID][bookID],`b-${shelfID}_${bookID}`);
         }
@@ -179,13 +192,13 @@ editForm.addEventListener('submit',(event) => {
 let bookTest = new Book('Code: The Hidden Language of Computer Hardware and Software and a bunch of','Charles Petzold');
 bookShelf[0].push(bookTest);
 addBookToShelf(bookTest,0);
-bookTest = new Book('The Hidden Language of Computer','Robert C. Martin',340,true);
+bookTest = new Book('The Hidden Language of Computer','Robert C. Martin',340,true,'',5);
 bookShelf[0].push(bookTest);
 addBookToShelf(bookTest,0);
-bookTest = new Book('Clean Code','Robert C. Martin');
+bookTest = new Book('Clean Code','Robert C. Martin',200,false,'',1);
 bookShelf[1].push(bookTest);
 addBookToShelf(bookTest,1);
-bookTest = new Book('Clean Code','Robert C. Martin');
+bookTest = new Book('Clean Code','Robert C. Martin',500,true,'so boring',5);
 bookShelf[1].push(bookTest);
 addBookToShelf(bookTest,1);
 bookTest = new Book('Code:','Robert C. Martin');
