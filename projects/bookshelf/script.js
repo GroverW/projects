@@ -98,13 +98,16 @@ var addRatingToBook = function(bookElement,bookRating) {
     bookElement.appendChild(newBookOuterStars);
 }
 
-var addDeleteButtonToBook = function(bookElement,bookLocation) {
+var addDeleteButtonToBook = function(bookElement,stackID,bookID) {
     let bookDelButton = document.createElement('a');
     bookDelButton.classList.add('delete_book');
+
     bookDelButton.addEventListener('click',(event) => {
         event.stopPropagation();
         bookDelButton.parentNode.remove();
-        bookShelf[bookLocation.stack].splice(bookLocation.book,1);
+        bookShelf[stackID].splice(bookID,1);
+        
+        localStorage.setItem('books',JSON.stringify(bookShelf));
     });
 
     bookElement.appendChild(bookDelButton);
@@ -127,10 +130,10 @@ var addBookClickEvent = function(bookElement,newBookDetails) {
     });
 }
 
-var addBookToShelf = function(newBookDetails,bookLocation) {
+var addBookToShelf = function(newBookDetails,stackID,bookID) {
     let newBookElement = document.createElement('div');
 
-    newBookElement.id = 'b-' + bookLocation.stack + '_' + bookLocation.book;
+    newBookElement.id = 'b-' + stackID + '_' + bookID;
     newBookElement.classList.add('book');
     newBookElement.classList.add(`book_type${newBookDetails.type}`);
 
@@ -138,11 +141,11 @@ var addBookToShelf = function(newBookDetails,bookLocation) {
 
     addRatingToBook(newBookElement,newBookDetails.rating);
 
-    addDeleteButtonToBook(newBookElement,bookLocation);
+    addDeleteButtonToBook(newBookElement,stackID,bookID);
 
     addBookClickEvent(newBookElement,newBookDetails);
 
-    let bookStack = document.querySelector(`#s-${bookLocation.stack}`);
+    let bookStack = document.querySelector(`#s-${stackID}`);
     bookStack.prepend(newBookElement);
 }
 
@@ -208,7 +211,7 @@ editForm.addEventListener('submit',(event) => {
                 bookShelf[location.stack].push(newBook);
                 location.book = bookShelf[location.stack].length - 1;
 
-                addBookToShelf(newBook,location)
+                addBookToShelf(newBook,location.stack,location.book)
             }
         } else if(location.type === 'b') {
             bookShelf[location.stack][location.book].title = bookDetails.title.value;
@@ -223,34 +226,48 @@ editForm.addEventListener('submit',(event) => {
 
         editForm.reset();
         editForm.classList.remove('show');
+
+        localStorage.setItem('books',JSON.stringify(bookShelf));
     }
 
 });
 
-let bookTest = new Book('Code: The Hidden Language of Computer Hardware and Software and a bunch of','Charles Petzold',401,false,'',1);
-let bookLocation = {type: 'b', stack: 0, book: 0};
-bookShelf[bookLocation.stack].push(bookTest);
-addBookToShelf(bookTest,bookLocation);
+if(localStorage.getItem('books')) {
+    bookShelf = JSON.parse(localStorage.getItem('books'));
 
-bookTest = new Book('The Hidden Language of Computer','Robert C. Martin',340,true,'',5);
-bookLocation.book = 1;
-bookShelf[bookLocation.stack].push(bookTest);
-addBookToShelf(bookTest,bookLocation);
+    for(let stack = 0; stack < bookShelf.length; stack++) {
+        for(let book = 0; book < bookShelf[stack].length; book++) {
+            addBookToShelf(bookShelf[stack][book],stack,book);
+        }
+    }
+} else {
+    let bookTest = new Book('Code: The Hidden Language of Computer Hardware and Software and a bunch of','Charles Petzold',401,false,'',1);
+    let bookLocation = {type: 'b', stack: 0, book: 0};
+    bookShelf[bookLocation.stack].push(bookTest);
+    addBookToShelf(bookTest,bookLocation.stack,bookLocation.book);
 
-bookTest = new Book('Clean Code','Robert C. Martin',200,false,'',1);
-bookLocation.stack = 1;
-bookLocation.book = 0;
-bookShelf[bookLocation.stack].push(bookTest);
-addBookToShelf(bookTest,bookLocation);
+    bookTest = new Book('The Hidden Language of Computer','Robert C. Martin',340,true,'',5);
+    bookLocation.book = 1;
+    bookShelf[bookLocation.stack].push(bookTest);
+    addBookToShelf(bookTest,bookLocation.stack,bookLocation.book);
 
-bookTest = new Book('Clean Code','Robert C. Martin',500,true,'so boring',5);
-bookLocation.book = 1;
-bookShelf[bookLocation.stack].push(bookTest);
-addBookToShelf(bookTest,bookLocation);
+    bookTest = new Book('Clean Code','Robert C. Martin',200,false,'',1);
+    bookLocation.stack = 1;
+    bookLocation.book = 0;
+    bookShelf[bookLocation.stack].push(bookTest);
+    addBookToShelf(bookTest,bookLocation.stack,bookLocation.book);
 
-bookTest = new Book('Code:','Robert C. Martin');
-bookLocation.stack = 2;
-bookLocation.book = 0;
-bookShelf[bookLocation.stack].push(bookTest);
-addBookToShelf(bookTest,bookLocation);
+    bookTest = new Book('Clean Code','Robert C. Martin',500,true,'so boring',5);
+    bookLocation.book = 1;
+    bookShelf[bookLocation.stack].push(bookTest);
+    addBookToShelf(bookTest,bookLocation.stack,bookLocation.book);
+
+    bookTest = new Book('Code:','Robert C. Martin');
+    bookLocation.stack = 2;
+    bookLocation.book = 0;
+    bookShelf[bookLocation.stack].push(bookTest);
+    addBookToShelf(bookTest,bookLocation.stack,bookLocation.book);
+}
+
+
 
