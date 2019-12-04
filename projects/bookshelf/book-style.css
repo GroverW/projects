@@ -218,7 +218,6 @@ book-author {
 
 .stars_inner {
     position: absolute;
-    height: 20px;
     bottom: 0;
     background-color: yellow;
 }
