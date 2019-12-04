@@ -132,6 +132,7 @@ input#has_read {
 }
 
 .book1, .book2, .book3, .book4 {
+    position: relative;
     height: 65px;
     width: 235px;
     display: grid;
@@ -183,6 +184,16 @@ input#has_read {
                     1px -1px 0 rgb(71, 71, 71),
                     -1px 1px 0 rgb(71, 71, 71),
                     1px 1px 0 rgb(71, 71, 71);
+}
+
+.delete_book {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    cursor: pointer;    
 }
 
 book-title {
