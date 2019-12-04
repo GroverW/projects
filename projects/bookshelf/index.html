@@ -41,12 +41,9 @@
                         </div>
                         <div id="bookshelf">
                             <div id="shelf1" class="shelf">
-                                <div id="s-0" class="shelf_stack">
-                                </div>
-                                <div id="s-1" class="shelf_stack">
-                                </div>
-                                <div id="s-2" class="shelf_stack">
-                                </div>
+                                <div id="s-0" class="shelf_stack"></div>
+                                <div id="s-1" class="shelf_stack"></div>
+                                <div id="s-2" class="shelf_stack"></div>
                             </div>
                             <div id="shelf2" class="shelf">
                                 <div id="s-3" class="shelf_stack"></div>
@@ -75,6 +72,21 @@
                                     <textarea id="book_summary" name="book_summary"></textarea>
                                 </div>
                                 <div>
+                                    <label for="book_rating">Rating</label><br>
+                                    <div id="rating_grid">
+                                        <label for="book_rating1">1</label>
+                                        <label for="book_rating2">2</label>
+                                        <label for="book_rating3">3</label>
+                                        <label for="book_rating4">4</label>
+                                        <label for="book_rating5">5</label>
+                                        <input type="radio" value="1" id="book_rating1" name="book_rating">
+                                        <input type="radio" value="2" id="book_rating2" name="book_rating">
+                                        <input type="radio" value="3" id="book_rating3" name="book_rating">
+                                        <input type="radio" value="4" id="book_rating4" name="book_rating">
+                                        <input type="radio" value="5" id="book_rating5" name="book_rating">
+                                    </div>
+                                </div>
+                                <div>
                                     <input type="checkbox" id="has_read" name="has_read">
                                     <label for="has_read">Have Read</label>
                                 </div>
@@ -85,7 +97,6 @@
                                 <input type="hidden" id="selected">
                             </form>
                         </div>
-                        
                 </div>
             </div>
             <div id="body_content_bg"></div>
