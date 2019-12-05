@@ -167,12 +167,12 @@ var updateBook = function(book,bookID) {
 }
 
 var setDefaultBooks = function() {
-    let bookTest = new Book('Code: The Hidden Language of Computer Hardware and Software and a bunch of','Charles Petzold',401,false,'',1);
+    let bookTest = new Book('Cracking the Coding Interview','Gayle Laakmann McDowell',687,false,'',1);
     let stackID = 0, bookID = getNextBookLocation(bookShelf,stackID);
     bookShelf[stackID].push(bookTest);
     addBookToShelf(bookTest,stackID,bookID);
 
-    bookTest = new Book('The Hidden Language of Computer','Robert C. Martin',340,true,'',5);
+    bookTest = new Book('Code','Charles Petzold',400,true,'',5);
     bookID = getNextBookLocation(bookShelf,stackID);
     bookShelf[stackID].push(bookTest);
     addBookToShelf(bookTest,stackID,bookID);
@@ -183,12 +183,12 @@ var setDefaultBooks = function() {
     bookShelf[stackID].push(bookTest);
     addBookToShelf(bookTest,stackID,bookID);
 
-    bookTest = new Book('Clean Code','Robert C. Martin',500,true,'so boring',5);
+    bookTest = new Book('Operating Systems: Three Easy Pieces','Remzi H Arpaci-Dusseau',714,false,'',5);
     bookID = getNextBookLocation(bookShelf,stackID)
     bookShelf[stackID].push(bookTest);
     addBookToShelf(bookTest,stackID,bookID);
 
-    bookTest = new Book('Code:','Robert C. Martin');
+    bookTest = new Book('Elements of Programming Interviews in Java','Aziz, Lee and Prakash');
     stackID++
     bookID = getNextBookLocation(bookShelf,stackID)
     bookShelf[stackID].push(bookTest);
