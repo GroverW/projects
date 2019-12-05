@@ -169,7 +169,7 @@ input#has_read {
     height: 65px;
     width: 235px;
     display: grid;
-    grid-template: 1fr 20px / 1fr 40px;
+    grid-template: 1fr 20px / 1fr 40px 35px;
     background: url(images/books.png) no-repeat;
     transition: .2s ease-in-out;
 }
@@ -204,11 +204,11 @@ input#has_read {
 }
 
 .book_type1 .stars_wrapper, .book_type2 .stars_wrapper {
-    margin: 6px 0 0 12px;
+    margin: 6px 0 0 7px;
 }
 
 .book_type3 .stars_wrapper, .book_type4 .stars_wrapper {
-    margin: 6px 0 0 17px;
+    margin: 6px 0 0 13px;
 }
 
 .book_type3 *, .book_type4 * {
@@ -245,7 +245,7 @@ input#has_read {
 }
 
 book-title {
-    grid-area: 1 / 1 / span 1 / span 1;
+    grid-area: 1 / 1 / span 1 / span 2;
     font-size: 14px;
     line-height: 14px;
     padding-left: 10px;
@@ -259,9 +259,15 @@ book-author {
     align-self: center;
 }
 
+book-read {
+    font-size: 11px;
+    grid-area: 2 / 2 / span 1 / span 1;
+    align-self: center;
+    justify-self: center;
+}
+
 .stars_wrapper, .stars_inner {
     width: 10px;
-    
     -webkit-mask: url(images/star-solid.svg);
     -webkit-mask-size: 10px 10px;
     mask-image: url(images/star-solid.svg);
@@ -270,7 +276,7 @@ book-author {
 
 .stars_wrapper {
     position: relative;
-    grid-area: 1 / 2 / span 2 / span 1;
+    grid-area: 1 / 3 / span 2 / span 1;
     height: 50px;
     background-color: black;
 }
