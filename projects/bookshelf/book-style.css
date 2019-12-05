@@ -1,5 +1,14 @@
+#instructions img {
+    vertical-align: bottom;
+}
+
+#reset {
+    cursor: pointer;
+}
+
 #bookshelf {
     position: relative;
+    margin-top: 15px;
     width: 850px;
     display: grid;
     grid-template: 30px 260px 30px 260px 30px / 30px 790px 30px;
