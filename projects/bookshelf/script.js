@@ -48,6 +48,10 @@ Book.prototype.randomizeBookType = function(types,weights) {
     }
 }
 
+var getNextBookLocation = function(bookShelf,stackID) {
+    return bookShelf[stackID].length;
+}
+
 var getBookRating = function(ratingButtons) {
     for(let rating of ratingButtons) {
         if(rating.checked === true) {
@@ -162,6 +166,56 @@ var updateBook = function(book,bookID) {
     bookRating.style.height = OUTER_STARS_HEIGHT * book.rating / MAX_RATING + 'px';
 }
 
+var setDefaultBooks = function() {
+    let bookTest = new Book('Code: The Hidden Language of Computer Hardware and Software and a bunch of','Charles Petzold',401,false,'',1);
+    let stackID = 0, bookID = getNextBookLocation(bookShelf,stackID);
+    bookShelf[stackID].push(bookTest);
+    addBookToShelf(bookTest,stackID,bookID);
+
+    bookTest = new Book('The Hidden Language of Computer','Robert C. Martin',340,true,'',5);
+    bookID = getNextBookLocation(bookShelf,stackID);
+    bookShelf[stackID].push(bookTest);
+    addBookToShelf(bookTest,stackID,bookID);
+
+    bookTest = new Book('Clean Code','Robert C. Martin',200,false,'',1);
+    stackID++;
+    bookID = getNextBookLocation(bookShelf,stackID)
+    bookShelf[stackID].push(bookTest);
+    addBookToShelf(bookTest,stackID,bookID);
+
+    bookTest = new Book('Clean Code','Robert C. Martin',500,true,'so boring',5);
+    bookID = getNextBookLocation(bookShelf,stackID)
+    bookShelf[stackID].push(bookTest);
+    addBookToShelf(bookTest,stackID,bookID);
+
+    bookTest = new Book('Code:','Robert C. Martin');
+    stackID++
+    bookID = getNextBookLocation(bookShelf,stackID)
+    bookShelf[stackID].push(bookTest);
+    addBookToShelf(bookTest,stackID,bookID);
+}
+
+var deleteBooks = function() {
+    for(let stack = 0; stack < bookShelf.length; stack++) {
+        for(let book = 0; book < bookShelf[stack].length; book++) {
+            let currBook = document.querySelector(`#b-${stack}_${book}`);
+            currBook.remove();
+        }
+
+        bookShelf[stack].length = 0;
+    }
+}
+
+var resetBookShelf = function() {
+    deleteBooks();
+    
+    localStorage.clear();
+    
+    setDefaultBooks();
+}
+
+let resetAll = document.querySelector('#reset');
+resetAll.addEventListener('click',() => resetBookShelf(bookShelf));
 
 let selectedElement = document.querySelector('#selected');
 let editForm = document.querySelector('#edit_form');
@@ -209,7 +263,7 @@ editForm.addEventListener('submit',(event) => {
                 );
 
                 bookShelf[location.stack].push(newBook);
-                location.book = bookShelf[location.stack].length - 1;
+                location.book = getNextBookLocation(bookShelf,location.stack);
 
                 addBookToShelf(newBook,location.stack,location.book)
             }
@@ -241,32 +295,7 @@ if(localStorage.getItem('books')) {
         }
     }
 } else {
-    let bookTest = new Book('Code: The Hidden Language of Computer Hardware and Software and a bunch of','Charles Petzold',401,false,'',1);
-    let bookLocation = {type: 'b', stack: 0, book: 0};
-    bookShelf[bookLocation.stack].push(bookTest);
-    addBookToShelf(bookTest,bookLocation.stack,bookLocation.book);
-
-    bookTest = new Book('The Hidden Language of Computer','Robert C. Martin',340,true,'',5);
-    bookLocation.book = 1;
-    bookShelf[bookLocation.stack].push(bookTest);
-    addBookToShelf(bookTest,bookLocation.stack,bookLocation.book);
-
-    bookTest = new Book('Clean Code','Robert C. Martin',200,false,'',1);
-    bookLocation.stack = 1;
-    bookLocation.book = 0;
-    bookShelf[bookLocation.stack].push(bookTest);
-    addBookToShelf(bookTest,bookLocation.stack,bookLocation.book);
-
-    bookTest = new Book('Clean Code','Robert C. Martin',500,true,'so boring',5);
-    bookLocation.book = 1;
-    bookShelf[bookLocation.stack].push(bookTest);
-    addBookToShelf(bookTest,bookLocation.stack,bookLocation.book);
-
-    bookTest = new Book('Code:','Robert C. Martin');
-    bookLocation.stack = 2;
-    bookLocation.book = 0;
-    bookShelf[bookLocation.stack].push(bookTest);
-    addBookToShelf(bookTest,bookLocation.stack,bookLocation.book);
+    setDefaultBooks();
 }
 
 
