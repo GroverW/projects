@@ -36,6 +36,31 @@
                     
             </div>
             <div id="update_content">
+                    <div class="update">
+                        <div class="update_header">
+                            <span class="update_title">Meme Generator</span>
+                            <span class="update_date">Nov 27, 2019</span>
+                        </div>
+                        <main>
+                            <p>
+                                Completed this project via <a href="https://www.rithmschool.com/">Rithm School</a>.
+                            </p>
+                            <a href="../projects/meme-generator/index.html">
+                                <img src="../projects/images/meme_image.png">
+                            </a>
+                            <p>(Click image to try it)</p>
+                            <p>Good opportunity to mess with HTML Canvas. Battled through some frustration trying to figure out how to load images... and I'd still say I have some questions at this point. One key was the obvious thing - reading the MDN articles on the context object and its methods.</p>
+                            <p>Some of the interesting challenges were:
+                                <ul>
+                                    <li>Scaling the font with the image size</li>
+                                    <li>Positioning text correctly and getting it to wrap. Positioning text seems so obvious now, but I guess it took me longer than I'd like to admit.</li>
+                                    <li>Writing text on the bottom of the image. I had to write the words backwards, because if there are multiple lines it's (seemingly) much easier to start from the bottom and move up instead of figuring out where the text is supposed to start. This was also the first time I wrote a function with a callback since the code for the top and bottom are similar but different enough to warrant one.</li>
+                                    <li>Figuring out what to do if the image can't be loaded - I'm still not completely sure what to do here. Using img.onerror still results in an error being logged to the console. I tried async await briefly, but really need to understand better how to use that.</li>
+                                </ul>
+                            </p>
+                            <p>Got a lot more practice with manipulating the DOM as well. Especially adding a delete link to an element which deletes the parent node.</p>
+                        </main>
+                    </div>
                 <div class="update">
                         <div class="update_header">
                             <span class="update_title">Scientific Calculator</span>
@@ -175,9 +200,8 @@
             this.setLastInput(this.currInput);
         }
     }
-                            </code></pre>
-
-                    </div>
+                        </code></pre>
+                </div>
 
                 <div class="update">
                     <div class="update_header">
@@ -200,71 +224,67 @@
                 </div>
 
                 <div class="update">
-                        <div class="update_header">
-                            <span class="update_title">Etch-A-Sketch</span>
-                            <span class="update_date">Nov 5, 2019</span>
-                        </div>
-                        <main>
-                            <p>
-                                Completed this project via <a href="https://www.theodinproject.com/">The Odin Project</a>.
-                            </p>
-                            <a href="../projects/etch-a-sketch/index.html">
-                                <img src="../projects/images/sketch_image.png">
-                            </a>
-                            <p>(Click image to try it)</p>
-                            <p>I had a bunch more ideas for features to add, like creating different layers that get swapped via a queue so you could mix colors / undo things. Ultimately I learned some of the limits of JS when it comes to styling divs based on mouseover - much more than a seven-bit grid (need to find a font with numbers or pay for this one haha) of divs and it starts to get pretty laggy (at least on my computer).</p>
-                            <p>Compared to the <a href="../projects/rock-paper-scissors/index.html">Rock-Paper-Scissors</a> project, there were way fewer visual elements, and as a result way fewer hours / lines of code used for this one. Lesson learned for the future :).</p>
-                        </main>
+                    <div class="update_header">
+                        <span class="update_title">Etch-A-Sketch</span>
+                        <span class="update_date">Nov 5, 2019</span>
                     </div>
+                    <main>
+                        <p>
+                            Completed this project via <a href="https://www.theodinproject.com/">The Odin Project</a>.
+                        </p>
+                        <a href="../projects/etch-a-sketch/index.html">
+                            <img src="../projects/images/sketch_image.png">
+                        </a>
+                        <p>(Click image to try it)</p>
+                        <p>I had a bunch more ideas for features to add, like creating different layers that get swapped via a queue so you could mix colors / undo things. Ultimately I learned some of the limits of JS when it comes to styling divs based on mouseover - much more than a seven-bit grid (need to find a font with numbers or pay for this one haha) of divs and it starts to get pretty laggy (at least on my computer).</p>
+                        <p>Compared to the <a href="../projects/rock-paper-scissors/index.html">Rock-Paper-Scissors</a> project, there were way fewer visual elements, and as a result way fewer hours / lines of code used for this one. Lesson learned for the future :).</p>
+                    </main>
+                </div>
 
                 <div class="update">
-                        <div class="update_header">
-                            <span class="update_title">Rock-Paper-Scissors</span>
-                            <span class="update_date">Nov 4, 2019</span>
-                        </div>
-                        <main>
-                            <p>
-                                Completed this project via <a href="https://www.theodinproject.com/">The Odin Project</a>.
-                            </p>
-                            <a href="../projects/rock-paper-scissors/index.html">
-                                <img src="../projects/images/rpc_image.png">
-                            </a>
-                            <p>(Click image to try it)</p>
-                            <p>Really basic app, but I was able to test a lot of different ideas, which resulted in some great leassons learned:</p>
-                            <h2>Levenshtein Distance</h2>
-                            <p>I used this to match what the user types against the words 'rock', 'paper' and 'scissors'. Originally this was a console based project, so I figured it would be a cool opportunity to practice something like that</p>
-                            <p>It's a cool algorithm for measuring the distane between two strings. It has a nice dynamic programming algorithm (<a href="https://github.com/trekhleb/javascript-algorithms/tree/master/src/algorithms/string/levenshtein-distance" target="blank">example</a>), that can be tweaked depending on how you want to make the comparison. I think I read something like this is used in spell checkers.</p>
-                            <p>The gist:</p>
-                            <ul>
-                                <li>Make a two-dimensional matrix with word A on top and word B on the left</li>
-                                <li>Add one point (or whatever you want) if you have to delete an extra letter from word A</li>
-                                <li>Add one point (or whatever you want) if you have to change a letter from word A to word B</li>
-                                <li>Add zero points if the letter is present in both</li>
-                                <li>Find the minimum sum to get from word A to word B</li>
-                            </ul>
-                            <h2>Asynchronous Javascript</h2>
-                            <p>Ok I spent way too much time on this one. Wwhen the computer makes its character selection, I originally wanted it to scroll through the different character protraits by turning the three classes on and off... I thought this would be a good opporunity to use setTimeout, but did not realize those functions are not run in order, only out of order with the regular code.</p>
-                            <p>My next attempt was to use a promise.then().then() or something along those loines, but didn't have any better luck. I'm pretty confident that <strong>was</strong> one of the viable methods, but I'll come back to this later.</strong></p>
-                            <p>Ultimately I just made the character highlight move from the player to the computer and wait something close to a second before displaying both characters and the result of each round. Makes it a little more dramatic I guess?</p>
-                            <h2>Clean Code</h2>
-                            <p>From <a href="https://github.com/ryanmcdermott/clean-code-javascript" target="blank">this</a> awesome article. I also bought the clean code book and hope to read it at some point</p>
-                            <p>I got to practice and see the benefits of some clean code concepts. Though I don't think my code is clean at all there were a few concepts that made it way better than it would have been otherwise.</p>
-                            <ul>
-                                <li><u>Function arguments (two or fewer ideally)</u> - The idea is to greatly reduce the complexity when testing. I did my best on this one (I think I achieved it?). If I thought I needed more than two arguments, I tried to find another way to do it. Though there were a few methods that allowed any number of arguments because it looped through hopefuly identicle selectors.</li>
-                                <li><u>Functions should do one thing</u> - This one I really noticed the benefits of. There were several methods that I reused over and over again in different contexts, and it felt so nice when I didn't feel like I needed to change anything.</li>
-                                <li><u>Function names should say what they do</u> - I had to go back a few times and rename methods because I had a hard time coming up with the right descriptions, but this helped a lot when I had to go back and figure out what my code was doing.</li>
-                                <li><u>Avoid mentail mapping</u> - Instead of using letters for variables, I tried to name the variables so I could figure out what they were for when I went back</li>
-                                <li><u>Make objects have private members</u> - Uh, I briefly attempted to do this, but it's on my to-do list for future projects.</li>
-                            </ul>
-                            <p>There were others, but I think this is a good start!</p>
-                            
-                            <p></p>
-                        </main>
+                    <div class="update_header">
+                        <span class="update_title">Rock-Paper-Scissors</span>
+                        <span class="update_date">Nov 4, 2019</span>
                     </div>
-
-                
-
-
+                    <main>
+                        <p>
+                            Completed this project via <a href="https://www.theodinproject.com/">The Odin Project</a>.
+                        </p>
+                        <a href="../projects/rock-paper-scissors/index.html">
+                            <img src="../projects/images/rpc_image.png">
+                        </a>
+                        <p>(Click image to try it)</p>
+                        <p>Really basic app, but I was able to test a lot of different ideas, which resulted in some great leassons learned:</p>
+                        <h2>Levenshtein Distance</h2>
+                        <p>I used this to match what the user types against the words 'rock', 'paper' and 'scissors'. Originally this was a console based project, so I figured it would be a cool opportunity to practice something like that</p>
+                        <p>It's a cool algorithm for measuring the distane between two strings. It has a nice dynamic programming algorithm (<a href="https://github.com/trekhleb/javascript-algorithms/tree/master/src/algorithms/string/levenshtein-distance" target="blank">example</a>), that can be tweaked depending on how you want to make the comparison. I think I read something like this is used in spell checkers.</p>
+                        <p>The gist:</p>
+                        <ul>
+                            <li>Make a two-dimensional matrix with word A on top and word B on the left</li>
+                            <li>Add one point (or whatever you want) if you have to delete an extra letter from word A</li>
+                            <li>Add one point (or whatever you want) if you have to change a letter from word A to word B</li>
+                            <li>Add zero points if the letter is present in both</li>
+                            <li>Find the minimum sum to get from word A to word B</li>
+                        </ul>
+                        <h2>Asynchronous Javascript</h2>
+                        <p>Ok I spent way too much time on this one. Wwhen the computer makes its character selection, I originally wanted it to scroll through the different character protraits by turning the three classes on and off... I thought this would be a good opporunity to use setTimeout, but did not realize those functions are not run in order, only out of order with the regular code.</p>
+                        <p>My next attempt was to use a promise.then().then() or something along those loines, but didn't have any better luck. I'm pretty confident that <strong>was</strong> one of the viable methods, but I'll come back to this later.</strong></p>
+                        <p>Ultimately I just made the character highlight move from the player to the computer and wait something close to a second before displaying both characters and the result of each round. Makes it a little more dramatic I guess?</p>
+                        <h2>Clean Code</h2>
+                        <p>From <a href="https://github.com/ryanmcdermott/clean-code-javascript" target="blank">this</a> awesome article. I also bought the clean code book and hope to read it at some point</p>
+                        <p>I got to practice and see the benefits of some clean code concepts. Though I don't think my code is clean at all there were a few concepts that made it way better than it would have been otherwise.</p>
+                        <ul>
+                            <li><u>Function arguments (two or fewer ideally)</u> - The idea is to greatly reduce the complexity when testing. I did my best on this one (I think I achieved it?). If I thought I needed more than two arguments, I tried to find another way to do it. Though there were a few methods that allowed any number of arguments because it looped through hopefuly identicle selectors.</li>
+                            <li><u>Functions should do one thing</u> - This one I really noticed the benefits of. There were several methods that I reused over and over again in different contexts, and it felt so nice when I didn't feel like I needed to change anything.</li>
+                            <li><u>Function names should say what they do</u> - I had to go back a few times and rename methods because I had a hard time coming up with the right descriptions, but this helped a lot when I had to go back and figure out what my code was doing.</li>
+                            <li><u>Avoid mentail mapping</u> - Instead of using letters for variables, I tried to name the variables so I could figure out what they were for when I went back</li>
+                            <li><u>Make objects have private members</u> - Uh, I briefly attempted to do this, but it's on my to-do list for future projects.</li>
+                        </ul>
+                        <p>There were others, but I think this is a good start!</p>
+                        
+                        <p></p>
+                    </main>
+                </div>
             </div>
             <div id="body_content_bg"></div>
         </div>
