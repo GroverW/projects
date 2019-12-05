@@ -2,6 +2,7 @@ const BOOK_STACKS = 6;
 const BOOKS_PER_STACK = 4;
 const OUTER_STARS_HEIGHT = 50;
 const MAX_RATING = 5;
+const YELLOW = 1, GREEN = 2, RED = 3, BLUE = 4;
 
 let bookShelf = new Array(BOOK_STACKS).fill(null).map((v) => Array(0));
 
@@ -17,17 +18,24 @@ class BookAuthor extends HTMLElement {
     }
 }
 
+class BookRead extends HTMLElement {
+    constructor() {
+        super();
+    }
+}
+
 customElements.define('book-title',BookTitle);
 customElements.define('book-author',BookAuthor);
+customElements.define('book-read',BookRead);
 
-var Book = function(title,author,numPages = '',hasRead = false,summary = '',rating = 1) {
+var Book = function(title,author,numPages = '',hasRead = false,summary = '',rating = 1,type) {
     this.title = title;
     this.author = author;
     this.numPages = numPages;
     this.hasRead = hasRead;
     this.summary = summary;
     this.rating = rating;
-    this.type = this.randomizeBookType([1,2,3,4],[.15,.15,.35,.35]);
+    this.type = type ? type : this.randomizeBookType([1,2,3,4],[.15,.15,.35,.35]);
 }
 
 Book.prototype.createRandomNum = function(min,max) {
@@ -84,11 +92,14 @@ var parseID = function(idString) {
 var addBookDetails = function(bookElement,book) {
     let newBookTitle = document.createElement('book-title');
     let newBookAuthor = document.createElement('book-author');
+    let newBookRead = document.createElement('book-read');
     newBookTitle.innerText = book.title;
     newBookAuthor.innerText = book.author;
+    newBookRead.innerText = book.hasRead ? 'Read' : 'Unread';
 
     bookElement.appendChild(newBookTitle);
     bookElement.appendChild(newBookAuthor);
+    bookElement.appendChild(newBookRead);
 }
 
 var addRatingToBook = function(bookElement,bookRating) {
@@ -157,38 +168,39 @@ var updateBook = function(book,bookID) {
     let bookSelector = document.querySelector(`#${bookID}`);
 
     let bookTitle = bookSelector.getElementsByTagName('book-title')[0];
-    bookTitle.innerText = book.title;
-
     let bookAuthor = bookSelector.getElementsByTagName('book-author')[0];
-    bookAuthor.innerText = book.author;
-
+    let bookRead = bookSelector.getElementsByTagName('book-read')[0];
     let bookRating = bookSelector.querySelector('.stars_inner');
+    
+    bookTitle.innerText = book.title;
+    bookAuthor.innerText = book.author;
+    bookRead.innerText = book.hasRead ? 'Read' : 'Unread';
     bookRating.style.height = OUTER_STARS_HEIGHT * book.rating / MAX_RATING + 'px';
 }
 
 var setDefaultBooks = function() {
-    let bookTest = new Book('Cracking the Coding Interview','Gayle Laakmann McDowell',687,false,'',1);
+    let bookTest = new Book('Cracking the Coding Interview','Gayle Laakmann McDowell',687,false,'',2,GREEN);
     let stackID = 0, bookID = getNextBookLocation(bookShelf,stackID);
     bookShelf[stackID].push(bookTest);
     addBookToShelf(bookTest,stackID,bookID);
 
-    bookTest = new Book('Code','Charles Petzold',400,true,'',5);
+    bookTest = new Book('Code','Charles Petzold',400,true,'',5,RED);
     bookID = getNextBookLocation(bookShelf,stackID);
     bookShelf[stackID].push(bookTest);
     addBookToShelf(bookTest,stackID,bookID);
 
-    bookTest = new Book('Clean Code','Robert C. Martin',200,false,'',1);
+    bookTest = new Book('Clean Code','Robert C. Martin',200,false,'',3,RED);
     stackID++;
     bookID = getNextBookLocation(bookShelf,stackID)
     bookShelf[stackID].push(bookTest);
     addBookToShelf(bookTest,stackID,bookID);
 
-    bookTest = new Book('Operating Systems: Three Easy Pieces','Remzi H Arpaci-Dusseau',714,false,'',5);
+    bookTest = new Book('Operating Systems: Three Easy Pieces','Remzi H Arpaci-Dusseau',714,false,'',4,BLUE);
     bookID = getNextBookLocation(bookShelf,stackID)
     bookShelf[stackID].push(bookTest);
     addBookToShelf(bookTest,stackID,bookID);
 
-    bookTest = new Book('Elements of Programming Interviews in Java','Aziz, Lee and Prakash');
+    bookTest = new Book('Elements of Programming Interviews in Java','Aziz, Lee and Prakash',482,false,'',4,YELLOW);
     stackID++
     bookID = getNextBookLocation(bookShelf,stackID)
     bookShelf[stackID].push(bookTest);
