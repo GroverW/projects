@@ -1,0 +1,19 @@
+#memory_board {
+    width: 660px;
+    height: 660px;
+    display: grid;
+    grid-template: repeat(5,100px) / repeat(5,100px);
+    grid-gap: 20px;
+    transition: .8s ease-in-out;
+    justify-content: center;
+    align-content: center;
+}
+
+#memory_board:hover {
+    transform: rotate(90deg);
+}
+
+mem-card {
+    border: 1px solid black;
+    border-radius: 5px;
+}

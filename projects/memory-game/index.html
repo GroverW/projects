@@ -5,16 +5,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         
-        <title>Meme Generator</title>
+        <title>Memory Game</title>
 
         <link href="../../style.css" type="text/css" rel="stylesheet">
-        <link href="meme-style.css" type="text/css" rel="stylesheet">
+        <link href="memory-style.css" type="text/css" rel="stylesheet">
     </head>
     <body>
         <div id="main_container">
             <div id="header">
                     <div id="page_title">
-                        Meme Generator<br>
+                        Memory Game<br>
                         <a class="back_arrow" href="../index.html"><span class="large_symbol">←</span> Back</a>
                     </div>
                 <div id="logo">
@@ -36,25 +36,34 @@
             </div>
             <div id="body_content">
                 <div id="instructions">
-                        <strong>Instructions:</strong> Enter file URL, enter top / bottom text as needed, BAM! Memelord. Meme will be created automatically, but if you want to make another one press the "Another!" button.
+                        <strong>Instructions:</strong>
+                        
                 </div>
-                <div id="settings">
-                    <form name="meme_form" id="meme_form">
-                        <!--<input type="file" name="meme_image_upload" id="meme_image_upload">-->
-                            <span class-'meme_label'>Image URL</span>
-                            <span class-'meme_label'>Top Text</span>
-                            <span class-'meme_label'>Bottom Text</span>
-                            <span></span>
-                            <input type="text" name="meme_image_link" id="meme_image_link">
-                            <input type="text" name="top_text" id="top_text">
-                            <input type="text" name="bottom_text"  id="bottom_text">
-                        <button id="add_btn" type="submit" form="meme_form">Another!</button>
-                    </form>                                            
-                </div>
-                <div id="meme_grid">
-                    <div id="meme1" class="meme">
-                        <canvas id="meme1_canvas" class="meme_canvas"></canvas>
-                    </div>
+                <div id="memory_board">
+                    <mem-card id="c-0"></mem-card>
+                    <mem-card id="c-1"></mem-card>
+                    <mem-card id="c-2"></mem-card>
+                    <mem-card id="c-3"></mem-card>
+                    <mem-card id="c-4"></mem-card>
+                    <mem-card id="c-5"></mem-card>
+                    <mem-card id="c-6"></mem-card>
+                    <mem-card id="c-7"></mem-card>
+                    <mem-card id="c-8"></mem-card>
+                    <mem-card id="c-9"></mem-card>
+                    <mem-card id="c-10"></mem-card>
+                    <mem-card id="c-11"></mem-card>
+                    <mem-card id="c-12"></mem-card>
+                    <mem-card id="c-13"></mem-card>
+                    <mem-card id="c-14"></mem-card>
+                    <mem-card id="c-15"></mem-card>
+                    <mem-card id="c-16"></mem-card>
+                    <mem-card id="c-17"></mem-card>
+                    <mem-card id="c-18"></mem-card>
+                    <mem-card id="c-19"></mem-card>
+                    <mem-card id="c-20"></mem-card>
+                    <mem-card id="c-21"></mem-card>
+                    <mem-card id="c-22"></mem-card>
+                    <mem-card id="c-23"></mem-card>
                 </div>
             </div>
             <div id="body_content_bg"></div>
