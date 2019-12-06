@@ -35,70 +35,68 @@
                     
             </div>
             <div id="body_content">
-                <div id="content_container">
-                        <div id="instructions">
-                                <strong>Instructions:</strong> Click an empty book stack (it will highlight) to add a new book. Click on a book to edit it. When you hover over a book, the delete button will pop up in the top right corner which you can click to delete the book. 
-                                <br><br>Click here (<a id='reset'><img src='images/reset.png'></a>) to reset the bookshelf.
-                                
-                        </div>
-                        <div id="bookshelf">
-                            <div id="shelf1" class="shelf">
-                                <div id="s-0" class="shelf_stack"></div>
-                                <div id="s-1" class="shelf_stack"></div>
-                                <div id="s-2" class="shelf_stack"></div>
-                            </div>
-                            <div id="shelf2" class="shelf">
-                                <div id="s-3" class="shelf_stack"></div>
-                                <div id="s-4" class="shelf_stack"></div>
-                                <div id="s-5" class="shelf_stack"></div>
-                            </div>
+                <div id="instructions">
+                        <strong>Instructions:</strong> Click an empty book stack (it will highlight) to add a new book. Click on a book to edit it. When you hover over a book, the delete button will pop up in the top right corner which you can click to delete the book. 
+                        <br><br>Click here (<a id='reset'><img src='images/reset.png'></a>) to reset the bookshelf.
+                        
+                </div>
+                <div id="bookshelf">
+                    <div id="shelf1" class="shelf">
+                        <div id="s-0" class="shelf_stack"></div>
+                        <div id="s-1" class="shelf_stack"></div>
+                        <div id="s-2" class="shelf_stack"></div>
+                    </div>
+                    <div id="shelf2" class="shelf">
+                        <div id="s-3" class="shelf_stack"></div>
+                        <div id="s-4" class="shelf_stack"></div>
+                        <div id="s-5" class="shelf_stack"></div>
+                    </div>
 
-                            <form id="edit_form" name="edit_form">
-                                <div>
-                                    <span id="edit_form_title"></span>
-                                </div>
-                                <div>
-                                    <label for="book_title">Title</label><br>
-                                    <input type="text" id="book_title" name="book_title">
-                                </div>
-                                <div>
-                                    <label for="book_author">Author</label><br>
-                                    <input type="text" id="book_author" name="book_author">
-                                </div>
-                                <div>
-                                    <label for="book_pages">No. Pages</label><br>
-                                    <input type="text" id="book_pages" name="book_pages">
-                                </div>
-                                <div>
-                                    <label for="book_summary">Summary</label>
-                                    <textarea id="book_summary" name="book_summary"></textarea>
-                                </div>
-                                <div>
-                                    <label for="book_rating">Rating</label><br>
-                                    <div id="rating_grid">
-                                        <label for="book_rating1">1</label>
-                                        <label for="book_rating2">2</label>
-                                        <label for="book_rating3">3</label>
-                                        <label for="book_rating4">4</label>
-                                        <label for="book_rating5">5</label>
-                                        <input type="radio" value="1" id="book_rating1" name="book_rating">
-                                        <input type="radio" value="2" id="book_rating2" name="book_rating">
-                                        <input type="radio" value="3" id="book_rating3" name="book_rating">
-                                        <input type="radio" value="4" id="book_rating4" name="book_rating">
-                                        <input type="radio" value="5" id="book_rating5" name="book_rating">
-                                    </div>
-                                </div>
-                                <div>
-                                    <input type="checkbox" id="has_read" name="has_read">
-                                    <label for="has_read">Read</label>
-                                </div>
-                                <div>
-                                    <button type="reset" id="cancel" form="edit_form">Cancel</button>
-                                    <button type="submit" id="save" form="edit_form">Save</button>
-                                </div>
-                                <input type="hidden" id="selected">
-                            </form>
+                    <form id="edit_form" name="edit_form">
+                        <div>
+                            <span id="edit_form_title"></span>
                         </div>
+                        <div>
+                            <label for="book_title">Title</label><br>
+                            <input type="text" id="book_title" name="book_title">
+                        </div>
+                        <div>
+                            <label for="book_author">Author</label><br>
+                            <input type="text" id="book_author" name="book_author">
+                        </div>
+                        <div>
+                            <label for="book_pages">No. Pages</label><br>
+                            <input type="text" id="book_pages" name="book_pages">
+                        </div>
+                        <div>
+                            <label for="book_summary">Summary</label>
+                            <textarea id="book_summary" name="book_summary"></textarea>
+                        </div>
+                        <div>
+                            <label for="book_rating">Rating</label><br>
+                            <div id="rating_grid">
+                                <label for="book_rating1">1</label>
+                                <label for="book_rating2">2</label>
+                                <label for="book_rating3">3</label>
+                                <label for="book_rating4">4</label>
+                                <label for="book_rating5">5</label>
+                                <input type="radio" value="1" id="book_rating1" name="book_rating">
+                                <input type="radio" value="2" id="book_rating2" name="book_rating">
+                                <input type="radio" value="3" id="book_rating3" name="book_rating">
+                                <input type="radio" value="4" id="book_rating4" name="book_rating">
+                                <input type="radio" value="5" id="book_rating5" name="book_rating">
+                            </div>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="has_read" name="has_read">
+                            <label for="has_read">Read</label>
+                        </div>
+                        <div>
+                            <button type="reset" id="cancel" form="edit_form">Cancel</button>
+                            <button type="submit" id="save" form="edit_form">Save</button>
+                        </div>
+                        <input type="hidden" id="selected">
+                    </form>
                 </div>
             </div>
             <div id="body_content_bg"></div>
