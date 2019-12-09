@@ -1,22 +1,22 @@
-class MemCard extends HTMLElement {
+class CardContainer extends HTMLElement {
     constructor() {
         super();
     }
 }
 
-class MemCardInner extends HTMLElement {
+class Card extends HTMLElement {
     constructor() {
         super();
     }
 }
 
-class MemCardFront extends HTMLElement {
+class CardFront extends HTMLElement {
     constructor() {
         super();
     }
 }
 
-class MemCardBack extends HTMLElement {
+class CardBack extends HTMLElement {
     constructor() {
         super();
     }
@@ -28,10 +28,10 @@ class ScoreCard extends HTMLElement {
     }
 }
 
-customElements.define('mem-card',MemCard);
-customElements.define('card-inner-container',MemCardInner);
-customElements.define('card-front',MemCardFront);
-customElements.define('card-back',MemCardBack);
+customElements.define('card-container',CardContainer);
+customElements.define('card-element',Card);
+customElements.define('card-front',CardFront);
+customElements.define('card-back',CardBack);
 customElements.define('score-card',ScoreCard);
 
 const NUM_CARDS = 24;
@@ -56,17 +56,18 @@ const drawBoard = (() => {
             gameBoard.appendChild(scoreCard);
         }
 
-        let newCard = document.createElement('mem-card');
+        let newCardContainer = document.createElement('card-container');
+
+        let newCard = document.createElement('card-element');
         newCard.id = `c-${i}`;
 
-        let newCardInner = document.createElement('card-inner-container');
         let newCardFront = document.createElement('card-front');
         let newCardBack = document.createElement('card-back');
 
-        newCardInner.appendChild(newCardFront);
-        newCardInner.appendChild(newCardBack);
-        newCard.appendChild(newCardInner);
-        gameBoard.appendChild(newCard);
+        newCard.appendChild(newCardFront);
+        newCard.appendChild(newCardBack);
+        newCardContainer.appendChild(newCard);
+        gameBoard.appendChild(newCardContainer);
     }
 })();
 
@@ -100,7 +101,7 @@ const CardFactory = (cardID, cardType, game) => {
 	});
 
 	const flip = () => {
-		cardSelector.toggleClass('flipped');
+		cardSelector.toggleClass('flip');
 
 		flipped = flipped ? false : true;
 	}
