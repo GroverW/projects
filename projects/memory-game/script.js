@@ -4,7 +4,7 @@ class CardContainer extends HTMLElement {
     }
 }
 
-class Card extends HTMLElement {
+class CardELement extends HTMLElement {
     constructor() {
         super();
     }
@@ -29,7 +29,7 @@ class ScoreCard extends HTMLElement {
 }
 
 customElements.define('card-container',CardContainer);
-customElements.define('card-element',Card);
+customElements.define('card-element',CardELement);
 customElements.define('card-front',CardFront);
 customElements.define('card-back',CardBack);
 customElements.define('score-card',ScoreCard);
@@ -116,7 +116,7 @@ const CardFactory = (cardID, cardType, game) => {
 const MemoryGame = (numCards, cardsPerType, gameType) => {
 	let gameStatus = true;
 	let matchedCards = [];
-	let remainingCards = numCards;
+	let cardsRemaining = numCards;
 
 	const gameReady = () => {
 		return gameStatus;
@@ -128,12 +128,22 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 
 	const continueGame = () => {
 		gameStatus = true;
-	}
+    }
+    
+    const isGameOver = () => {
+        if(gameType.getGameResult(cardsRemaining)) {
+            gameOver(gameType.getGameResult(cardsRemaining));
+            
+            return true;
+		}
+    }
 
 	const addCard = (card) => {
 		matchedCards.push(card);
 
-		gameType.updateScore();
+        gameType.updateScore();
+        
+        if(isGameOver(cardsRemaining)) gameOver();
 	}
 
 	const checkMatch = () => {
@@ -167,21 +177,16 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 	const successfulMatch = () => {
 		resetMatchedCards();
 
-		remainingCards -= cardsPerType;
+		cardsRemaining -= cardsPerType;
 
-		let isGameComplete = gameType.checkGameStatus(remainingCards)
-
-		if(isGameComplete) {
-			gameOver(gameType.getGameResult());
-		}
+		isGameOver(cardsRemaining)
 	}
 
 	const failedMatch = () => {
 		resetMatchedCards();
+        
 
-		let isGameComplete = gameType.checkGameStatus(remainingCards);
-		
-		isGameComplete ? gameOver(gameType.getGameResult()) : resetFailedMatch();
+		isGameOver(cardsRemaining); resetFailedMatch();
 	}
 
 	return {gameReady, addCard, checkMatch};
