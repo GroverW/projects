@@ -84,9 +84,15 @@ const CardFactory = (cardID, cardType, game) => {
 
 	const createCardElement = () => {
 		cardSelector.classList.add(`card_type${cardType}`);
-	}
+    }
+    
+    const resetCard = () => {
+        cardSelector.classList.remove(`card_type${cardType}`);
 
-	return {getCardType, flip, createCardElement}
+        if(flipped) flip();
+    }
+
+	return { getCardType, flip, createCardElement, resetCard }
 }
 
 const MemoryGame = (numCards, cardsPerType, gameType) => {
@@ -122,7 +128,7 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 		return false;
 	}
 
-	const resetMatchedCards = () => {
+	const clearMatchedCards = () => {
 		matchedCards.length = 0;
 	}
 
@@ -141,7 +147,7 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 	}
 
 	const successfulMatch = () => {
-		resetMatchedCards();
+		clearMatchedCards();
 
 		cardsRemaining -= cardsPerType;
 
@@ -149,10 +155,100 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 	}
 
 	const failedMatch = () => {
-		resetMatchedCards();
+		clearMatchedCards();
         
 		gameType.getGameResult(cardsRemaining) ? gameOver(gameType.getGameResult(cardsRemaining)) : resetFailedMatch();
 	}
 
-	return {gameReady, addCard, checkMatch};
+	return { gameReady, addCard, checkMatch };
+}
+
+
+const MemoryGameEasy = (scoreCard) => {
+	let currScore = 0;
+
+	const setScore = () => {
+		scoreCard.innerText = ('0' + currScore).slice(-2);
+	}
+
+	const updateScore = () => {
+		currScore++;
+		
+		setScore();
+	}
+
+	const getGameResult = (cardsRemaining) => {
+		return cardsRemaining === 0 ? 'win' : false;
+	}
+
+	return { setScore, updateScore, getGameResult };
+}
+
+const MemoryGameMedium = (scoreCard, numCards) => {
+	let currScore = Math.ceil((numCards / 2) * 1.25);
+
+	const setScore = () => {
+		scoreCard.innerText = ('0' + currScore).slice(-2);
+	}
+
+	const updateScore = () => {
+		currScore--;
+
+		setScore();
+	}
+
+	const getGameResult = (cardsRemaining) => {
+		if(cardsRemaining === 0) {
+			return 'win';
+		} else if(currScore === 0) {
+			return 'lose';
+		}
+
+		return false;
+	}
+
+	return { setScore, updateScore, getGameResult };
+}
+
+const MemoryGameHard = (scoreCard, numCards, gameBoard) => {
+	let currScore = Math.ceil((numCards / 2) * 1.25);
+	let nextRotationIncrement = Math.ceil(numCards / 3);
+	let nextRotation = numCards - nextRotationIncrement;
+	let nextRotation = 90;
+
+	const setScore = () => {
+		scoreCard.innerText = ('0' + currScore).slice(-2);
+	}
+
+	const updateScore = () => {
+		currScore--;
+		
+		scoreCard.innerText = ('0' + currScore).slice(-2);
+		
+		if(numCards === nextRotation && nextRotation > 0) {
+			rotateBoard();
+
+			nextRotation -= nextRotationIncrement;
+		}
+	}
+
+	const rotateBoard = () => {
+		gameBoard.style.transform(`rotate(${nextRotation}deg`);
+		
+		scoreCard.style.transform(`rotate(${-nextRotation}deg`);
+
+		nextRotation += 90;
+	}
+
+	const getGameResult = (cardsRemaining) => {
+		if(cardsRemaining === 0) {
+			return 'win';
+		} else if(currScore === 0) {
+			return 'lose';
+		}
+
+		return false;
+	}
+
+	return { setScore, updateScore, getGameResult };
 }
