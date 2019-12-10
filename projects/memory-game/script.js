@@ -11,18 +11,10 @@ customElements.define('card-back',CardBack);
 customElements.define('score-card',ScoreCard);
 
 const NUM_CARDS = 24;
+const CARDS_PER_TYPE = 2;
 
-let start = document.querySelectorAll('.new_game_button');
 let gameContainer = document.querySelector('#game_container');
 let gameBoard = document.querySelector('#game_board');
-
-start.forEach(obj => obj.addEventListener('click',() => {
-    let isOpen = gameContainer.classList.contains('slide_in');
-
-    gameContainer.setAttribute('class', isOpen ? 'slide_out' : 'slide_in');
-}));
-
-cardArray = new Array(NUM_CARDS).fill(null)
 
 const drawBoard = (() => {
     for(let i = 0; i < NUM_CARDS; i++) {
@@ -47,6 +39,8 @@ const drawBoard = (() => {
     }
 })();
 
+let scoreCard = document.querySelector('#score');
+
 const generateCardTypes = (numCards, cardsPerType) => {
 	let type = 1;
 	let cardTypes = [];
@@ -60,24 +54,36 @@ const generateCardTypes = (numCards, cardsPerType) => {
 	return cardTypes;
 }
 
+const shuffleCardTypes = (cardTypes) => {
+    let count = cardTypes.length;
+
+    while(count) {
+        cardTypes.push(cardTypes.splice(Math.floor(Math.random() * count),1)[0]);
+        count--;
+    }
+
+    return cardTypes;
+}
+
 const CardFactory = (cardID, cardType, game) => {
-	let flipped = false;
+    let flipped = false;
+    let cardObject = this;
 
-	const getCardType = () => cardType;
-
-	const cardSelector = document.querySelector(`#c-${cardID}`);
+    const cardSelector = document.querySelector(`#c-${cardID}`);
+    
+    const getCardType = () => cardType;
 	
 	cardSelector.addEventListener('click',function(event) {
 		event.stopPropagation();
 
 		if(game.gameReady() && !flipped) {
 			flip();
-			game.addCard(this);
+			game.addCard(cardID);
 		}
 	});
 
 	const flip = () => {
-		cardSelector.toggleClass('flip');
+		cardSelector.classList.toggle('flip');
 
 		flipped = flipped ? false : true;
 	}
@@ -86,10 +92,14 @@ const CardFactory = (cardID, cardType, game) => {
 		cardSelector.classList.add(`card_type${cardType}`);
     }
     
-    const resetCard = () => {
+    const resetCard = (newCardType) => {
         cardSelector.classList.remove(`card_type${cardType}`);
 
         if(flipped) flip();
+
+        cardType = newCardType;
+
+        cardSelector.classList.add(`card_type${cardType}`);
     }
 
 	return { getCardType, flip, createCardElement, resetCard }
@@ -112,20 +122,22 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 		gameStatus = true;
     }
 
-	const addCard = (card) => {
-		matchedCards.push(card);
+	const addCard = (cardID) => {
+        matchedCards.push(cardID);
+        
+        checkMatch();
 	}
 
 	const checkMatch = () => {
 		if(matchedCards.length === cardsPerType) {
+            freezeGame();
+
             gameType.updateScore();
 
-			let matched = matchedCards.every(card => card.getCardType() === matchedCards[0].getCardType());		
+			let matched = matchedCards.every(cardID => cardArray[cardID].getCardType() === cardArray[matchedCards[0]].getCardType());
 
 			matched ? successfulMatch() : failedMatch();
 		}
-
-		return false;
 	}
 
 	const clearMatchedCards = () => {
@@ -136,10 +148,10 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 		freezeGame();
 
 		setTimeout(() => {
-			matchedCards.forEach(card => card.flip());
-			continueGame();
-		},750);
-		
+			matchedCards.forEach(cardID => cardArray[cardID].flip());
+            continueGame();
+            clearMatchedCards();
+		},1000);
 	}
 
 	const gameOver = (result) => {
@@ -147,20 +159,31 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 	}
 
 	const successfulMatch = () => {
-		clearMatchedCards();
-
 		cardsRemaining -= cardsPerType;
 
-		if(gameType.getGameResult(cardsRemaining)) gameOver(gameType.getGameResult(cardsRemaining));
-	}
-
-	const failedMatch = () => {
-		clearMatchedCards();
+        if(gameType.getGameResult(cardsRemaining)) gameOver(gameType.getGameResult(cardsRemaining));
         
-		gameType.getGameResult(cardsRemaining) ? gameOver(gameType.getGameResult(cardsRemaining)) : resetFailedMatch();
+        clearMatchedCards();
+
+        continueGame();
 	}
 
-	return { gameReady, addCard, checkMatch };
+	const failedMatch = () => {        
+        gameType.getGameResult(cardsRemaining) ? gameOver(gameType.getGameResult(cardsRemaining)) : resetFailedMatch();
+    }
+    
+    const resetGame = (newGameType) => {
+        clearMatchedCards();
+        
+        cardsRemaining = numCards;
+        gameType = newGameType;
+
+        gameType.setScore();
+
+        continueGame();
+    }
+
+	return { gameReady, addCard, checkMatch, resetGame };
 }
 
 
@@ -212,9 +235,9 @@ const MemoryGameMedium = (scoreCard, numCards) => {
 
 const MemoryGameHard = (scoreCard, numCards, gameBoard) => {
 	let currScore = Math.ceil((numCards / 2) * 1.25);
-	let nextRotationIncrement = Math.ceil(numCards / 3);
-	let nextRotation = numCards - nextRotationIncrement;
-	let nextRotation = 90;
+	let nextRotationIncrement = Math.ceil(currScore / 3);
+	let nextRotation = currScore - nextRotationIncrement;
+	let nextRotationAmount = 90;
 
 	const setScore = () => {
 		scoreCard.innerText = ('0' + currScore).slice(-2);
@@ -225,7 +248,7 @@ const MemoryGameHard = (scoreCard, numCards, gameBoard) => {
 		
 		scoreCard.innerText = ('0' + currScore).slice(-2);
 		
-		if(numCards === nextRotation && nextRotation > 0) {
+		if(currScore === nextRotation && nextRotation > 0) {
 			rotateBoard();
 
 			nextRotation -= nextRotationIncrement;
@@ -233,11 +256,11 @@ const MemoryGameHard = (scoreCard, numCards, gameBoard) => {
 	}
 
 	const rotateBoard = () => {
-		gameBoard.style.transform(`rotate(${nextRotation}deg`);
+		gameBoard.style.transform(`rotate(${nextRotationAmount}deg`);
 		
-		scoreCard.style.transform(`rotate(${-nextRotation}deg`);
+		scoreCard.style.transform(`rotate(${-nextRotationAmount}deg`);
 
-		nextRotation += 90;
+		nextRotationAmount += 90;
 	}
 
 	const getGameResult = (cardsRemaining) => {
@@ -252,3 +275,44 @@ const MemoryGameHard = (scoreCard, numCards, gameBoard) => {
 
 	return { setScore, updateScore, getGameResult };
 }
+
+let newGameButtons = document.querySelectorAll('.new_game_button');
+let cardArray = new Array(NUM_CARDS).fill(null);
+let gameType = MemoryGameEasy(scoreCard);
+let game = MemoryGame(NUM_CARDS,CARDS_PER_TYPE,gameType);
+
+gameType.setScore();
+
+const initializeGame = (() => {
+    let cardTypes = shuffleCardTypes(generateCardTypes(NUM_CARDS,CARDS_PER_TYPE));
+
+    for(let i = 0; i < NUM_CARDS; i++) {
+        let currCard = CardFactory(i,cardTypes[i],game);
+        currCard.createCardElement();
+        cardArray[i] = currCard;
+    }
+})();
+
+
+newGameButtons.forEach(obj => obj.addEventListener('click',() => {
+    let isOpen = gameContainer.classList.contains('slide_in');
+    gameContainer.setAttribute('class', isOpen ? 'slide_out' : 'slide_in');
+
+    let newGameType;
+
+    if(obj.name === 'hard') {
+        newGameType = MemoryGameHard(scoreCard,NUM_CARDS,gameBoard);
+    } else if(obj.name === 'medium') {
+        newGameType = MemoryGameMedium(scoreCard,NUM_CARDS);
+    } else {
+        newGameType = MemoryGameEasy(scoreCard);
+    }
+
+    game.resetGame(newGameType);
+    
+    let cardTypes = shuffleCardTypes(generateCardTypes(NUM_CARDS,CARDS_PER_TYPE));
+
+    for(let i = 0; i < NUM_CARDS; i++) {
+        cardArray[i].resetCard(cardTypes[i]);
+    }
+}));
