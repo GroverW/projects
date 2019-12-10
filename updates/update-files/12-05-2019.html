@@ -20,11 +20,13 @@
                 <li>Extend one of the existing objects, and set the constructor to super(). I used HTMLElement. (class BookShelf extends HTMLElement)</li>
                 <li>customElement.define('tag name',class) and bam! Done.</li>
             </ul>
-            <li></li>
-            <li></li>
-            <li></li>
+            <li>Using LocalStorage. Wow there are so many tools available these days. JSON.stringify an array and save it in localStorage to be loaded whenever the user comes back to the site. Pretty cool!</li>
+            <li>How to do weighted random numbers - pick a random number between one and the max weight, then run through the list of weights (adding each to the previous total weight), and once your weight sum is greater than the random number, you've found your selection.  I used these to make two of the book types show up more than the other two. I guess this one isn't that hard if you sit down and think about it, but actually doing the implementation feels like the best way to learn it.</li>
+            <li>How to make a star rating sytem for the books - though I don't think my implementation was very flexible. It used css masks in the shape of the stars, along with one gold layer stacked on top of a black layer. The gold layer has its height adjusted to reduce or increase the number of gold stars visible. The place where this became inflexible was when I tried doing half stars, as I think the stars probably started from the wrong end of the layer so they would be offset from the black ones underneath... Could probably figure it out with some testing. As I've quickly learned after reading about factory functions, it seems the old way is still favored? The new Class syntax still doesn't have private variables... and I haven't learned how or if you could achieve that without using closures.</li>
+            <li>Testing out the ol' Javascript way of creating classes by declaring functions. It's a little funny coming in to JS at such a late date and first learning about the newer Class syntax when everyone had been doing it the other way until probably last year or something.</li>
         </ul>
         </p>
-        <p>Got a lot more practice with manipulating the DOM as well. Especially adding a delete link to an element which deletes the parent node.</p>
+        <p>Besides all of that, my code quality is still bad. Fortunately, I'm finally starting to learn some design patterns and ideas around coding practices in the lessons immediately after this project.</p>
+
     </main>
 </div>
