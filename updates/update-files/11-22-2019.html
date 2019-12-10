@@ -1,0 +1,142 @@
+<div class="update">
+    <div class="update_header">
+            <a name='11-22-2019'></a>
+        <span class="update_title">Scientific Calculator</span>
+        <span class="update_date">Nov 22, 2019</span>
+    </div>
+    <main>
+        <p>
+            Completed this project via <a href="https://www.theodinproject.com/">The Odin Project</a>.
+        </p>
+        <a href="../projects/calculator/index.html">
+            <img src="../projects/images/calc_image.png">
+        </a>
+        <p>(Click image to try it)</p>
+        <p>
+            Finally finished this thing. When I finished the rock-paper-scissors project, I was pretty proud of myself for praciting some Clean Code conventions... well that all went out the window real fast. I'd like to immortilize my worst piece of giant spaghetti code method at the bottom of this post so that I can see how far I've (hopefully) come a year from now. I think if there's anything I want to learn the most, it's how to break a problem down into clean, generalized statements. 
+        </p>
+        <p>
+            This project provided plenty of headaches, and only felt marginally better by the end. Having been working on data structures and algorithms a bit, there were a few things I knew I'd want to try in my approach from the beginning:
+        </p>
+        <ul>
+            <li><u>Polish Notation</u> - This had come up once on <a href="https://leetcode.com/problems/evaluate-reverse-polish-notation/" target="blank">Leetcode</a> and I ignored it because I couldn't make sense of it. Then it came up again on the <a href="https://runestone.academy" target="blank">Runestone</a> Data Structures and Algorithms course so I looked it up:</li>
+            <ul>
+                <li>If someone enters something like: <span class='numbers'>4 × 5 ^ 2 + 17 - 10 / 5 + 14 × 2 =</span> - how does your program know what order to do those calculations in? Do you go through the whole list and find expontents first, then multiplication and division, then addition and subtraction? What if there are parentheses? Or single variable functions like log and ln?</li>
+                <li>Looking at the first statement only - <span class='numbers'>4 × 5 ^ 2</span> - Polish Notation converts it to - <span class='numbers'> 4 5 2 ^ ×</span> - so now everything is in order of precedence.</li>
+                <li>So now if you want to evaluate this first statement, you just put each value onto a stack, and everytime you run into an operator, you call the function that evaluates that operator and apply it to the last one or two elements on the stack depending on what type of operator it is.</li>
+                <ul>
+                    <li><span class='numbers'>4 [5 2] {^} ×</span> - becomes:</li>
+                    <li><span class='numbers'>[4 25] {×}</span> - which then becomes:</li>
+                    <li><span class='numbers'>100</span> - and the whole statement in Polish notation would look like:</li>
+                    <li><span class='numbers'>4 5 2 ^ × 17 + 10 5 / - 14 2 × +</span></li>
+                </ul>
+                <li>Bam! So it takes two passes to convert a list into Polish Notation and evaluate it<br><br></li>
+            </ul>
+            
+            <li><u>History Bar</u> - It's not in the screenshot, but it's the area on the right side of the calculator that shows you all the calculations you've made and their resutls. I figured this would be as easy as using a really basic Queue (as in, nothing fancy besides Unshifting and Popping an array). I was right; it took like twenty minutes to do this part (woohoo!)<br><br></li>
+            <li><u>Scientific Notation</u> - This was the big issue. Instead of spending a bunch of time up front figuring out how a <strong>calculator</strong> worked, I tried making it up on my own. This worked for all of basically no time at all before I started getting into "Rule Hell" where I'd have to write a new if-statement for every new rule that I thought of:</li>
+            <ul>
+                <li>Entering a value seems simple enough, just set the current value on the display... wait I'm only typing one digit at a time, ok so if the display is zero then set it to the value, otherwise concatenate the value.</li>
+                <li>Damnit the value is negative zero, I guess I gotta check the absolute value first</li>
+                <li>But what if the last input was a right paren? Do I add a multiplication sign in there like I'm doing math on paper? Oh looks like the windows calculator deletes the whole statement in the parentheses... darn now I gotta write a method to find the last parenthesis. Or maybe I'll keep an input buffer of the current calculation and then push it to the main list once.... once what... once they do a new operator? But what if there are open parens still, I guess I gotta check for that.</li>
+                <li>Oh wait that wasn't just closed paren, it was a log function... ugh ok I have to find the last function outside the parentheses in case the last input was a function, or just the left paren in case they just entered a paren</li>
+                <li>Ok moving on to parentheses. I guess you can do an open paren any time you want; what about a closed paren? It doesn't make sense to have that after they entered an operator, or right after a left paren, so I guess I'll just stop them from doing that?</li>
+                <li>Damnit, it looks like the windows calculator just inserts the current display value when you try something like that</li>
+                <li>And on and on for maybe a week....<br><br></li>
+            </ul>
+        </ul>
+
+        <p>I went through a few iterations before ending up with several hundred lines of code. By the end there were times where I was deleting great big blocks of junmbled nonsense and simplifying things into more generic methods, and that felt great. Still not a very good job overall, but hopefully I'll learn from this!</p>
+
+        <p>The big spaghetti method:</p>
+
+        <pre><code class="small_code">
+    pushInputToList() {
+    if(this.currInputType === 'operator') {
+
+    if(this.inputList.length === 0) {
+    this.inputList.push(this.convertToNum(this.displayInput),this.currInput);
+    this.setDisplayInput(this.convertToNum(this.displayInput));
+
+    } else if(this.lastInputType === 'operator') {
+    this.inputList.pop();
+    this.inputList.push(this.currInput);
+
+    } else if(this.lastInputType === 'value' || this.lastInput === '(') {
+    this.inputList.push(this.convertToNum(this.displayInput));
+    this.setDisplayInput(this.evaluateCurrent());
+    this.inputList.push(this.currInput);
+
+    } else if(this.peakInputList() === ')') {
+    this.inputList.push(this.currInput);
+
+    }
+
+    this.setLastInput(this.currInput);
+
+    } else if(this.currInputType === 'shortop') {
+
+    if (this.inputList.length === 0) {
+    this.inputList.push(this.currInput,'(',this.convertToNum(this.displayInput),')');
+
+    } else if (this.lastInputType === 'shortop') {
+    this.pushShortOpToList();
+
+    } else if(this.lastInput === ')') {
+    this.inputList.splice(this.findLeftParen(),0,this.currInput);
+
+    } else {
+    this.inputList.push(this.currInput,'(',this.convertToNum(this.displayInput),')');
+    }
+
+    this.setDisplayInput(this.convertToNum(this.evaluateCurrent()));
+    this.setLastInput(this.currInput);
+
+    } else if(this.currInputType === 'paren') {
+    if(this.currInput === '(') {
+    if(this.peakInputList() === ')') {
+        this.inputList.push('×');
+    }
+
+    this.inputList.push(this.currInput);
+    this.resetDisplayInput();
+
+    this.setLastInput(this.currInput);
+
+    } else if(this.currInput === ')' && this.validRightParen()) {
+    if(this.peakInputList() === ')') {
+        this.inputList.push(this.currInput);
+    } else {
+        this.inputList.push(this.convertToNum(this.displayInput),this.currInput);
+    }
+
+    this.setDisplayInput(this.evaluateCurrent());
+    this.setLastInput(this.currInput);
+    }
+
+    } else if(this.currInputType === 'value') {
+    if(this.lastInputType === 'value' || this.lastInput === '.') {
+    if(this.displayInput === '0' || this.currInput === 'π') {
+        this.setDisplayInput(this.currInput);  
+    } else {
+        this.setDisplayInput(this.displayInput + this.currInput);
+    }
+
+    } else if(this.lastInputType === 'shortop') {
+    this.removeLast('shortop');
+
+    this.setDisplayInput(this.currInput);
+
+    } else {
+    if(this.lastInput === ')') {
+        this.removeLast('paren');
+    }
+
+    this.setDisplayInput(this.currInput);
+    }
+
+    this.setLastInput(this.currInput);
+    }
+    }
+    </code></pre>
+</div>

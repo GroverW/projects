@@ -1,0 +1,26 @@
+<div class="update">
+    <div class="update_header">
+        <a name='11-27-2019'></a>
+        <span class="update_title">Meme Generator</span>
+        <span class="update_date">Nov 27, 2019</span>
+    </div>
+    <main>
+        <p>
+            Completed this project via <a href="https://www.rithmschool.com/">Rithm School</a>.
+        </p>
+        <a href="../projects/meme-generator/index.html">
+            <img src="../projects/images/meme_image.png">
+        </a>
+        <p>(Click image to try it)</p>
+        <p>Good opportunity to mess with HTML Canvas. Battled through some frustration trying to figure out how to load images... and I'd still say I have some questions at this point. One key was the obvious thing - reading the MDN articles on the context object and its methods.</p>
+        <p>Some of the interesting challenges were:
+            <ul>
+                <li>Scaling the font with the image size</li>
+                <li>Positioning text correctly and getting it to wrap. Positioning text seems so obvious now, but I guess it took me longer than I'd like to admit.</li>
+                <li>Writing text on the bottom of the image. I had to write the words backwards, because if there are multiple lines it's (seemingly) much easier to start from the bottom and move up instead of figuring out where the text is supposed to start. This was also the first time I wrote a function with a callback since the code for the top and bottom are similar but different enough to warrant one.</li>
+                <li>Figuring out what to do if the image can't be loaded - I'm still not completely sure what to do here. Using img.onerror still results in an error being logged to the console. I tried async await briefly, but really need to understand better how to use that.</li>
+            </ul>
+        </p>
+        <p>Got a lot more practice with manipulating the DOM as well. Especially adding a delete link to an element which deletes the parent node.</p>
+    </main>
+</div>

@@ -1,0 +1,45 @@
+<div class="update">
+    <div class="update_header">
+        <a name='11-04-2019'></a>
+        <span class="update_title">Rock-Paper-Scissors</span>
+        <span class="update_date">Nov 4, 2019</span>
+    </div>
+    <main>
+        <p>
+            Completed this project via <a href="https://www.theodinproject.com/">The Odin Project</a>.
+        </p>
+        <a href="../projects/rock-paper-scissors/index.html">
+            <img src="../projects/images/rpc_image.png">
+        </a>
+        <p>(Click image to try it)</p>
+        <p>Really basic app, but I was able to test a lot of different ideas, which resulted in some great leassons learned:</p>
+        <h2>Levenshtein Distance</h2>
+        <p>I used this to match what the user types against the words 'rock', 'paper' and 'scissors'. Originally this was a console based project, so I figured it would be a cool opportunity to practice something like that</p>
+        <p>It's a cool algorithm for measuring the distane between two strings. It has a nice dynamic programming algorithm (<a href="https://github.com/trekhleb/javascript-algorithms/tree/master/src/algorithms/string/levenshtein-distance" target="blank">example</a>), that can be tweaked depending on how you want to make the comparison. I think I read something like this is used in spell checkers.</p>
+        <p>The gist:</p>
+        <ul>
+            <li>Make a two-dimensional matrix with word A on top and word B on the left</li>
+            <li>Add one point (or whatever you want) if you have to delete an extra letter from word A</li>
+            <li>Add one point (or whatever you want) if you have to change a letter from word A to word B</li>
+            <li>Add zero points if the letter is present in both</li>
+            <li>Find the minimum sum to get from word A to word B</li>
+        </ul>
+        <h2>Asynchronous Javascript</h2>
+        <p>Ok I spent way too much time on this one. Wwhen the computer makes its character selection, I originally wanted it to scroll through the different character protraits by turning the three classes on and off... I thought this would be a good opporunity to use setTimeout, but did not realize those functions are not run in order, only out of order with the regular code.</p>
+        <p>My next attempt was to use a promise.then().then() or something along those loines, but didn't have any better luck. I'm pretty confident that <strong>was</strong> one of the viable methods, but I'll come back to this later.</strong></p>
+        <p>Ultimately I just made the character highlight move from the player to the computer and wait something close to a second before displaying both characters and the result of each round. Makes it a little more dramatic I guess?</p>
+        <h2>Clean Code</h2>
+        <p>From <a href="https://github.com/ryanmcdermott/clean-code-javascript" target="blank">this</a> awesome article. I also bought the clean code book and hope to read it at some point</p>
+        <p>I got to practice and see the benefits of some clean code concepts. Though I don't think my code is clean at all there were a few concepts that made it way better than it would have been otherwise.</p>
+        <ul>
+            <li><u>Function arguments (two or fewer ideally)</u> - The idea is to greatly reduce the complexity when testing. I did my best on this one (I think I achieved it?). If I thought I needed more than two arguments, I tried to find another way to do it. Though there were a few methods that allowed any number of arguments because it looped through hopefuly identicle selectors.</li>
+            <li><u>Functions should do one thing</u> - This one I really noticed the benefits of. There were several methods that I reused over and over again in different contexts, and it felt so nice when I didn't feel like I needed to change anything.</li>
+            <li><u>Function names should say what they do</u> - I had to go back a few times and rename methods because I had a hard time coming up with the right descriptions, but this helped a lot when I had to go back and figure out what my code was doing.</li>
+            <li><u>Avoid mentail mapping</u> - Instead of using letters for variables, I tried to name the variables so I could figure out what they were for when I went back</li>
+            <li><u>Make objects have private members</u> - Uh, I briefly attempted to do this, but it's on my to-do list for future projects.</li>
+        </ul>
+        <p>There were others, but I think this is a good start!</p>
+        
+        <p></p>
+    </main>
+</div>
