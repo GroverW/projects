@@ -1,32 +1,8 @@
-class CardContainer extends HTMLElement {
-    constructor() {
-        super();
-    }
-}
-
-class CardELement extends HTMLElement {
-    constructor() {
-        super();
-    }
-}
-
-class CardFront extends HTMLElement {
-    constructor() {
-        super();
-    }
-}
-
-class CardBack extends HTMLElement {
-    constructor() {
-        super();
-    }
-}
-
-class ScoreCard extends HTMLElement {
-    constructor() {
-        super();
-    }
-}
+class CardContainer extends HTMLElement { constructor() { super(); } }
+class CardELement extends HTMLElement { constructor() { super(); } }
+class CardFront extends HTMLElement { constructor() { super(); } }
+class CardBack extends HTMLElement { constructor() { super(); } }
+class ScoreCard extends HTMLElement { constructor() { super(); } }
 
 customElements.define('card-container',CardContainer);
 customElements.define('card-element',CardELement);
@@ -38,7 +14,7 @@ const NUM_CARDS = 24;
 
 let start = document.querySelectorAll('.new_game_button');
 let gameContainer = document.querySelector('#game_container');
-let gameBoard = document.querySelector('#memory_board');
+let gameBoard = document.querySelector('#game_board');
 
 start.forEach(obj => obj.addEventListener('click',() => {
     let isOpen = gameContainer.classList.contains('slide_in');
@@ -129,25 +105,15 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 	const continueGame = () => {
 		gameStatus = true;
     }
-    
-    const isGameOver = () => {
-        if(gameType.getGameResult(cardsRemaining)) {
-            gameOver(gameType.getGameResult(cardsRemaining));
-            
-            return true;
-		}
-    }
 
 	const addCard = (card) => {
 		matchedCards.push(card);
-
-        gameType.updateScore();
-        
-        if(isGameOver(cardsRemaining)) gameOver();
 	}
 
 	const checkMatch = () => {
 		if(matchedCards.length === cardsPerType) {
+            gameType.updateScore();
+
 			let matched = matchedCards.every(card => card.getCardType() === matchedCards[0].getCardType());		
 
 			matched ? successfulMatch() : failedMatch();
@@ -171,7 +137,7 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 	}
 
 	const gameOver = (result) => {
-		
+		freezeGame();
 	}
 
 	const successfulMatch = () => {
@@ -179,14 +145,13 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 
 		cardsRemaining -= cardsPerType;
 
-		isGameOver(cardsRemaining)
+		if(gameType.getGameResult(cardsRemaining)) gameOver(gameType.getGameResult(cardsRemaining));
 	}
 
 	const failedMatch = () => {
 		resetMatchedCards();
         
-
-		isGameOver(cardsRemaining); resetFailedMatch();
+		gameType.getGameResult(cardsRemaining) ? gameOver(gameType.getGameResult(cardsRemaining)) : resetFailedMatch();
 	}
 
 	return {gameReady, addCard, checkMatch};
