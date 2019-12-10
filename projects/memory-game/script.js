@@ -256,9 +256,9 @@ const MemoryGameHard = (scoreCard, numCards, gameBoard) => {
 	}
 
 	const rotateBoard = () => {
-		gameBoard.style.transform(`rotate(${nextRotationAmount}deg`);
+		gameBoard.style.transform = `rotate(${nextRotationAmount}deg`;
 		
-		scoreCard.style.transform(`rotate(${-nextRotationAmount}deg`);
+		scoreCard.style.transform = `rotate(${-nextRotationAmount}deg`;
 
 		nextRotationAmount += 90;
 	}
@@ -298,21 +298,23 @@ newGameButtons.forEach(obj => obj.addEventListener('click',() => {
     let isOpen = gameContainer.classList.contains('slide_in');
     gameContainer.setAttribute('class', isOpen ? 'slide_out' : 'slide_in');
 
-    let newGameType;
+    let newGameType = false;
 
     if(obj.name === 'hard') {
         newGameType = MemoryGameHard(scoreCard,NUM_CARDS,gameBoard);
     } else if(obj.name === 'medium') {
         newGameType = MemoryGameMedium(scoreCard,NUM_CARDS);
-    } else {
+    } else if(obj.name === 'easy') {
         newGameType = MemoryGameEasy(scoreCard);
     }
 
-    game.resetGame(newGameType);
+    if(newGameType) {
+        game.resetGame(newGameType);
     
-    let cardTypes = shuffleCardTypes(generateCardTypes(NUM_CARDS,CARDS_PER_TYPE));
+        let cardTypes = shuffleCardTypes(generateCardTypes(NUM_CARDS,CARDS_PER_TYPE));
 
-    for(let i = 0; i < NUM_CARDS; i++) {
-        cardArray[i].resetCard(cardTypes[i]);
+        for(let i = 0; i < NUM_CARDS; i++) {
+            cardArray[i].resetCard(cardTypes[i]);
+        }
     }
 }));
