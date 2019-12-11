@@ -20,7 +20,20 @@ const drawBoard = (() => {
     for(let i = 0; i < NUM_CARDS; i++) {
         if(i === Math.floor(NUM_CARDS / 2)) {
             let scoreCard = document.createElement('score-card');
-            scoreCard.id = 'score';
+            let score = document.createElement('div');
+            let timerContainer = document.createElement('div');
+            let timeCaption = document.createElement('div');
+            let timeRemaining = document.createElement('div');
+            timerContainer.id = 'timer_container';
+            timeCaption.innerHTML = '&#9716;';
+            score.id = 'score';
+            timeCaption.classList.add('scoreCard_caption');
+            timeRemaining.id = 'time';
+            
+            scoreCard.appendChild(score);
+            timerContainer.appendChild(timeCaption);
+            timerContainer.appendChild(timeRemaining);
+            scoreCard.appendChild(timerContainer);
             gameBoard.appendChild(scoreCard);
         }
 
@@ -39,7 +52,8 @@ const drawBoard = (() => {
     }
 })();
 
-let scoreCard = document.querySelector('#score');
+let score = document.querySelector('#score');
+let timer = document.querySelector('#time');
 
 const generateCardTypes = (numCards, cardsPerType) => {
 	let type = 1;
@@ -67,7 +81,6 @@ const shuffleCardTypes = (cardTypes) => {
 
 const CardFactory = (cardID, cardType, game) => {
     let flipped = false;
-    let cardObject = this;
 
     const cardSelector = document.querySelector(`#c-${cardID}`);
     
@@ -86,7 +99,11 @@ const CardFactory = (cardID, cardType, game) => {
 		cardSelector.classList.toggle('flip');
 
 		flipped = flipped ? false : true;
-	}
+    }
+    
+    const rotate = (degree) => {
+        cardSelector.style.transform = `rotate(${degree}deg)`;
+    }
 
 	const createCardElement = () => {
 		cardSelector.classList.add(`card_type${cardType}`);
@@ -102,7 +119,7 @@ const CardFactory = (cardID, cardType, game) => {
         cardSelector.classList.add(`card_type${cardType}`);
     }
 
-	return { getCardType, flip, createCardElement, resetCard }
+	return { getCardType, flip, rotate, createCardElement, resetCard }
 }
 
 const MemoryGame = (numCards, cardsPerType, gameType) => {
@@ -187,37 +204,44 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 }
 
 
-const MemoryGameEasy = (scoreCard) => {
+const MemoryGameEasy = (score,timer) => {
 	let currScore = 0;
 
-	const setScore = () => {
-		scoreCard.innerText = ('0' + currScore).slice(-2);
+	const setScoreCard = () => {
+        score.innerText = ('0' + currScore).slice(-2);
+        timer.innerText = '00';
 	}
 
 	const updateScore = () => {
 		currScore++;
 		
-		setScore();
+		setScoreCard();
 	}
 
 	const getGameResult = (cardsRemaining) => {
 		return cardsRemaining === 0 ? 'win' : false;
 	}
 
-	return { setScore, updateScore, getGameResult };
+	return { setScore: setScoreCard, updateScore, getGameResult };
 }
 
-const MemoryGameMedium = (scoreCard, numCards) => {
-	let currScore = Math.ceil((numCards / 2) * 1.25);
+const MemoryGameMedium = (score, timer, numCards) => {
+    let currScore = Math.ceil((numCards / 2) * 1.25);
+    let timeRemaining = 60;
 
-	const setScore = () => {
-		scoreCard.innerText = ('0' + currScore).slice(-2);
-	}
+	const setScoreCard = () => {
+        score.innerText = ('0' + currScore).slice(-2);
+        timer.innerText = ('0' + timeRemaining).slice(-2);
+    }
+    
+    const setTimer = () => {
+
+    }
 
 	const updateScore = () => {
 		currScore--;
 
-		setScore();
+		setScoreCard();
 	}
 
 	const getGameResult = (cardsRemaining) => {
@@ -230,14 +254,11 @@ const MemoryGameMedium = (scoreCard, numCards) => {
 		return false;
 	}
 
-	return { setScore, updateScore, getGameResult };
+	return { setScore: setScoreCard, updateScore, getGameResult };
 }
 
 const MemoryGameHard = (scoreCard, numCards, gameBoard) => {
 	let currScore = Math.ceil((numCards / 2) * 1.25);
-	let nextRotationIncrement = Math.ceil(currScore / 3);
-	let nextRotation = currScore - nextRotationIncrement;
-	let nextRotationAmount = 90;
 
 	const setScore = () => {
 		scoreCard.innerText = ('0' + currScore).slice(-2);
@@ -247,20 +268,6 @@ const MemoryGameHard = (scoreCard, numCards, gameBoard) => {
 		currScore--;
 		
 		scoreCard.innerText = ('0' + currScore).slice(-2);
-		
-		if(currScore === nextRotation && nextRotation > 0) {
-			rotateBoard();
-
-			nextRotation -= nextRotationIncrement;
-		}
-	}
-
-	const rotateBoard = () => {
-		gameBoard.style.transform = `rotate(${nextRotationAmount}deg`;
-		
-		scoreCard.style.transform = `rotate(${-nextRotationAmount}deg`;
-
-		nextRotationAmount += 90;
 	}
 
 	const getGameResult = (cardsRemaining) => {
@@ -278,7 +285,7 @@ const MemoryGameHard = (scoreCard, numCards, gameBoard) => {
 
 let newGameButtons = document.querySelectorAll('.new_game_button');
 let cardArray = new Array(NUM_CARDS).fill(null);
-let gameType = MemoryGameEasy(scoreCard);
+let gameType = MemoryGameEasy(score, timer);
 let game = MemoryGame(NUM_CARDS,CARDS_PER_TYPE,gameType);
 
 gameType.setScore();
@@ -301,11 +308,11 @@ newGameButtons.forEach(obj => obj.addEventListener('click',() => {
     let newGameType = false;
 
     if(obj.name === 'hard') {
-        newGameType = MemoryGameHard(scoreCard,NUM_CARDS,gameBoard);
+        newGameType = MemoryGameHard(score,NUM_CARDS,gameBoard);
     } else if(obj.name === 'medium') {
-        newGameType = MemoryGameMedium(scoreCard,NUM_CARDS);
+        newGameType = MemoryGameMedium(score,timer,NUM_CARDS);
     } else if(obj.name === 'easy') {
-        newGameType = MemoryGameEasy(scoreCard);
+        newGameType = MemoryGameEasy(score,timer);
     }
 
     if(newGameType) {
