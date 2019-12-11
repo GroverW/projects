@@ -122,21 +122,47 @@ const CardFactory = (cardID, cardType, game) => {
 	return { getCardType, flip, rotate, createCardElement, resetCard }
 }
 
-const MemoryGame = (numCards, cardsPerType, gameType) => {
+const MemoryGame = (numCards, cardsPerType, gameType, scoreCardSelector, timerSelector) => {
 	let gameStatus = true;
 	let matchedCards = [];
-	let cardsRemaining = numCards;
+    let cardsRemaining = numCards;
+    let timer = null;
+    let timeRemaining = gameType.getTimeConstraint();
+    let firstMove = true;
 
 	const gameReady = () => {
 		return gameStatus;
 	}
 
 	const freezeGame = () => {
-		gameStatus = false;
+        gameStatus = false;
+        
+        pauseTimer();
 	}
 
 	const continueGame = () => {
-		gameStatus = true;
+        gameStatus = true;
+        
+        startTimer();
+    }
+
+    const setScoreCard = () => {
+        scoreCardSelector.innerText = ('0' + gameType.getCurrScore()).slice(-2);
+        timerSelector.innerText = ('0' + timeRemaining).slice(-2);
+    }
+
+    const startTimer = () => {
+        timer = setInterval(() => {
+            if(timeRemaining > 0) {
+                timeRemaining--;
+            }
+
+            setScoreCard();
+        },1000);
+    }
+
+    const pauseTimer = () => {
+        clearInterval(timer);
     }
 
 	const addCard = (cardID) => {
@@ -146,10 +172,13 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 	}
 
 	const checkMatch = () => {
+        if(firstMove) {
+            firstMove = false;
+            startTimer();
+        }
+
 		if(matchedCards.length === cardsPerType) {
             freezeGame();
-
-            gameType.updateScore();
 
 			let matched = matchedCards.every(cardID => cardArray[cardID].getCardType() === cardArray[matchedCards[0]].getCardType());
 
@@ -179,13 +208,17 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 		cardsRemaining -= cardsPerType;
 
         if(gameType.getGameResult(cardsRemaining)) gameOver(gameType.getGameResult(cardsRemaining));
+
+        setScoreCard(gameType.updateScore(true));
         
         clearMatchedCards();
 
         continueGame();
 	}
 
-	const failedMatch = () => {        
+	const failedMatch = () => {  
+        setScoreCard(gameType.updateScore(false));
+        
         gameType.getGameResult(cardsRemaining) ? gameOver(gameType.getGameResult(cardsRemaining)) : resetFailedMatch();
     }
     
@@ -193,102 +226,93 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
         clearMatchedCards();
         
         cardsRemaining = numCards;
+        firstMove = true;
         gameType = newGameType;
+        timeRemaining = gameType.getTimeConstraint();
 
-        gameType.setScore();
+        setScoreCard();
 
-        continueGame();
+        gameStatus = true;
     }
 
-	return { gameReady, addCard, checkMatch, resetGame };
+	return { gameReady, setScoreCard, addCard, checkMatch, resetGame };
 }
 
 
-const MemoryGameEasy = (score,timer) => {
+const MemoryGameEasy = () => {
 	let currScore = 0;
 
-	const setScoreCard = () => {
-        score.innerText = ('0' + currScore).slice(-2);
-        timer.innerText = '00';
-	}
+    const getTimeConstraint = () => 0;
+
+    const getCurrScore = () => currScore;
+
+    const getSwapChance = () => 0;
 
 	const updateScore = () => {
 		currScore++;
-		
-		setScoreCard();
+        
+        return currScore;
 	}
 
 	const getGameResult = (cardsRemaining) => {
 		return cardsRemaining === 0 ? 'win' : false;
 	}
 
-	return { setScore: setScoreCard, updateScore, getGameResult };
+	return { getTimeConstraint, getCurrScore, getSwapChance, updateScore, getGameResult };
 }
 
-const MemoryGameMedium = (score, timer, numCards) => {
-    let currScore = Math.ceil((numCards / 2) * 1.25);
-    let timeRemaining = 60;
+const MemoryGameMedium = () => {
+    let currScore = 0;
 
-	const setScoreCard = () => {
-        score.innerText = ('0' + currScore).slice(-2);
-        timer.innerText = ('0' + timeRemaining).slice(-2);
-    }
-    
-    const setTimer = () => {
+    const getTimeConstraint = () => 99;
 
-    }
+    const getCurrScore = () => currScore;
 
-	const updateScore = () => {
-		currScore--;
+    const getSwapChance = () => 0;
 
-		setScoreCard();
+	const updateScore = (successfulMatch) => {
+        currScore += successfulMatch ? 4 : -1;
+        currScore = Math.max(Math.min(currScore,99),0);
+
+		return currScore;
 	}
 
 	const getGameResult = (cardsRemaining) => {
-		if(cardsRemaining === 0) {
-			return 'win';
-		} else if(currScore === 0) {
-			return 'lose';
-		}
-
-		return false;
+		return cardsRemaining === 0 ? true : false;
 	}
 
-	return { setScore: setScoreCard, updateScore, getGameResult };
+	return { getTimeConstraint, getCurrScore, getSwapChance, updateScore, getGameResult };
 }
 
-const MemoryGameHard = (scoreCard, numCards, gameBoard) => {
-	let currScore = Math.ceil((numCards / 2) * 1.25);
+const MemoryGameHard = () => {
+	let currScore = 0;
 
-	const setScore = () => {
-		scoreCard.innerText = ('0' + currScore).slice(-2);
-	}
+    const getTimeConstraint = () => 99;
+
+    const getCurrScore = () => currScore;
+
+    const getSwapChance = () => 0.33;
 
 	const updateScore = () => {
-		currScore--;
+        currScore += successfulMatch ? 4 : -1;
+        currScore = Math.max(Math.min(currScore,99),0);
 		
-		scoreCard.innerText = ('0' + currScore).slice(-2);
+		return currScore;
 	}
 
 	const getGameResult = (cardsRemaining) => {
-		if(cardsRemaining === 0) {
-			return 'win';
-		} else if(currScore === 0) {
-			return 'lose';
-		}
-
-		return false;
+        return cardsRemaining === 0 ? true : false;
 	}
 
-	return { setScore, updateScore, getGameResult };
+	return { getTimeConstraint, getCurrScore, getSwapChance, updateScore, getGameResult };
 }
 
 let newGameButtons = document.querySelectorAll('.new_game_button');
 let cardArray = new Array(NUM_CARDS).fill(null);
-let gameType = MemoryGameEasy(score, timer);
-let game = MemoryGame(NUM_CARDS,CARDS_PER_TYPE,gameType);
+let gameType = MemoryGameEasy();
+let game = MemoryGame(NUM_CARDS,CARDS_PER_TYPE,gameType,score,timer);
 
-gameType.setScore();
+game.setScoreCard();
 
 const initializeGame = (() => {
     let cardTypes = shuffleCardTypes(generateCardTypes(NUM_CARDS,CARDS_PER_TYPE));
@@ -310,9 +334,9 @@ newGameButtons.forEach(obj => obj.addEventListener('click',() => {
     if(obj.name === 'hard') {
         newGameType = MemoryGameHard(score,NUM_CARDS,gameBoard);
     } else if(obj.name === 'medium') {
-        newGameType = MemoryGameMedium(score,timer,NUM_CARDS);
+        newGameType = MemoryGameMedium();
     } else if(obj.name === 'easy') {
-        newGameType = MemoryGameEasy(score,timer);
+        newGameType = MemoryGameEasy();
     }
 
     if(newGameType) {
