@@ -170,7 +170,7 @@ card-back {
 #game_over {
     position: absolute;
     display: grid;
-    grid-template: 2fr repeat(4,1fr) / 1fr;
+    grid-template: 2fr repeat(5,1fr) / 5fr 4fr;
     width: 200px;
     height: 200px;
     padding: 10px;
@@ -180,7 +180,6 @@ card-back {
     z-index: 2;
     justify-self: center;
     align-self: center;
-    justify-items: center;
 }
 
 #game_over.hide {
@@ -189,6 +188,7 @@ card-back {
 
 #game_over_message {
     width: 100%;
+    grid-area: 1 / 1 / span 1 / span 2;
     text-align: center;
     font-size: 36px;
     color: rgb(5, 209, 15);
@@ -199,13 +199,24 @@ card-back {
     color: rgb(209, 5, 5);
 }
 
+.score_details {
+    justify-self: right;
+}
+
+.score_format {
+    justify-self: right;
+    padding-right: 30px;
+}
+
 .new_game_button {
+    grid-area: 6 / 1 / span 1 / span 2;
     padding: 5px;
     border: 1px solid rgb(12, 69, 110);
     background-color: rgb(24, 141, 224);
     border-radius: 3px;
     color: white;
     cursor: pointer;
+    justify-self: center;
 }
 
 .new_game_button:hover {
