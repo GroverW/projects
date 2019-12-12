@@ -71,6 +71,10 @@ score-card {
     justify-self: left;
 }
 
+#time.resume {
+    color: rgb(216, 27, 27);
+}
+
 .scoreCard_caption {
     grid-area: 1 / 2 / span 1 / span 1;
     font-size: 30px;
@@ -166,9 +170,9 @@ card-back {
 #game_over {
     position: absolute;
     display: grid;
-    grid-template: 2fr repeat(3,1fr) / 1fr;
+    grid-template: 2fr repeat(4,1fr) / 1fr;
     width: 200px;
-    height: 150px;
+    height: 200px;
     padding: 10px;
     background-color: white;
     border-radius: 7px;
@@ -177,6 +181,9 @@ card-back {
     justify-self: center;
     align-self: center;
     justify-items: center;
+}
+
+#game_over.hide {
     visibility: hidden;
 }
 
@@ -185,9 +192,6 @@ card-back {
     text-align: center;
     font-size: 36px;
     font-weight: 600;
-}
-
-.game_winner {
     color: rgb(5, 209, 15);
 }
 
