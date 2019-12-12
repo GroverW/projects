@@ -72,7 +72,7 @@ score-card {
 }
 
 #time.resume {
-    color: rgb(216, 27, 27);
+    color: rgb(216, 57, 57);
 }
 
 .scoreCard_caption {
@@ -191,8 +191,12 @@ card-back {
     width: 100%;
     text-align: center;
     font-size: 36px;
-    font-weight: 600;
     color: rgb(5, 209, 15);
+    font-weight: 600;
+}
+
+#game_over_message.lose {
+    color: rgb(209, 5, 5);
 }
 
 .new_game_button {
