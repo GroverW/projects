@@ -1,4 +1,5 @@
 let projectList = [
+    {folder: 'memory-game', image: 'memory_image.png', caption: 'Memory Game'},
     {folder: 'bookshelf', image: 'book_image.png', caption: 'Bookshelf'},
     {folder: 'meme-generator', image: 'meme_image.png', caption: 'Meme Generator'},
     {folder: 'calculator', image: 'calc_image.png', caption: 'Calculator'},
