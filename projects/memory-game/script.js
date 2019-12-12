@@ -21,7 +21,7 @@ let gameScore = document.querySelector('#game_score');
 let gameTimeLeft = document.querySelector('#game_time_left');
 let gameTotalScore = document.querySelector('#game_total_score');
 let gameHighScore = document.querySelector('#high_score');
-let highScores = {easy: 0, medium: 0, hard: 0};
+let highScores = localStorage.getItem('highScores') ? JSON.parse(localStorage.getItem('highScores')) : {easy: 0, medium: 0, hard: 0};
 
 const drawBoard = (() => {
     for(let i = 0; i < NUM_CARDS; i++) {
@@ -255,6 +255,7 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
                 gameOverMessage.classList.remove('lose');
                 gameOverMessage.innerText = 'You Win!';
                 highScores[gameType.getGameType()] = Math.max(highScores[gameType.getGameType()], totalScore);
+                localStorage.setItem('highScores',JSON.stringify(highScores));
             } else {
                 gameOverMessage.classList.add('lose');
                 gameOverMessage.innerText = "Time's Up.";
