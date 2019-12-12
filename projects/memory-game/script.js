@@ -22,6 +22,19 @@ let gameTimeLeft = document.querySelector('#game_time_left');
 let gameTotalScore = document.querySelector('#game_total_score');
 let gameHighScore = document.querySelector('#high_score');
 let highScores = localStorage.getItem('highScores') ? JSON.parse(localStorage.getItem('highScores')) : {easy: 0, medium: 0, hard: 0};
+let menuHighScores = {
+    easy: document.querySelector('#high_score_easy'),
+    medium: document.querySelector('#high_score_medium'),
+    hard: document.querySelector('#high_score_hard')
+}
+
+const initializeHighScores = (() => {
+    if(localStorage.getItem('highScores')) {
+        for(let key in menuHighScores) {
+            menuHighScores[key].innerText = highScores[key];
+        }
+    }
+})();
 
 const drawBoard = (() => {
     for(let i = 0; i < NUM_CARDS; i++) {
@@ -265,6 +278,7 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
             gameTimeLeft.innerText = timeRemaining;
             gameTotalScore.innerText = totalScore;
             gameHighScore.innerText = highScores[gameType.getGameType()];
+            menuHighScores[gameType.getGameType()].innerText = highScores[gameType.getGameType()];
         },500);
 	}
 
@@ -330,7 +344,7 @@ const MemoryGameMedium = () => {
 
     const getGameType = () => gameType;
 
-    const getTimeConstraint = () => 6;
+    const getTimeConstraint = () => 60;
 
     const getCurrScore = () => currScore;
 
@@ -373,9 +387,9 @@ let cardArray = new Array(NUM_CARDS).fill(null);
 let gameType = MemoryGameEasy();
 let game = MemoryGame(NUM_CARDS,CARDS_PER_TYPE,gameType);
 
-game.setScoreCard();
-
 const initializeGame = (() => {
+    game.setScoreCard();
+
     let cardTypes = shuffleCardTypes(generateCardTypes(NUM_CARDS,CARDS_PER_TYPE));
 
     for(let i = 0; i < NUM_CARDS; i++) {
