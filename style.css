@@ -13,6 +13,21 @@
     src: url(fonts/AgeoPersonalUse-Medium.otf);
 }
 
+@font-face {
+    font-family: KB-Dunk-Tank;
+    src: url(fonts/KBDunkTank.ttf);
+}
+
+@font-face {
+    font-family: KB-Radio-Wizard;
+    src: url(fonts/KBRadioWizard.ttf);
+}
+
+@font-face {
+    font-family: KB-Pay-The-Lady;
+    src: url(fonts/KBPayTheLady.ttf);
+}
+
 * {
     padding: 0;
     margin: 0;
