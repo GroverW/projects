@@ -16,6 +16,7 @@ const CARDS_PER_TYPE = 2;
 let gameContainer = document.querySelector('#game_container');
 let gameBoard = document.querySelector('#game_board');
 let gameOverSelector = document.querySelector('#game_over');
+let gameOverMessage = document.querySelector('#game_over_message');
 let gameScore = document.querySelector('#game_score');
 let gameTimeLeft = document.querySelector('#game_time_left');
 let gameTotalScore = document.querySelector('#game_total_score');
@@ -169,6 +170,8 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
         timer = setInterval(() => {
             if(timeRemaining > 0) {
                 timeRemaining--;
+            } else {
+                gameOver('lose');
             }
 
             setScoreCard();
@@ -240,14 +243,23 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
         trySwapCards(resetCards);
 	}
 
-	const gameOver = () => {
+	const gameOver = (result) => {
         freezeGame();
 
         let totalScore = gameType.getCurrScore() + timeRemaining;
-        highScores[gameType.getGameType()] = Math.max(highScores[gameType.getGameType()], totalScore);
         
         setTimeout(() => {
             gameOverSelector.classList.remove('hide');
+
+            if(result === 'win') {
+                gameOverMessage.classList.remove('lose');
+                gameOverMessage.innerText = 'You Win!';
+                highScores[gameType.getGameType()] = Math.max(highScores[gameType.getGameType()], totalScore);
+            } else {
+                gameOverMessage.classList.add('lose');
+                gameOverMessage.innerText = "Time's Up.";
+            }
+            
             gameScore.innerText = gameType.getCurrScore();
             gameTimeLeft.innerText = timeRemaining;
             gameTotalScore.innerText = totalScore;
@@ -262,7 +274,7 @@ const MemoryGame = (numCards, cardsPerType, gameType) => {
 
         clearMatchedCards();
 
-        cardsRemaining === 0 ? gameOver() : continueGame();
+        cardsRemaining === 0 ? gameOver('win') : continueGame();
 	}
 
 	const failedMatch = () => {  
@@ -296,7 +308,7 @@ const MemoryGameEasy = () => {
 
     const getGameType = () => gameType;
 
-    const getTimeConstraint = () => 0;
+    const getTimeConstraint = () => 99;
 
     const getCurrScore = () => currScore;
 
@@ -317,7 +329,7 @@ const MemoryGameMedium = () => {
 
     const getGameType = () => gameType;
 
-    const getTimeConstraint = () => 60;
+    const getTimeConstraint = () => 6;
 
     const getCurrScore = () => currScore;
 
