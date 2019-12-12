@@ -208,26 +208,64 @@ card-back {
     padding-right: 30px;
 }
 
-.new_game_button {
+#new_game {
     grid-area: 6 / 1 / span 1 / span 2;
-    padding: 5px;
-    border: 1px solid rgb(12, 69, 110);
-    background-color: rgb(24, 141, 224);
+}
+
+.new_game_button {
+    padding: 5px 0 3px 0;
+    width: 60px;
+    /*border: 1px solid rgb(12, 69, 110);*/
+    background-color: rgb(0,161,241);
     border-radius: 3px;
     color: white;
     cursor: pointer;
     justify-self: center;
+    text-align: center;
 }
 
 .new_game_button:hover {
-    background-color: rgb(9, 103, 170);
+    background-color: rgb(0, 129, 194);
 }
 
 .new_game_button:active {
-    background-color: rgb(8, 81, 133);
+    background-color: rgb(0, 88, 133);
 }
 
 #game_menu {
+    width: 300px;
+    height: 470px;
     justify-self: center;
     align-self: center;
+    display: grid;
+    grid-template: 350px 50px 40px 30px / 300px;
+    justify-items: center;
+}
+
+#game_menu * {
+    font-family: KB-Pay-The-Lady;
+}
+
+#game_title {
+    font-size: 48px;
+    color: rgb(0,161,241);
+}
+
+.game_menu_section {
+    width: 100%;
+    height: 100%;
+    align-self: center;
+    justify-self: center;
+    display: grid;
+    grid-template: 1fr / 80px repeat(3,1fr);
+    align-items: center;
+}
+
+.game_menu_caption {
+    justify-self: right;
+    color: black;
+}
+
+.game_menu_high_score {
+    justify-self: center;
 }
