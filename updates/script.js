@@ -9,6 +9,22 @@ let updateList = [
 
 let updateContent = document.querySelector('#update_content');
 
+//updateList.forEach(file => updateOutput.push(fetch(`update-files/${file}`)));
+
+Promise.all(updateList.map(file => 
+    fetch(`update-files/${file}`)
+        .then(response => response.text())
+        .catch(err => console.log('Failed to fetch page: ' + err)))
+).then(updates => {
+    updates.forEach(html => {
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(html,"text/html");
+
+        let update = doc.querySelector('.update');   
+        updateContent.appendChild(update);
+    })
+})
+/*
 updateList.forEach(file => {
     fetch(`update-files/${file}`)
     .then(response => {
@@ -16,12 +32,12 @@ updateList.forEach(file => {
     })
     .then(html => {
         let parser = new DOMParser();
-
         let doc = parser.parseFromString(html,"text/html");
+
         let update = doc.querySelector('.update');   
         updateContent.appendChild(update);
     })
     .catch(err => {
         console.log('Failed to fetch page: ' + err);
     });
-});
+});*/
