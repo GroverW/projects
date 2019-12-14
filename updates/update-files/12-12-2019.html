@@ -1,0 +1,40 @@
+<div class="update">
+    <div class="update_header">
+        <a name='12-05-2019'></a>
+        <span class="update_title">Memory Game</span>
+        <span class="update_date">Dec 12, 2019</span>
+    </div>
+    <main>
+        <p>
+            Completed this project via <a href="https://www.rithmschool.com/">Rithm School</a>.
+        </p>
+        <a href="../projects/memory-game/index.html">
+            <img src="../projects/images/memory_image.png">
+        </a>
+        <p>(Click image to try it)</p>
+        <p>For this project I attempted to design as much as possible before coding. I think I have a tendancy to be all over the place and just code whatever comes to mind as soon as I think about it - this created a lot of problems with the <a href="../projects/calculator/index.html" target="blank">Scientific Calculator</a> where I had to re-write things multiple times. This meant writing out the flow in a blank document, and trying to write some basic functions without entering them into the code editor to see how they would interact. Designing first was partially successful for a couple reasons:</p>
+        <ul>
+            <li>I don't think I put a lot of thought into <strong>what</strong> I should design first. I started with the card and game objects, then added objects for the different difficulties, then built the UI and tested things.</li>
+            <li>This made it hard for me to see how the game should flow, and I got stuck a few times because I didn't have at least a basic mockup first to use for testing.</li>
+            <li>I'm not sure if this illustrates the importance of test driven development, but that's what I'm working on next.</li>
+        </ul>
+        <p>I'm really not sure what I'm supposed to be doing with DOM selectors. Should they just be at a high scope level? Should I be passing them around through functions? I think I read some article or post saying there should be one object handling DOM manipulation (single responsibility) - how does this object know when or what to do?</p>
+        <p>Also, which objects should be handling which responsibilities?</p>
+        <ul>
+            <li>I have a factory function that produces cards. Each card knows what its ID and Type are.</li>
+            <li>At this point it seems like in order to handle manipulating the card, the simple option is to add an event handler to the card so that it knows when it's been clicked on, and can flip itself.</li>
+            <li>But then the card needs to know if the game is ready or not before it can be flipped, and the Game object needs to be able to tell the card to flip itself back over after a failed match.</li>
+            <li>So I pass a reference to the Game object in the Card constructor so that it can pass its ID when clicked... should I be doing that?? It seems like the more you intertwine two objects the more trouble you run into later.</li>
+            <li>That also didn't answer how the Game object tells the card to flip itself back over... so there's a global array with references to all the card objects, so the Game object can look it up by the passed ID and tell it to flip back over..</li>
+        </ul>
+        <p>Once again my code starts out pretty simple, and by the end I have one giant object that probably does too much stuff. At least I didn't have any giant methods this time, but still something I really want to improve.</p>
+        <p>There were a few new learnings as per every project so far (woohoo!):</p>
+        <ul>
+            <li>First time using factory functions - not bad! Feels way more secure than just writing vanilla objects.</li>
+            <li>Used the module pattern for the first time as well.</li>
+            <li>Finally timed some asynchronous code - when a failed match happens on hard mode, there's a chance the two cards swap positions with each other. When this happens, I wanted there to be some extra time before the cards flip back over. Yet again I got frustrated and gave up on getting Async Await to work, so I used nested callbacks; ah well, next time.</li>
+            <li>CSS transform doesn't behave like I hoped it would. Originally I wanted the entire board to rotate every few moves on hard mode - the problem is that this changes the rotation and axis of rotation for each card on the board. Not only that, but it changes yet again depending on whether or not the card has been flipped over. I mapped out an object to determine what the card should do depending on its orientation and whether or not it's flipped, but it ended up being too complex and relied on me passing way too much information around between objects.</li>
+        </ul>
+        <p>I skipped ahead in The Odin Project to start using Test Driven Development on at least one or two projects in the last three weeks I have left - pretty pumped!</p>
+    </main>
+</div>
