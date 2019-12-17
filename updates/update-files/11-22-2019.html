@@ -52,91 +52,91 @@
 
         <pre><code class="small_code">
     pushInputToList() {
-    if(this.currInputType === 'operator') {
+            if(this.currInputType === 'operator') {
 
-    if(this.inputList.length === 0) {
-    this.inputList.push(this.convertToNum(this.displayInput),this.currInput);
-    this.setDisplayInput(this.convertToNum(this.displayInput));
+            if(this.inputList.length === 0) {
+                this.inputList.push(this.convertToNum(this.displayInput),this.currInput);
+                this.setDisplayInput(this.convertToNum(this.displayInput));
 
-    } else if(this.lastInputType === 'operator') {
-    this.inputList.pop();
-    this.inputList.push(this.currInput);
+            } else if(this.lastInputType === 'operator') {
+                this.inputList.pop();
+                this.inputList.push(this.currInput);
 
-    } else if(this.lastInputType === 'value' || this.lastInput === '(') {
-    this.inputList.push(this.convertToNum(this.displayInput));
-    this.setDisplayInput(this.evaluateCurrent());
-    this.inputList.push(this.currInput);
+            } else if(this.lastInputType === 'value' || this.lastInput === '(') {
+                this.inputList.push(this.convertToNum(this.displayInput));
+                this.setDisplayInput(this.evaluateCurrent());
+                this.inputList.push(this.currInput);
 
-    } else if(this.peakInputList() === ')') {
-    this.inputList.push(this.currInput);
+            } else if(this.peakInputList() === ')') {
+                this.inputList.push(this.currInput);
 
-    }
+            }
 
-    this.setLastInput(this.currInput);
+            this.setLastInput(this.currInput);
 
-    } else if(this.currInputType === 'shortop') {
+        } else if(this.currInputType === 'shortop') {
 
-    if (this.inputList.length === 0) {
-    this.inputList.push(this.currInput,'(',this.convertToNum(this.displayInput),')');
+            if (this.inputList.length === 0) {
+                this.inputList.push(this.currInput,'(',this.convertToNum(this.displayInput),')');
 
-    } else if (this.lastInputType === 'shortop') {
-    this.pushShortOpToList();
+            } else if (this.lastInputType === 'shortop') {
+                this.pushShortOpToList();
 
-    } else if(this.lastInput === ')') {
-    this.inputList.splice(this.findLeftParen(),0,this.currInput);
+            } else if(this.lastInput === ')') {
+                this.inputList.splice(this.findLeftParen(),0,this.currInput);
 
-    } else {
-    this.inputList.push(this.currInput,'(',this.convertToNum(this.displayInput),')');
-    }
+            } else {
+                this.inputList.push(this.currInput,'(',this.convertToNum(this.displayInput),')');
+            }
 
-    this.setDisplayInput(this.convertToNum(this.evaluateCurrent()));
-    this.setLastInput(this.currInput);
+            this.setDisplayInput(this.convertToNum(this.evaluateCurrent()));
+            this.setLastInput(this.currInput);
 
-    } else if(this.currInputType === 'paren') {
-    if(this.currInput === '(') {
-    if(this.peakInputList() === ')') {
-        this.inputList.push('×');
-    }
+        } else if(this.currInputType === 'paren') {
+            if(this.currInput === '(') {
+                if(this.peakInputList() === ')') {
+                    this.inputList.push('×');
+                }
 
-    this.inputList.push(this.currInput);
-    this.resetDisplayInput();
+                this.inputList.push(this.currInput);
+                this.resetDisplayInput();
 
-    this.setLastInput(this.currInput);
+                this.setLastInput(this.currInput);
 
-    } else if(this.currInput === ')' && this.validRightParen()) {
-    if(this.peakInputList() === ')') {
-        this.inputList.push(this.currInput);
-    } else {
-        this.inputList.push(this.convertToNum(this.displayInput),this.currInput);
-    }
+            } else if(this.currInput === ')' && this.validRightParen()) {
+                if(this.peakInputList() === ')') {
+                    this.inputList.push(this.currInput);
+                } else {
+                    this.inputList.push(this.convertToNum(this.displayInput),this.currInput);
+                }
 
-    this.setDisplayInput(this.evaluateCurrent());
-    this.setLastInput(this.currInput);
-    }
+                this.setDisplayInput(this.evaluateCurrent());
+                this.setLastInput(this.currInput);
+            }
 
-    } else if(this.currInputType === 'value') {
-    if(this.lastInputType === 'value' || this.lastInput === '.') {
-    if(this.displayInput === '0' || this.currInput === 'π') {
-        this.setDisplayInput(this.currInput);  
-    } else {
-        this.setDisplayInput(this.displayInput + this.currInput);
-    }
+        } else if(this.currInputType === 'value') {
+            if(this.lastInputType === 'value' || this.lastInput === '.') {
+                if(this.displayInput === '0' || this.currInput === 'π') {
+                    this.setDisplayInput(this.currInput);  
+                } else {
+                    this.setDisplayInput(this.displayInput + this.currInput);
+                }
 
-    } else if(this.lastInputType === 'shortop') {
-    this.removeLast('shortop');
+            } else if(this.lastInputType === 'shortop') {
+                this.removeLast('shortop');
 
-    this.setDisplayInput(this.currInput);
+                this.setDisplayInput(this.currInput);
 
-    } else {
-    if(this.lastInput === ')') {
-        this.removeLast('paren');
-    }
+            } else {
+                if(this.lastInput === ')') {
+                    this.removeLast('paren');
+                }
 
-    this.setDisplayInput(this.currInput);
-    }
+                this.setDisplayInput(this.currInput);
+            }
 
-    this.setLastInput(this.currInput);
-    }
+            this.setLastInput(this.currInput);
+        }
     }
     </code></pre>
 </div>
