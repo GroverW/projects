@@ -1,0 +1,66 @@
+<div class="update">
+        <div class="update_header">
+            <a name='12-05-2019'></a>
+            <span class="update_title">Composition vs Inheritance</span>
+            <span class="update_date">Dec 17, 2019</span>
+        </div>
+        <main>
+            <p>
+                Finally got a great explanation of this (or at least one that I can understand) via <a target="blank" href="https://www.youtube.com/watch?v=wfMtDGfHWpA">This Video</a>, so it's time to try to cement this into my memory.
+            </p>
+            <h2>Inheritance</h2>
+            <p>Inheritance is when you define your objects based on what they are:</p>
+            <p>
+                <u>Car class</u> - cars have wheels and can drive, so in order to avoid duplicating the "wheels" and "drive" methods, any type of car will just inherit those from the car class.
+                <br><u>Plane class</u> - planes have wings and can fly, so any type of plane in teh plane class will have wings and be able to fly.
+            </p>
+            <p>Ok that works pretty great up until the flying car is invented and then... we need to be able to fly, drive, have wheels and maybe even wings on our flying car.</p>
+            <p>To rectify the situation we could:</p>
+            <ul>
+                <li>Make an even higher level class (vehicle?) that our planes and cars inherit from. But then when we create a new plane or car, we get a bunch of extra functionality we didn't ask for. I guess there's a popular analogy called the Gorilla-Banana problem where you ask for a banana and you get a gorilla holding the banana, and the entire jungle along with it.</li>
+                <li>Duplicate methods; put fly in the car class or something like that. This isn't as bad, but still isn't a great solution.</li>
+                <li>Or we could do...</li>
+            </ul>
+            <h2>Composition</h2>
+            <p>Composition is when you define your objects based on what they do:</p>
+            <p>Now the relationship is reversed in a way:</p>
+            <p>
+                <u>Car class</u> - a thing that drives and has wheels.
+                <br><u>Plane class</u> - a thing that flies and has wings.
+                <br><u>Flying Car class</u> - a thing that flies, drives, has wheels and maybe even wings.
+            </p>
+            <p>Now drive, fly, wheels and wings are their own objects, and they can be incorporated into the car class or the boat class or any other class you can think up.</p>
+            <pre><code>
+    const driver = (state) => ({
+        drive: () => state.positionX += state.speed;
+    })
+    
+    const flyer = (state) => ({
+        fly: () => {
+            state.positionX += state.lift;
+            state.positionY += state.speed;
+        }
+    })
+    
+    const flyingCar = (name) => {
+        let state = {
+            name,
+            speed: 100,
+            lift: 10,
+            positionX: 0,
+            positionY: 0
+        }
+    
+        return Object.assign{
+            {},
+            driver(state),
+            flyer(state)
+            //... the rest
+        }
+    }
+            </code></pre>
+            <h2>Which is better? Is-A vs Has-A</h2>
+            <p>Most programmers apparently say you should <u>favor</u> composition over inheritance. In the video, he argues for only using composition - for pretty much any class structure, you could look at it from both sides, and inheritance tends to be weaker because it requires you to predict the future about what types of objects you'll need to create. The example he gives is that he <u>is-a</u> man, therefore he can inherit from the man class, versus a car which <u>has-an</u> engine and could use composition. <u>But</u>, as a man he has arms and has cooking skills, therefore that could also be expressed using composition.</p>
+            <p>I like that reasoning as a person who knows so little at this point, but who knows how my opinion will change in the future.</p>
+        </main>
+    </div>
