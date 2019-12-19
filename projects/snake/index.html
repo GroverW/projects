@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        
+        <title>Snake</title>
+
+        <link href="../../style.css" type="text/css" rel="stylesheet">
+        <link href="snake-style.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="main_container">
+            <div id="header">
+                    <div id="page_title">
+                        Snake<br>
+                        <a class="back_arrow" href="../index.html"><span class="large_symbol">←</span> Back</a>
+                    </div>
+                <div id="logo">
+                    <a href="https://www.willgrover.com"></a>
+                </div>
+                <div id="nav_links">
+                        <a href=",,.../index.html">Home</a>
+                        <a href="../../updates/index.html">Updates</a>
+                        <a href="../index.html" class="selected">Projects</a>
+                        <a href="../../about/index.html">About</a>
+                        <a class="image_link" href="https://github.com/GroverW" target="blank">
+                            <img src="../../images/gitHub.png" width="20" height="20">
+                        </a>
+                        <a class="image_link" href="https://www.linkedin.com/in/willgrover/" target="blank">
+                            <img src="../../images/linkedIn.png" width="20" height="20">
+                        </a>
+                </div>
+                    
+            </div>
+            <div id="body_content">
+                <div id="instructions">
+                        <strong>Instructions:</strong><br>
+                </div>
+                <div id="visible_area">
+                    <div id="game_container">
+                        <div id="game_board">
+                            <div id="game_over" class="hide">
+                                <div id="game_over_message"></div>
+                                <span class="score_details">Your Score:</span><span id="game_score" class="score_format"></span>
+                                <span class="score_details">Time Bonus:</span><span id="game_time_left" class="score_format"></span>
+                                <span class="score_details">Total Score:</span><span id="game_total_score" class="score_format"></span>
+                                <span class="score_details">Best Score:</span><span id="high_score" class="score_format"></span>
+                                <a id="new_game" class="new_game_button">New Game</a>
+                            </div>
+                        </div>
+                        <div id="game_menu">
+                            <img src="images/brain_image.png">
+                            <div id="game_title">Memory Game</div>
+                            <div class="game_menu_section">
+                                <span class="game_menu_caption">New Game:</span>
+                                <a id="new_game_easy" class="new_game_button" name="easy">Easy</a>
+                                <a id="new_game_medium" class="new_game_button" name="medium">Medium</a>
+                                <a id="new_game_hard" class="new_game_button" name="hard">Hard</a>
+                            </div>
+                            <div class="game_menu_section">
+                                <span class="game_menu_caption">High Score:</span>
+                                <span id="high_score_easy" class="game_menu_high_score">0</span>
+                                <span id="high_score_medium" class="game_menu_high_score">0</span>
+                                <span id="high_score_hard" class="game_menu_high_score">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="body_content_bg"></div>
+        </div>
+    </body>
+    <script src="dist/main.js"></script>
+</html>
