@@ -3,3 +3,28 @@
 
 #directories
 theOdinProject/
+
+
+# Added at Rithm School; things to always ignore in Git
+.env
+__pycache__
+env/
+venv/
+node_modules/
+build/
+.vscode/
+/test/js
+/test/browsertest/js
+/test/fixtures/temp-*
+/test/temp
+/test/ChangesAndRemovals
+/benchmark/js
+/benchmark/fixtures
+/examples/**/dist
+/coverage
+*.log
+.idea
+.cache
+.eslintcache
+package-lock.json
+webpack.config.js
