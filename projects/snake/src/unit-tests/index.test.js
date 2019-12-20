@@ -1,4 +1,4 @@
-const testsWork = require('./index');
+const testsWork = require('../index');
 
 test('TDD Ready!',() => {
     expect(testsWork()).toBe('Ready!');
