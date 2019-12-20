@@ -1,19 +1,24 @@
 const tests = require('../index');
 
+// Test Snake Object
 test('Set Default Snake',() => {
-    expect(tests.snakeObject.getSnake()).toEqual([
-        [0,0],
-        [0,1],
-        [0,2]
-    ]);
+    let snakeResult = [];
+    tests.pubSub.subscribe('getSnake',(data) => snakeResult = data);
+
+    tests.Snake.getSnake();
+
+    expect(snakeResult).toEqual(tests.defaultSnake);
 });
 
 test('Move Snake Down',() => {
-    tests.snakeObject.moveSnake([0,1]);
+    let snakeResult = [];
+    let expectedSnake = tests.defaultSnake.map(v => [v[0],v[1]+1]);
+    
+    tests.pubSub.subscribe('getSnake',(data) => snakeResult = data);
 
-    expect(tests.snakeObject.getSnake()).toEqual([
-        [0,1],
-        [0,2],
-        [0,3]
-    ]);
+    tests.Snake.moveSnake([0,1]);
+
+    expect(snakeResult).toEqual(expectedSnake);
 });
+
+// Test Game Object

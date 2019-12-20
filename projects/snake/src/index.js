@@ -1,14 +1,16 @@
-const pubSub = require('./pubSub');
+const PubSub = require('./PubSub');
+const defaultSnake = [
+    [0,0],
+    [0,1],
+    [0,2]
+];
 
-const snakeObject = () => {
-    let snake = [
-        [0,0],
-        [0,1],
-        [0,2]
-    ];
+
+const Snake = (initialSnake) => {
+    let snake = initialSnake;
     let head = snake[snake.length - 1];
 
-    const getSnake = () => snake;
+    const getSnake = () => PubSub.publish('getSnake',snake);
 
     const updateHead = () => head = snake[snake.length - 1];
 
@@ -19,6 +21,7 @@ const snakeObject = () => {
             head[1] + direction[1]
         ]);
 
+        getSnake();
         updateHead();
     }
 
@@ -26,5 +29,7 @@ const snakeObject = () => {
 }
 
 module.exports = {
-    snakeObject: snakeObject()
+    defaultSnake,
+    Snake: Snake(defaultSnake),
+    pubSub: PubSub
 };

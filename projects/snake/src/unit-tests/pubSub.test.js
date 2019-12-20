@@ -1,4 +1,4 @@
-const pubSubTest = require('../pubSub');  
+const pubSubTest = require('../PubSub');  
 
 test('Publish',() => {
     expect(pubSubTest.publish('subTest','')).toBe(undefined);
