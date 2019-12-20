@@ -1,6 +1,6 @@
 const subscribers = {};
 
-const pubSub = {
+module.exports = {
     subscribe(event, callback) {
         let index;
 
@@ -13,13 +13,11 @@ const pubSub = {
             unsubscribe() {
                 subscribers[event].splice(index,1);
             }
-        }
+        };
     },
     publish(event, data) {
         if(!subscribers[event]) return;
 
         subscribers[event].forEach(subscriberCallback => subscriberCallback(data));
     }
-};
-
-module.exports = pubSub;
+};;
