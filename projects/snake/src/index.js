@@ -5,6 +5,9 @@ const defaultSnake = [
     [0,2]
 ];
 
+const boardWidth = 64;
+const boardHeight = 64;
+
 
 const Snake = (initialSnake) => {
     let snake = initialSnake;
@@ -28,8 +31,21 @@ const Snake = (initialSnake) => {
     return { getSnake, moveSnake };
 }
 
+const Game = (boardWidth, boardHeight) => {
+    const start = () => {
+        PubSub.publish('gameState',true);
+    }
+
+    const stop = () => {
+        PubSub.publish('gameState',false);
+    }
+
+    return { start, stop };
+}
+
 module.exports = {
+    PubSub: PubSub,
     defaultSnake,
     Snake: Snake(defaultSnake),
-    pubSub: PubSub
+    Game: Game()
 };

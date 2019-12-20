@@ -3,7 +3,7 @@ const tests = require('../index');
 // Test Snake Object
 test('Set Default Snake',() => {
     let snakeResult = [];
-    tests.pubSub.subscribe('getSnake',(data) => snakeResult = data);
+    tests.PubSub.subscribe('getSnake',(data) => snakeResult = data);
 
     tests.Snake.getSnake();
 
@@ -13,8 +13,8 @@ test('Set Default Snake',() => {
 test('Move Snake Down',() => {
     let snakeResult = [];
     let expectedSnake = tests.defaultSnake.map(v => [v[0],v[1]+1]);
-    
-    tests.pubSub.subscribe('getSnake',(data) => snakeResult = data);
+
+    tests.PubSub.subscribe('getSnake',(data) => snakeResult = data);
 
     tests.Snake.moveSnake([0,1]);
 
@@ -22,3 +22,22 @@ test('Move Snake Down',() => {
 });
 
 // Test Game Object
+test('Game Start',() => {
+    let gameState = false;
+
+    tests.PubSub.subscribe('gameState',(data) => gameState = data);
+
+    tests.Game.start();
+
+    expect(gameState).toBe(true);
+});
+
+test('Game Stop',() => {
+    let gameState = true;
+
+    tests.PubSub.subscribe('gameState',(data) => gameState = data);
+
+    tests.Game.stop();
+
+    expect(gameState).toBe(false);
+});
