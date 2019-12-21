@@ -40,6 +40,23 @@ const Game = (boardWidth, boardHeight) => {
         PubSub.publish('gameState',false);
     }
 
+    const gameOver = (() => {
+        PubSub.subscribe('getSnake',(snake) => {
+            let segmentLocations = {};
+
+            snake.forEach(segment => {
+                let coords = segment.join('');
+
+                if( (segment[0] < 0 || segment[0] >= boardWidth) ||
+                    (segment[1] < 0 || segment[1] >= boardHeight) ||
+                    (coords in segmentLocations))
+                        PubSub.publish('gameOver',true)
+                
+                segmentLocations[coords] = true;
+            })
+        })
+    })();
+
     return { start, stop };
 }
 
