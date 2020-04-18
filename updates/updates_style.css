@@ -35,14 +35,16 @@
 }
 
 .update_title {
-    font-family: Ageo;
+    font-family: Corbert;
     font-size: 26px;
+    line-height: 24px;
     float: left;
     color: rgb(65, 177, 0);
 }
 
 .update_date {
-    margin-top: 10px;
+    font-family: Corbert;
+    margin-top: 6px;
     font-size: 14px;
     float: right;
     color: rgb(65, 177, 0);
