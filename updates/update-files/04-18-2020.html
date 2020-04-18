@@ -1,0 +1,92 @@
+<div class="update">
+  <div class="update_header">
+    <a name='04-18-2020'></a>
+    <span class="update_title">Interview Prep (day 1)</span>
+    <span class="update_date">Apr 18, 2020</span>
+  </div>
+  <main>
+    <p>
+      Been a long time. Writing this stuff out should help me remember it, so let's go.
+    </p>
+    <h3>What will happen when we run the following code?</h3>
+    <pre><code>
+  function foo() {
+    console.log(’hi is...’, hi);
+  }
+
+  foo();
+
+  var hi = 5;
+      </code></pre>
+    <p>
+      JS will create memory for 'hi', but by the time foo() executes, 'hi' will not be assigned, so we should get 'hi
+      is...undefined'
+    </p>
+    <h3>Describe and give standard operations (with time complexities) for:</h3>
+    <ul>
+      <li><b>Stack</b></li>
+      <ul>
+        <li>LIFO (Last in, First out)</li>
+        <li>Add - push</li>
+        <li>Remove - pop</li>
+        <li>Can be built with an array or linked-list, but why bother with a linked-list.</li>
+        <li>All operations are O(1)</li>
+      </ul>
+      <li><b>Queue</b></li>
+      <ul>
+        <li>FIFO (First in, First out)</li>
+        <li>Add - enqueue</li>
+        <li>Remove - dequeue</li>
+        <li>Can be built with an array or linked-list. With a singly linked-list, elements should be added to the tail and removed from the head (either is fine for doubly linked-list. Array shouldn't be used unless you know the size of the queue and want to use pointers instead of pushing / shifting elements.</li>
+        <li>Linked-list: O(1) enqueue / dequeue. Array: pick either O(1) enqueue O(n) dequeue or vise-versa, unless you know the size of the queue ahead of time in which you can do it in O(1) for both using pointers.</li>
+      </ul>
+      <li><b>Array</b></li>
+      <ul>
+        <li>access - O(1)</li>
+        <li>search - O(n)</li>
+        <li>sort - O(nlogn) w/ O(1) space for a comparative sort (O(n) space for merge sort). O(n) w/ O(n) space for a counting sort</li>
+        <li>add - O(1) to push, O(n) to unshift</li>
+        <li>remove - O(1) to pop, O(n) to shift</li>
+      </ul>
+      <li><b>Linked List</b></li>
+      <ul>
+        <li>access - O(n)</li>
+        <li>search - O(n)</li>
+        <li>sort - O(nlogn) w/ O(1) space. I guess you could technically do a counting sort for this as well?</li>
+        <li>add - O(1)</li>
+        <li>remove - O(1)</li>
+      </ul>
+      <li><b>Tree</b></li>
+      <ul>
+        <li>Hierarchical - parent child relationship between nodes</li>
+        <li>Acyclic - usually...</li>
+        <li>Number of child nodes per parent depends on type of tree - 2 for binary / binary-search tree</li>
+        <li>Binary Search Tree - all nodes to the left of parent node have lower values, all nodes to the right have higher values. O(logn) search runtime.</li>
+        <li>Heap - all child node values are less than the parent node in the case of a max-heap, or greater than in the case of a min heap. It's O(n) to build a heap, O(logn) to add or remove a node. Some terms would be heapify, sift-up, sift-down. Good for finding the kth value in a list. Priority queues use heaps.</li>
+      </ul>
+      <li><b>Graph</b></li>
+      <ul>
+        <li>All trees are graphs</li>
+        <li>Graphs are undirected, non-hierarchical, frequently have cycles, many to many relationships, don't even have to all be connected</li>
+        <li>Nodes, edges, neighbors</li>
+        <li>Adjacency List - object of arrays representing nodes and their neighbors. More space efficient.</li>
+        <li>Adjacency Matrix - array of arrays representing relationships amongst all nodes. Faster access time.</li>
+      </ul>
+      <li><b>Hash Table / Map</b></li>
+      <ul>
+        <li>Key - value pairs.</li>
+        <li>Run key through hashing algorithm to produce integer index value. Mod result by size of array, and place object in slot as subarray with key/value pair.</li>
+        <li>Strategies for dealing with collisions - linear probing, quadratic probing, linked lists, subarrays, re-hashing</li>
+        <li>O(1) lookup time by limiting the maximum size of the key. Hashing algo needs to be really good to prevent collisions</li>
+        <li>Resizing array is done in O(n) time as the size of the array is used to determine where to place each key/value pair.</li>
+      </ul>
+      <li><b>BFS vs DFS</b></li>
+      <ul>
+        <li>BFS - Breadth First Search, DFS - Depth First Search</li>
+        <li>DFS - can implement recursively or interatively with an array</li>
+        <li>BFS - gotta be implemented iteratively</li>
+        <li>BFS used for Dijkstra, A*</li>
+      </ul>
+    </ul>
+  </main>
+</div>
