@@ -25,8 +25,6 @@ const loadUpdates = async list => {
             Prism.highlightAllUnder(update, true);
             updateContent.appendChild(update)
         })
-
-        console.log(Prism);
     } catch (err) {
         console.log(`Failed to fetch page: ${err}`);
     }
