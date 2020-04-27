@@ -65,3 +65,10 @@ code {
     font-size: 14;
     color: #555;
 }
+
+.inline-code {
+    border: 1px solid #DDD;
+    padding: 0px 5px;
+    font-size: .9em;
+    color: salmon;
+}
