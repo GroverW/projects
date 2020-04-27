@@ -1,0 +1,91 @@
+<div class="update">
+  <div class="update_header">
+    <a name='04-27-2020'></a>
+    <span class="update_title">Interview Prep (day 2)</span>
+    <span class="update_date">Apr 27, 2020</span>
+  </div>
+  <main>
+    <p>
+      Let's start a streak of this. Answering questions from:
+      <a href="https://www.toptal.com/javascript/interview-questions">
+        37 Essential JavaScript Interview Questions
+      </a>. A session of failing and learning.
+    </p>
+    <h3>
+      What is a potential pitfall with using <span class="inline-code">typeof bar === "object"</span>
+      to determine if <span class="inline-code">bar</span> is an object? How can this pitfall be avoided?
+    </h3>
+    <p>
+      <strong>My answer:</strong> This expression would be true whether
+      <span class="inline-code">bar</span> were an array or an object.
+      <span class="inline-code">instanceof</span> might work better in this case.
+    </p>
+    <p>
+      <strong>Their answer:</strong> If <span class="inline-code">bar</span> were <span class="inline-code">null</span>
+      it would also be considered an object. So you would have to include a check to see if it was not <span
+        class="inline-code">null</span>.
+      They mention it could be an <span class="inline-code">array</span>, so you need to do:
+      <pre><code class="language-javascript">
+  (bar !== null) && (bar.constructor === Object)
+      </code></pre>
+    </p>
+    <h3>
+      What will the code below output to the console and why?
+    </h3>
+    <pre><code class="language-javascript">
+  (function(){
+    var a = b = 3;
+  })();
+
+  console.log("a defined? " + (typeof a !== 'undefined'));
+  console.log("b defined? " + (typeof b !== 'undefined'));
+      </code></pre>
+    <p>
+      <strong>My answer:</strong> Ok so the declaration in the IIFE is the equivalent of saying:
+    </p>
+    <pre><code class="language-javascript">
+  b = 3;
+  var a = b;
+      </code></pre>
+    <p>
+      This makes <span class="inline-code">b</span> a global variable, and should not be scoped to the IIFE, whereas
+      <span class="inline-code">a</span> should be undefined. So it should be false, and true.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Just to add, when using <span class="inline-code">use strict</span> This 
+      whole expression will result in <span class="inline-code">ReferenceError: b is not defined</span>. Which seems pretty useful.
+    </p>
+    <h3>
+      What will the code below output to the console and why?
+    </h3>
+    <pre><code class="language-javascript">
+  var myObject = {
+    foo: "bar",
+    func: function() {
+        var self = this;
+        console.log("outer func:  this.foo = " + this.foo);
+        console.log("outer func:  self.foo = " + self.foo);
+        (function() {
+            console.log("inner func:  this.foo = " + this.foo);
+            console.log("inner func:  self.foo = " + self.foo);
+        }());
+    }
+  };
+  myObject.func();
+    </code></pre>
+    <p>
+      <strong>My answer:</strong> ugh <span class="inline-code">this</span> pointer stuff is hard. 
+      I think the first two <span class="inline-code">console.log</span> will print "bar", but I can't quite explain
+      why <span class="inline-code">this</span> in the inner and outer functions are different. 
+      I think because it's only being defined in the outer function, but called in the inner function? The inner function 
+      should have its own local <span class="inline-code">this</span>, while the outer function should get it 
+      from <span class="inline-code">myObject</span>. For the inner function, it should print "undefined"
+      and "bar" respectively. It doesn't have a local <span class="inline-code">self</span> and should take it from the outer function.
+    </p>
+    <p>
+      <strong>Their answer:</strong> ok, apparently I'm right but I don't know why. Gotta read that book 
+      <a href="http://cdn.lxqnsys.com/03_You_Don%27t%20_Know_JS_this_&_Object_Prototypes.pdf">You Don't Know This</a>
+    </p>
+
+  </main>
+</div>
