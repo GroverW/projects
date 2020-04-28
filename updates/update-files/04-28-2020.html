@@ -1,0 +1,177 @@
+<div class="update">
+  <div class="update_header">
+    <a name='04-27-2020'></a>
+    <span class="update_title">Interview Prep (day 3)</span>
+    <span class="update_date">Apr 28, 2020</span>
+  </div>
+  <main>
+    <p>
+      Answering questions from:
+      <a href="https://www.toptal.com/javascript/interview-questions">
+        37 Essential JavaScript Interview Questions
+      </a>. A session of failing and learning.
+    </p>
+    <h3>
+      What is the significance of, and reason for, wrapping the entire content of a JavaScript source file in a function
+      block?
+    </h3>
+    <p>
+      <strong>My answer:</strong> Scoping - variables will be scoped to that file, so that there are no collisions with
+      variables in other files that might have the same name.
+    </p>
+    <p>
+      <strong>Their answer:</strong> To add, it also allows for an easily referenceable (presumably shorter) alias for a
+      global variable, like the jQuery <span class="inline-code">$</span>.
+    </p>
+    <h3>
+      What is the significance, and what are the benefits, of including <span class="inline-code">'use strict'</span> at
+      the beginning of a JavaScript source file?
+    </h3>
+    <p>
+      <strong>My answer:</strong> I don't remember too much about the details of <span class="inline-code">'use
+        strict'</span>. I'm pretty sure certain actions that
+      JavaScript would normally ignore, now become errors. I also believe that the <span
+        class="inline-code">class</span> keyword differentiates itself from functions in part by
+      using <span class="inline-code">'use strict'</span> as a default.
+    </p>
+    <p>
+      <strong>Their answer:</strong>
+    </p>
+    <ul>
+      <li>Makes debugging easier - code errors that would have been ignored will now generate errors or throw exceptions
+        (ok got this one at least)</li>
+      <li>Prevents accidental globals - without it, assigning a value to an undeclared variable automatically creates a
+        global variable with that name. Now it throws an error</li>
+      <li>Eliminates <span class="inline-code">this</span> coercion - without it, a null / undefined <span
+          class="inline-code">this</span> gets coerced into a global (super interesting!)</li>
+      <li>Disallows duplicate parameter values - nice!</li>
+      <li>Makes eval() safer - I don't think I need to worry about this one since I probably shouldn't be using it
+        anyway</li>
+      <li>Throws error on invalid usage of <span class="inline-code">delete</span></li>
+    </ul>
+    <h3>
+      Consider the two functions below. Will they both return the same thing? Why or why not?
+    </h3>
+    <pre><code class="language-javascript">
+  function foo1()
+  {
+    return {
+        bar: "hello"
+    };
+  }
+  
+  function foo2()
+  {
+    return
+    {
+        bar: "hello"
+    };
+  }
+    </code></pre>
+    <p>
+      <strong>My answer:</strong> The first one should return the object. The second one should return before the
+      object, so the result would be <span class="inline-code">undefined</span>.
+    </p>
+    <p>
+      <strong>Their answer:</strong> They add that this behavior also argues for following the convention of placing an
+      opening curly brace at
+      the end of a line in JavaScript instead of the beginning of a new line. Seems to make sense!
+    </p>
+    <h3>What is <span class="inline-code">NaN</span>? What is its type? How can you reliably test if a value is equal to <span class="inline-code">NaN</span>?</h3>
+    <p>
+      <strong>My answer:</strong> <span class="inline-code">NaN</span> means 'Not a Number', but paradoxically I think it's of type <span class="inline-code">number</span>.
+      I'm not sure how to reliably test it... does <span class="inline-code">===</span> not work?
+    </p>
+    <p>
+      <strong>Their answer:</strong> Looks like <span class="inline-code">===</span> doesn't work even if it's being compared to itself (just returns false). ES6 added 
+      <span class="inline-code">Number.isNaN()</span> which is apparently pretty reliable.
+    </p>
+    <h3>What will the code below output? Explain your answer.</h3>
+    <pre><code class="language-javascript">
+  console.log(0.1 + 0.2);
+  console.log(0.1 + 0.2 == 0.3);
+    </code></pre>
+    <p>
+      <strong>My answer:</strong> Ok, I clicked on this one yesterday because I read it wrong and thought it was saying something else. Would have gotten it wrong anyway.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Since numbers in JavaScript are all treated as floats, they may not always yield the expected result. 
+      This one would print <span class="inline-code">0.30000000000000004</span> and <span class="inline-code">false</span>. Cool! Makes sense.
+    </p>
+    <h3>Discuss possible ways to write a function <span class="inline-code">isInteger(x)</span> that determines if <span class="inline-code">x</span> is an integer.</h3>
+    <p>
+      <strong>My answer:</strong> I've used <span class="inline-code">Math.floor(x) === x</span> in the past. I guess you could use <span class="inline-code">%</span> as well. 
+      I think <span class="inline-code">parseInt()</span> should also work?
+    </p>
+    <p>
+      <strong>Their answer:</strong> Derp, apparently ECMAScript 6 added <span class="inline-code">Number.isInteger()</span>. Also, there's some bit manipulation like
+      <span class="inline-code">(x ^ 0) === x</span> (I'd like to practice that stuff more). Also, apparently <span class="inline-code">parseInt()</span> doesn't work for very large numbers.
+    </p>
+    <h3>In what order will the numbers 1-4 be logged to the console when the code below is executed? Why?</h3>
+    <pre><code class="language-javascript">
+  (function() {
+    console.log(1); 
+    setTimeout(function(){console.log(2)}, 1000); 
+    setTimeout(function(){console.log(3)}, 0); 
+    console.log(4);
+  })();
+    </code></pre>
+    <p>
+      <strong>My answer:</strong> 1 - 4 - 3 - 2. The <span class="inline-code">setTimeout</span> ones get taken off the call stack and handled asynchronously by the event loop. They're only 
+      executed once the call stack is empty, so they should go last, and the one waiting longer should go after the one with 0ms timeout.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Yea that's it.
+    </p>
+    <h3>Write a simple function (less than 160 characters) that returns a boolean indicating whether or not a string is a palindrome.</h3>
+    <p>
+      <strong>My answer:</strong>
+    </p>
+    <pre><code class="language-javascript">
+  const isPalindrome = (str) => str === str.split('').reverse().join();
+  const isPalindrome = (str) => str.split('').every((char, i) => char === str[str.length - 1 - i])
+    </code></pre>
+    <p>
+      I guess I could add stuff to remove spaces or lower / uppercase all the letters, but should be able to do that in 160 chars too.
+    </p>
+    <p>
+      <strong>Their answer:</strong> They pretty much did the first one, except they used a regex to replace whitespace and lowercased the letters.
+    </p>
+    <h3>Write a <span class="inline-code">sum</span> method which will work properly when invoked using either syntax below.</h3>
+    <pre><code class="language-javascript">
+  console.log(sum(2,3));  // Outputs 5
+  console.log(sum(2)(3)); // Outputs 5
+    </code></pre>
+    <p>
+      <strong>My answer:</strong> Ok, so I think this either has to return a helper if it doesn't get enough arguments, or return the sum if it does.
+    </p>
+    <pre><code class="language-javascript">
+  const sum = (...args) => {
+    if(args.length > 1) {
+      return args.reduce((sum, val) => sum += val, 0);
+    }
+
+    let vals = [...args];
+
+    return (...args) => {
+      vals.push(...args);
+      return vals.length > 1
+        ? vals.reduce((sum, val) => sum += val, 0)
+        : helper;
+    }
+  }
+    </code></pre>
+    <p>
+      <strong>Their answer:</strong> Haha, I guess if you only care about two numbers it's way simpler.
+    </p>
+    <pre><code class="language-javascript">
+  function sum(x) {
+    if (arguments.length == 2) {
+      return arguments[0] + arguments[1];
+    } else {
+      return function(y) { return x + y; };
+    }
+  }
+    </code></pre>
+  </main>
+</div>
