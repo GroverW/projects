@@ -209,7 +209,7 @@ p {
     font-weight: thin;
 }
 
-main ul {
+main ul, main ol {
     margin-left: 25px;
 }
 
