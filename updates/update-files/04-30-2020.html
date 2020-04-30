@@ -1,0 +1,229 @@
+<div class="update">
+  <div class="update_header">
+    <a name='04-30-2020'></a>
+    <span class="update_title">Interview Prep (day 5)</span>
+    <span class="update_date">Apr 30, 2020</span>
+  </div>
+  <main>
+    <p>
+      Answering questions from:
+      <a href="https://www.toptal.com/javascript/interview-questions">
+        37 Essential JavaScript Interview Questions
+      </a>. A session of failing and learning.
+    </p>
+    <h3>
+      The following recursive code will cause a stack overflow if the array list is too large.
+      How can you fix this and still retain the recursive pattern?
+    </h3>
+    <pre><code class="language-javascript">
+  var list = readHugeList();
+
+  var nextListItem = function() {
+      var item = list.pop();
+  
+      if (item) {
+          // process the list item...
+          nextListItem();
+      }
+  };
+      </code></pre>
+    <p>
+      <strong>My answer:</strong> I have no idea.
+    </p>
+    <p>
+      <strong>Their answer:</strong>
+    </p>
+    <pre><code class="language-javascript">
+  var list = readHugeList();
+
+  var nextListItem = function() {
+    var item = list.pop();
+
+    if (item) {
+        // process the list item...
+        setTimeout( nextListItem, 0);
+    }
+  };
+    </code></pre>
+    <p>
+      Ok so they move it off the call stack and process it asynchronously - so it moves to a queue instead of being on a stack. 
+      This seems really implementation specific.. I'm not sure I understand how this would process everything in the correct order if you were
+      relying on a stack to begin with.
+    </p>
+    <h3>
+      What is a "closure" in JavaScript? Provide an example.
+    </h3>
+    <p>
+      <strong>My answer:</strong> A closure is the ability for an inner function to remember the details of it's outer function long after that 
+      outer function has been executed.
+    </p>
+    <pre><code class="language-javascript">
+  const counter = () => {
+    let num = 0;
+
+    const increment = () => {
+      const currCount = num;
+      num++;
+
+      return currCount;
+    }
+
+    return increment;
+  }
+
+  let count = counter();  // undefined
+  count()                 // 0
+  count()                 // 1
+    </code></pre>
+    <p>
+      <strong>Their answer:</strong> So all they say is that a closure is an inner function that has access to the variables 
+      in the outer (enclosing) function's scope chain. Nothing about having access to it after the outer scope has been executed. 
+      Maybe there's another part to closure I don't know about.
+    </p>
+    <pre><code class="language-javascript">
+  var globalVar = "xyz";
+
+  (function outerFunc(outerArg) {
+      var outerVar = 'a';
+      
+      (function innerFunc(innerArg) {
+      var innerVar = 'b';
+      
+      console.log(
+          "outerArg = " + outerArg + "\n" +
+          "innerArg = " + innerArg + "\n" +
+          "outerVar = " + outerVar + "\n" +
+          "innerVar = " + innerVar + "\n" +
+          "globalVar = " + globalVar);
+      
+      })(456);
+  })(123);
+
+  // outerArg = 123
+  // innerArg = 456
+  // outerVar = a
+  // innerVar = b
+  // globalVar = xyz
+    </code></pre>
+    <h3>
+      What will be the output of the following code:
+      <pre><code class="language-javascript">
+  for (var i = 0; i < 5; i++) {
+    setTimeout(function() { console.log(i); }, i * 1000 );
+  }
+      </code></pre>
+      Explain your answer. How could the use of closures help here?
+    </h3>
+    <p>
+      <strong>My answer:</strong> It's going to log "5" each time. This is similar to that previous problem, where using 
+      <span class="inline-code">var</span> in a loop that doesn't display the value immediately runs into issues. Looks like 
+      they want you to use an IIFE and pass <span class="inline-code">i</span> in as a parameter.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Yep.
+    </p>
+    <h3>
+      What would the following lines of code output to the console?
+    </h3>
+    <pre><code class="language-javascript">
+  console.log("0 || 1 = "+(0 || 1));
+  console.log("1 || 2 = "+(1 || 2));
+  console.log("0 && 1 = "+(0 && 1));
+  console.log("1 && 2 = "+(1 && 2));
+    </code></pre>
+    <p>
+      <strong>My answer:</strong> Guarding and Short-Circuiting. So we got the following:
+      <ul>
+        <li>
+          <span class="inline-code">console.log("0 || 1 = "+(0 || 1));</span> - 0 is falsey, so it should default to 1 and log 
+          <span class="inline-code">"0 || 1 = 1"</span>
+        </li>
+        <li>
+          <span class="inline-code">console.log("1 || 2 = "+(1 || 2));</span> - 1 is truthy? Anyway, it should stop at 1 and log
+          <span class="inline-code">"1 || 2 = 1"</span>
+        </li>
+        <li>
+          <span class="inline-code">console.log("0 && 1 = "+(0 && 1));</span> - 0 is falsey, so it doesn't make it to 1 and logs
+          <span class="inline-code">"0 && 1 = 0"</span> I think, though I'm not sure if it would actually log false or undefined or something.
+        </li>
+        <li>
+          <span class="inline-code">console.log("1 && 2 = "+(1 && 2));</span> - Same as before, it logs 
+          <span class="inline-code">"1 && 2 = 2"</span>
+        </li>
+      </ul>
+    </p>
+    <p>
+      <strong>Their answer:</strong> Yep.
+    </p>
+    <h3>
+        What will be the output when the following code is executed? Explain.
+    </h3>
+        <pre><code class="language-javascript">
+  console.log(false == '0')
+  console.log(false === '0')
+        </code></pre>
+      <p>
+        <strong>My answer:</strong> Got about 80% certainty on this one. For the first, JS should attempt to 
+        coerce <span class="inline-code">'0'</span> into <span class="inline-code">false</span>, which should work so I think it
+        will return <span class="inline-code">true</span>. <br />
+        For the second one, it can't coerce so it returns <span class="inline-code">false</span> I hope.
+      </p>
+      <p>
+        <strong>Their answer:</strong> Got it.
+      </p>
+    <h3>
+        What is the output of the following code? Explain your answer.
+    </h3>
+        <pre><code class="language-javascript">
+  var a={},
+  b={key:'b'},
+  c={key:'c'};
+  
+  a[b]=123;
+  a[c]=456;
+  
+  console.log(a[b]);
+        </code></pre>
+      <p>
+        <strong>My answer:</strong> It's <span class="inline-code">123</span>. The key for an object gets stringified. I think the key 
+        would actually be <span class="inline-code">"{key:'b'}"</span> though.
+      </p>
+      <p>
+        <strong>Their answer:</strong> I'm wrong. So apparently they'd actually get stringified to 
+        <span class="inline-code">"[object Object]"</span>, which means <span class="inline-code">a[c]=456</span> would overwrite 
+        <span class="inline-code">a[b]=123</span> and the result would be <span class="inline-code">456</span>
+      </p>
+    <h3>
+        What will the following code output to the console:
+    </h3>
+        <pre><code class="language-javascript">
+  console.log((function f(n){return ((n > 1) ? n * f(n-1) : n)})(10));
+        </code></pre>
+      <p>
+        <strong>My answer:</strong> Looks like this would basically return <span class="inline-code">n!</span>, 
+        so <span class="inline-code">3628800</span>. Base case is 1, beyond that all the numbers are just being multiplied together 
+        recursively.
+      </p>
+      <p>
+        <strong>Their answer:</strong> Yes.
+      </p>
+    <h3>
+        Consider the code snippet below. What will the console output be and why?
+    </h3>
+        <pre><code class="language-javascript">
+  (function(x) {
+    return (function(y) {
+        console.log(x);
+    })(2)
+  })(1);
+        </code></pre>
+      <p>
+        <strong>My answer:</strong> Ok so <span class="inline-code">y</span> isn't being used at all looks like. 
+        <span class="inline-code">x</span> should just take its value from what's being passed in to the outer function, which is 1. 
+        So 1.
+      </p>
+      <p>
+        <strong>Their answer:</strong> Yes.
+      </p>
+  </main>
+</div>
