@@ -42,33 +42,34 @@
       One thing of note is they talk about bonus points for knowing things like how execution contexts, variable
       objects, activation objects, and the internal "scope" property
       contribute to the closure behavior, so that's probably some good info to research.
-      <h3>
-        Assuming <span class="inline-code">d</span> is an "empty" object in scope, say: <br />
-        <span class="inline-code">var d = {};</span> <br />
-        ...what is accomplished using the following code?
-      </h3>
-      <pre><code class="language-javascript">
+    </p>
+    <h3>
+      Assuming <span class="inline-code">d</span> is an "empty" object in scope, say: <br />
+      <span class="inline-code">var d = {};</span> <br />
+      ...what is accomplished using the following code?
+    </h3>
+    <pre><code class="language-javascript">
   [ 'zebra', 'horse' ].forEach(function(k) {
     d[k] = undefined;
   });
         </code></pre>
-      <p>
-        <strong>My answer:</strong> I don't see much to say about this besides <span class="inline-code">d</span> now
-        has two
-        keys called <span class="inline-code">zebra</span> and <span class="inline-code">horse</span>. So you could
-        check if those
-        keys exist in the object with <span class="inline-code">if in</span>, or loop through those keys using <span
-          class="inline-code">for in</span>.
-      </p>
-      <p>
-        <strong>Their answer:</strong> JavaScript now marks those properties as "own properties" of the object. They add
-        that <span class="inline-code">Object.keys</span>
-        will retrieve those keys. You could say the same with some other object methods.
-      </p>
-      <h3>
-        What will the code below output to the console and why?
-      </h3>
-      <pre><code class="language-javascript">
+    <p>
+      <strong>My answer:</strong> I don't see much to say about this besides <span class="inline-code">d</span> now
+      has two
+      keys called <span class="inline-code">zebra</span> and <span class="inline-code">horse</span>. So you could
+      check if those
+      keys exist in the object with <span class="inline-code">if in</span>, or loop through those keys using <span
+        class="inline-code">for in</span>.
+    </p>
+    <p>
+      <strong>Their answer:</strong> JavaScript now marks those properties as "own properties" of the object. They add
+      that <span class="inline-code">Object.keys</span>
+      will retrieve those keys. You could say the same with some other object methods.
+    </p>
+    <h3>
+      What will the code below output to the console and why?
+    </h3>
+    <pre><code class="language-javascript">
   var arr1 = "john".split('');
   var arr2 = arr1.reverse();
   var arr3 = "jones".split('');
@@ -76,36 +77,39 @@
   console.log("array 1: length=" + arr1.length + " last=" + arr1.slice(-1));
   console.log("array 2: length=" + arr2.length + " last=" + arr2.slice(-1));
     </code></pre>
-      <p>
-        <strong>My answer:</strong> Ok so this is a test of which methods modify the array directly, and which don't.
-        <ol>
-          <li>
-            After the first line, <span class="inline-code">arr1</span> is now <span
-            class="inline-code">['j', 'o', 'h', 'n']</span>
-          </li>
-          <li>
-            After the second line, I believe <span class="inline-code">.reverse()</span> mutates the array, so both
-            <span class="inline-code">arr1</span> and <span class="inline-code">arr2</span> are now 
-            <span class="inline-code">['n', 'h', 'o', 'j']</span>
-          </li>
-          <li>
-            Third line, <span class="inline-code">arr3</span> is <span class="inline-code">['j', 'o', 'n', 'e', 's']</span>
-          </li>
-          <li>
-            Fourth line, <span class="inline-code">arr1</span> and <span class="inline-code">arr2</span> are now 
-            <span class="inline-code">['n', 'h' ,'o' , 'j', ['j', 'o', 'n', 'e', 's']]</span>
-          </li>
-        </ol>
-        So now I think the same thing gets logged, the length is 5, and last is <span class="inline-code">['j', 'o', 'n', 'e', 's']</span>
-      </p>
-      <p>
-        <strong>Their answer:</strong> The thing I didn't mention is that <span class="inline-code">.reverse()</span> returns a reference to the array 
-        itself. I dunno if I could have confidently said that, but it would be required for my reasoning to work out.
-      </p>
-      <h3>
-        What will the code below output to the console and why?
-      </h3>
-      <pre><code class="language-javascript">
+    <p>
+      <strong>My answer:</strong> Ok so this is a test of which methods modify the array directly, and which don't.
+      <ol>
+        <li>
+          After the first line, <span class="inline-code">arr1</span> is now <span class="inline-code">['j', 'o', 'h',
+            'n']</span>
+        </li>
+        <li>
+          After the second line, I believe <span class="inline-code">.reverse()</span> mutates the array, so both
+          <span class="inline-code">arr1</span> and <span class="inline-code">arr2</span> are now
+          <span class="inline-code">['n', 'h', 'o', 'j']</span>
+        </li>
+        <li>
+          Third line, <span class="inline-code">arr3</span> is <span class="inline-code">['j', 'o', 'n', 'e',
+            's']</span>
+        </li>
+        <li>
+          Fourth line, <span class="inline-code">arr1</span> and <span class="inline-code">arr2</span> are now
+          <span class="inline-code">['n', 'h' ,'o' , 'j', ['j', 'o', 'n', 'e', 's']]</span>
+        </li>
+      </ol>
+      So now I think the same thing gets logged, the length is 5, and last is <span class="inline-code">['j', 'o', 'n',
+        'e', 's']</span>
+    </p>
+    <p>
+      <strong>Their answer:</strong> The thing I didn't mention is that <span class="inline-code">.reverse()</span>
+      returns a reference to the array
+      itself. I dunno if I could have confidently said that, but it would be required for my reasoning to work out.
+    </p>
+    <h3>
+      What will the code below output to the console and why?
+    </h3>
+    <pre><code class="language-javascript">
   console.log(1 +  "2" + "2");
   console.log(1 +  +"2" + "2");
   console.log(1 +  -"1" + "2");
@@ -113,35 +117,40 @@
   console.log( "A" - "B" + "2");
   console.log( "A" - "B" + 2);
     </code></pre>
-      <p>
-        <strong>My answer:</strong> 
-        <ul>
-          <li>
-            <span class="inline-code">console.log(1 + "2" + "2");</span> - I'm not sure if the strings get coerced into numbers or not 
-            since they come after the number... I'll guess they don't and it's <span class="inline-code">"122"</span>
-          </li>
-          <li>
-            <span class="inline-code">console.log(1 + +"2" + "2");</span> - If I'm right about the first one, then this has to be 
-            <span class="inline-code">"32"</span>
-          </li>
-          <li>
-            <span class="inline-code">console.log(1 + -"1" + "2");</span> - Which would make this <span class="inline-code">"02"</span>
-          </li>
-          <li>
-            <span class="inline-code">console.log(+"1" + "1" + "2");</span> - And <span class="inline-code">"112"</span>
-          </li>
-          <li>
-            <span class="inline-code">console.log("A" - "B" + "2");</span> - I have no idea what happens when you try to subtract letters.
-          </li>
-          <li>
-            <span class="inline-code">console.log("A" - "B" + 2);</span> - Still no idea.
-          </li>
-        </ul>
-      </p>
-      <p>
-        <strong>Their answer:</strong> Wow I was expecting to be wrong on these. The last two are <span class="inline-code">"NaN2"</span> 
-        and <span class="inline-code">NaN</span>. I guess that makes sense.
-      </p>
+    <p>
+      <strong>My answer:</strong>
+      <ul>
+        <li>
+          <span class="inline-code">console.log(1 + "2" + "2");</span> - I'm not sure if the strings get coerced into
+          numbers or not
+          since they come after the number... I'll guess they don't and it's <span class="inline-code">"122"</span>
+        </li>
+        <li>
+          <span class="inline-code">console.log(1 + +"2" + "2");</span> - If I'm right about the first one, then this
+          has to be
+          <span class="inline-code">"32"</span>
+        </li>
+        <li>
+          <span class="inline-code">console.log(1 + -"1" + "2");</span> - Which would make this <span
+            class="inline-code">"02"</span>
+        </li>
+        <li>
+          <span class="inline-code">console.log(+"1" + "1" + "2");</span> - And <span class="inline-code">"112"</span>
+        </li>
+        <li>
+          <span class="inline-code">console.log("A" - "B" + "2");</span> - I have no idea what happens when you try to
+          subtract letters.
+        </li>
+        <li>
+          <span class="inline-code">console.log("A" - "B" + 2);</span> - Still no idea.
+        </li>
+      </ul>
+    </p>
+    <p>
+      <strong>Their answer:</strong> Wow I was expecting to be wrong on these. The last two are <span
+        class="inline-code">"NaN2"</span>
+      and <span class="inline-code">NaN</span>. I guess that makes sense.
+    </p>
 
   </main>
 </div>
