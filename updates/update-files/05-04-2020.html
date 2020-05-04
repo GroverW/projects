@@ -1,0 +1,221 @@
+<div class="update">
+  <div class="update_header">
+    <a name='05-04-2020'></a>
+    <span class="update_title">Interview Prep (day 6)</span>
+    <span class="update_date">May 04, 2020</span>
+  </div>
+  <main>
+    <p>
+      Answering questions from:
+      <a href="https://www.toptal.com/javascript/interview-questions">
+        37 Essential JavaScript Interview Questions
+      </a>. A session of failing and learning.
+    </p>
+    <p>
+      On a side note... I need to update the layout for this site. And maybe some damn pagination.
+    </p>
+
+    <h3>
+      What will the following code output to the console and why:
+      <pre><code class="language-javascript">
+  var hero = {
+    _name: 'John Doe',
+    getSecretIdentity: function (){
+        return this._name;
+    }
+  };
+  
+  var stoleSecretIdentity = hero.getSecretIdentity;
+  
+  console.log(stoleSecretIdentity());
+  console.log(hero.getSecretIdentity());
+      </code></pre>
+      What is the issue with this code and how can it be fixed.
+    </h3>
+    <p>
+      <strong>My answer:</strong> <span class="inline-code">this</span> doesn't refer to anything when it's called from
+      <span class="inline-code">stoleSecretIdentity</span>, so that first output would be <span
+        class="inline-code">undefined</span>.
+      You'd need to do something like <span class="inline-code">var stoleSecretIdentity =
+        hero.getSecretIdentity.bind(hero)</span> to
+      maintain the correct <span class="inline-code">this</span> context.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Bam, nailed it.
+    </p>
+
+    <h3>
+      Create a function that, given a DOM Element on the page, will visit the element itself and all of its descendants
+      (not just its immediate children). For each element visited, the function should pass that element to a provided
+      callback function. <br />
+      The arguments to the function should be:
+      <ul>
+        <li>a DOM element</li>
+        <li>a callback function (that takes a DOM element as its argument</li>
+      </ul>
+    </h3>
+    <p>
+      <strong>My answer:</strong> Could do this iteratively or recursively. Let's go with recursive! The annoying thing
+      about accessing
+      DOM children is that they're one of those array-like data structures that are clumsy to work with.
+    </p>
+    <pre><code class="language-javascript">
+  const forEachDOMElement = (node, callback) => {
+    callback(node);
+    
+    for(let i = 0; i < node.children.length; i++) {
+        forEachDOMElement(node.children[i], callback)
+    }
+  }
+    </code></pre>
+    <p>
+      <strong>Their answer:</strong> Pretty much the same except no ES6.
+    </p>
+
+    <h3>
+      Testing your <span class="inline-code">this</span> knowledge in JavaScript: What is the output of the following
+      code?
+    </h3>
+    <pre><code class="language-javascript">
+  var length = 10;
+  function fn() {
+    console.log(this.length);
+  }
+  
+  var obj = {
+    length: 5,
+    method: function(fn) {
+      fn();
+      arguments[0]();
+    }
+  };
+  
+  obj.method(fn, 1);
+    </code></pre>
+    <p>
+      <strong>My answer:</strong> Man this is tough. I think the first log where just call <span
+        class="inline-code">fn()</span> should
+      be <span class="inline-code">undefined</span> because it's too many levels deep. I have a feeling <span
+        class="inline-code">arguments[0]()</span>
+      will be 5, but I don't know why.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Sooo far off. So the first one is 10, because when it's passed as a parameter its
+      context becomes <span class="inline-code">window</span>,
+      and <span class="inline-code">window.length</span> refers to <span class="inline-code">var length = 10</span> -
+      HUH??? <br />
+      Ok continuing on, when it's called by <span class="inline-code">arguments[0]()</span>, it's now referring to the
+      <span class="inline-code">arguments</span>
+      object, which is some dumb pseudo-array, and it has a length property which is 2 because 2 arguments were passed
+      in to
+      <span class="inline-code">object.method</span> when it was called. Geeeeeeeze - gotta read that book
+      <a href="https://www.amazon.com/You-Dont-Know-JS-Prototypes/dp/1491904151">You Don't Know Js: this & Object
+        Prototypes</a>.
+    </p>
+    <h3>
+      Consider the following code. What will the output be, and why?
+    </h3>
+    <pre><code class="language-javascript">
+  (function () {
+    try {
+        throw new Error();
+    } catch (x) {
+        var x = 1, y = 2;
+        console.log(x);
+    }
+    console.log(x);
+    console.log(y);
+  })();
+    </code></pre>
+    <p>
+      <strong>My answer:</strong> Hmmmm I don't know how scoping works with <span class="inline-code">try / catch</span>
+      blocks. I'm guessing
+      <span class="inline-code">x</span> and <span class="inline-code">y</span> are still scoped to the function and
+      it'd log 1 and 2.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Ehhhh whoops. I missed the third log. Interesting answer though. Apparently it's
+      <span class="inline-block">1</span>, <span class="inline-block">undefined</span> and <span
+        class="inline-block">2</span>. Apparently
+      it's the equivalent of:
+    </p>
+    <pre><code class="language-javascript">
+  (function () {
+    var x, y; // outer and hoisted
+    try {
+        throw new Error();
+    } catch (x /* inner */) {
+        x = 1; // inner x, not the outer one
+        y = 2; // there is only one y, which is in the outer scope
+        console.log(x /* inner */);
+    }
+    console.log(x);
+    console.log(y);
+  })();
+    </code></pre>
+    <h3>
+      What will be the output of this code?
+    </h3>
+    <pre><code class="language-javascript">
+  var x = 21;
+  var girl = function () {
+      console.log(x);
+      var x = 20;
+  };
+  girl ();
+        </code></pre>
+    <p>
+      <strong>My answer:</strong> Unfortunately, I think I remember seeing the answer to this. Inner <span
+        class="inline-code">x</span> declaration gets
+      hoisted to the top of the function and <span class="inline-code">undefined</span> gets logged (value doesn't get
+      set until after the log).
+    </p>
+    <p>
+      <strong>Their answer:</strong> Yea.
+    </p>
+    <h3>
+      How do you clone an object?
+    </h3>
+    <p>
+      <strong>My answer:</strong> Could use the spread operator. I know there are some like <span
+        class="inline-code">Object.assign()</span> method
+      or something but I'd need to look it up. The problem is that this is only a shallow clone. To deep clone you'd
+      have to do it recursively,
+      or if you don't have any functions in there you could do <span
+        class="inline-code">JSON.parse(JSON.stringify(object))</span>.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Yea, they went with <span class="inline-code">Object.assign()</span>
+    </p>
+    <h3>
+      <pre><code class="language-javascript">
+  for (let i = 0; i < 5; i++) {
+    setTimeout(function() { console.log(i); }, i * 1000 );
+  }
+      </code></pre>
+      What will this code print?
+    </h3>
+    <p>
+      <strong>My answer:</strong> Methinks it will be 0, 1, 2, 3, 4 since they're using <span class="inline-code">let</span>.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Ok yea.
+    </p>
+    <h3>
+      What do the following lines output, and why?
+    </h3>
+    <pre><code class="language-javascript">
+  console.log(1 < 2 < 3);
+  console.log(3 > 2 > 1);
+    </code></pre>
+    <p>
+      <strong>My answer:</strong> <span class="inline-code">1 < 2</span> is true (or 1), so it becomes <span class="inline-code">1 < 3</span> 
+      which is also true, so it should log <span class="inline-code">true</span>. <br />
+      <span class="inline-code">3 > 2</span> is true (or 1), so the second one becomes <span class="inline-code">1 > 1</span> which is false. 
+      So <span class="inline-code">false</span>.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Yes.
+    </p>
+  </main>
+</div>
