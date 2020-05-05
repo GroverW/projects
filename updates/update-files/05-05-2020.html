@@ -1,0 +1,115 @@
+<div class="update">
+  <div class="update_header">
+    <a name='05-05-2020'></a>
+    <span class="update_title">Interview Prep (day 7)</span>
+    <span class="update_date">May 05, 2020</span>
+  </div>
+  <main>
+    <p>
+      Answering questions from:
+      <a href="https://www.toptal.com/javascript/interview-questions">
+        37 Essential JavaScript Interview Questions
+      </a>. A session of failing and learning.
+    </p>
+    <p>
+      Last set!
+    </p>
+
+    <h3>
+      How do you add an element at the beginning of an array? How do you add one at the end?
+    </h3>
+    <p>
+      <strong>My answer:</strong> <span class="inline-code">arr.unshift()</span> to add to the beginning. 
+      <span class="inline-code">arr.push()</span> to add to the end.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Cool, they added that you can use the spread operator, which might look like: 
+      <span class="inline-code">myArray = ['start', ...myArray, 'end']</span>, which is more of a functional programming 
+      style. I like that!
+    </p>
+
+    <h3>
+      Imagine you have this code:
+      <pre><code class="language-javascript">
+  var a = [1, 2, 3];
+      </code></pre>
+      a) Will this result in a crash?
+      <pre><code class="language-javascript">
+  a[10] = 99;
+      </code></pre>
+      b) What will this output?
+      <pre><code class="language-javascript">
+  console.log(a[5]);
+      </code></pre>
+    </h3>
+    <p>
+      <strong>My answer:</strong> That will work fine. JavaScript will fill in all the missing indices with <span class="inline-code">undefined</span>. 
+      So i guess that kinda answers both parts.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Ah interesting. So they won't actually be 'filled' with <span class="inline-scode">undefined</span>. 
+      Those indices actually will be <span class="inline-code">undefined</span>, so a method like <span class="inline-code">arr.map()</span> 
+      won't output those values.
+    </p>
+
+    <h3>
+      What is the value of <span class="inline-code">typeof undefined === typeof NULL</span>?
+    </h3>
+    <p>
+      <strong>My answer:</strong> Not really sure. I don't know what either of those produce, but the result of each is a string I believe, 
+      so as long as they have the same type it should work?
+    </p>
+    <p>
+      <strong>Their answer:</strong> Went a little too quickly there. <span class="inline-code">NULL</span> isn't the same as 
+      <span class="inline-code">null</span>, it would actually be considered an undefined variable, so the expression would be true. Also, 
+      <span class="inline-code">typeof null</span> is 'object', and <span class="inline-code">typeof undefined</span> is 'undefined'.
+    </p>
+
+    <h3>
+      What would following code return?
+      <pre><code class="language-javascript">
+  console.log(typeof typeof 1);
+      </code></pre>
+    </h3>
+    <p>
+      <strong>My answer:</strong> Sweet, this falls in line with what I was talking about in the last one. Should be 'string'.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Yes indeed.
+    </p>
+
+    <h3>
+      What will the following code output and why?
+      <pre><code class="language-javascript">
+  var b = 1;
+  function outer(){
+        var b = 2
+      function inner(){
+          b++;
+          var b = 3;
+          console.log(b)
+      }
+      inner();
+  }
+    outer();
+          </code></pre>
+    </h3>
+    <p>
+      <strong>My answer:</strong> Looks like another hoisting question. <span class="inline-code">var b = 2</span> would override 
+      <span class="inline-code">var b = 1;</span>. In the inner function, <span class="inline-code">var b</span> would be 
+      hoisted to the top and override the outer <span class="inline-code">b</span>, then <span class="inline-code">b++</span> would 
+      do nothing because it's undefiend at that point until it gets assigned to 3, so the final log should be 3.
+    </p>
+    <p>
+      <strong>Their answer:</strong> Yea, and I guess their code makes it more clear what's going on in the inner function.
+    </p>
+    <pre><code class="language-javascript">
+  function inner () {
+    var b; // b is undefined
+    b++; // b is NaN
+    b = 3; // b is 3
+    console.log(b); // output "3"
+  }
+    </code></pre>
+  </main>
+</div>
