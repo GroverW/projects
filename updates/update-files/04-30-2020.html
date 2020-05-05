@@ -11,10 +11,11 @@
         37 Essential JavaScript Interview Questions
       </a>. A session of failing and learning.
     </p>
+
+
     <h3>
       The following recursive code will cause a stack overflow if the array list is too large.
       How can you fix this and still retain the recursive pattern?
-    </h3>
     <pre><code class="language-javascript">
   var list = readHugeList();
 
@@ -27,6 +28,7 @@
       }
   };
       </code></pre>
+    </h3>
     <p>
       <strong>My answer:</strong> I have no idea.
     </p>
@@ -58,6 +60,8 @@
       why <span class="inline-code">requestAnimationFrame</span> could call a function recursively 60 times a second and
       not stack overflow. Turns out this is the exact reason why. So I'm a dummy and I love that this showed up so quickly.</i>
     </p>
+
+
     <h3>
       What is a "closure" in JavaScript? Provide an example.
     </h3>
@@ -116,6 +120,8 @@
   // innerVar = b
   // globalVar = xyz
     </code></pre>
+
+
     <h3>
       What will be the output of the following code:
       <pre><code class="language-javascript">
@@ -134,15 +140,17 @@
     <p>
       <strong>Their answer:</strong> Yep.
     </p>
+
+
     <h3>
       What would the following lines of code output to the console?
-    </h3>
-    <pre><code class="language-javascript">
+      <pre><code class="language-javascript">
   console.log("0 || 1 = "+(0 || 1));
   console.log("1 || 2 = "+(1 || 2));
   console.log("0 && 1 = "+(0 && 1));
   console.log("1 && 2 = "+(1 && 2));
-    </code></pre>
+      </code></pre>
+    </h3>
     <p>
       <strong>My answer:</strong> Guarding and Short-Circuiting. So we got the following:
       <ul>
@@ -171,13 +179,15 @@
     <p>
       <strong>Their answer:</strong> Yep.
     </p>
+
+
     <h3>
       What will be the output when the following code is executed? Explain.
-    </h3>
-    <pre><code class="language-javascript">
+      <pre><code class="language-javascript">
   console.log(false == '0')
   console.log(false === '0')
-        </code></pre>
+      </code></pre>
+    </h3>
     <p>
       <strong>My answer:</strong> Got about 80% certainty on this one. For the first, JS should attempt to
       coerce <span class="inline-code">'0'</span> into <span class="inline-code">false</span>, which should work so I
@@ -188,10 +198,11 @@
     <p>
       <strong>Their answer:</strong> Got it.
     </p>
+
+
     <h3>
       What is the output of the following code? Explain your answer.
-    </h3>
-    <pre><code class="language-javascript">
+      <pre><code class="language-javascript">
   var a={},
   b={key:'b'},
   c={key:'c'};
@@ -200,7 +211,8 @@
   a[c]=456;
   
   console.log(a[b]);
-        </code></pre>
+      </code></pre>
+    </h3>
     <p>
       <strong>My answer:</strong> It's <span class="inline-code">123</span>. The key for an object gets stringified. I
       think the key
@@ -212,12 +224,14 @@
       overwrite
       <span class="inline-code">a[b]=123</span> and the result would be <span class="inline-code">456</span>
     </p>
+
+
     <h3>
       What will the following code output to the console:
-    </h3>
-    <pre><code class="language-javascript">
+      <pre><code class="language-javascript">
   console.log((function f(n){return ((n > 1) ? n * f(n-1) : n)})(10));
-        </code></pre>
+      </code></pre>
+    </h3>
     <p>
       <strong>My answer:</strong> Looks like this would basically return <span class="inline-code">n!</span>,
       so <span class="inline-code">3628800</span>. Base case is 1, beyond that all the numbers are just being multiplied
@@ -227,16 +241,18 @@
     <p>
       <strong>Their answer:</strong> Yes.
     </p>
+
+
     <h3>
       Consider the code snippet below. What will the console output be and why?
-    </h3>
-    <pre><code class="language-javascript">
+      <pre><code class="language-javascript">
   (function(x) {
     return (function(y) {
         console.log(x);
     })(2)
   })(1);
-        </code></pre>
+      </code></pre>
+    </h3>
     <p>
       <strong>My answer:</strong> Ok so <span class="inline-code">y</span> isn't being used at all looks like.
       <span class="inline-code">x</span> should just take its value from what's being passed in to the outer function,
