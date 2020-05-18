@@ -1,0 +1,80 @@
+<div class="update">
+  <div class="update_header">
+    <a name='05-18-2020'></a>
+    <span class="update_title">Bit Manipulation (Part 1)</span>
+    <span class="update_date">May 18, 2020</span>
+  </div>
+  <main>
+    <p>
+      Trying to wrap my head around using, and use-cases of bit manipulation.
+      Maybe this is a huge waste of time, who knows.
+    </p>
+
+    <h3>
+      <a href="https://leetcode.com/problems/single-number/">
+        Leetcode - Single Number
+      </a><br />
+      Given a <strong>non-empty</strong> array of integers, every element appears <i>twice</i> except
+      for one. Find that single one.
+      <br />
+      <strong>Notes:</strong> Your algorithm should have a linear runtime complexity. Could you implement it without
+      using extra memory?
+      <br />
+      <br />
+      <strong>Example 1:</strong>
+      <pre><code>
+  Input: [2,2,1]
+  Output: 1
+      </code></pre>
+      <strong>Example 2:</strong>
+      <pre><code>
+  Input: [4,1,2,1,2]
+  Output: 4
+      </code></pre>
+    </h3>
+    <p>
+      Sooo, not a challenging problem if you don't care about space complexity, and I guess not a challenging problem 
+      if you really understand bit manipulation well. The way to do it is using Exclusive Or, or <span class="inline-code">XOR</span> - 
+      if you take bits <span class="inline-code">0101</span> and <span class="inline-code">0011</span> and 
+      <span class="inline-code">XOR</span> them, you get <span class="inline-code">0110</span>, 
+      because all it cares about are the bits that are exclusive to each number.
+    </p>
+    <p>
+      Ok, but how do you get from that to finding the unique value in an array? So, if you <span class="inline-code">XOR</span> 
+      a number with itself, you get <span class="inline-code">0000</span> because none of the bits are exclusive 
+      to either side of the expression. Following from that logic, if I <span class="inline-code">XOR</span> a 
+      whole bunch of numbers consecutively, any duplicates will cancel each other out. If you only have one unique number, 
+      the remaining bits should just be that number because <span class="inline-code">0000 ^ 0001</span> is just 
+      <span class="inline-code">0001</span>.
+    </p>
+    <p>
+      This makes sense, but I have a hard time following why it's the case. Intuitively it feels like 
+      <span class="inline-code">XOR</span>ing a bunch of numbers in a row should just screw up all the bits. I wonder
+      what the other interesting properties of <span class="inline-code">XOR</span> are. In any case, I think it helps to 
+      just test a see visually what happens: <br />
+      <span class="inline-code">[4, 1, 2, 1, 2]</span>, then convert to binary<br />
+      <span class="inline-code">[0100, 0001, 0010, 0001, 0010]</span> then start <span class="inline-code">XOR</span>ing in order<br />
+      <span class="inline-code">[0101, 0010, 0001, 0010]</span><br />
+      <span class="inline-code">[0111, 0001, 0010]</span><br />
+      <span class="inline-code">[0110, 0010]</span><br />
+      <span class="inline-code">[0100]</span><br />
+      That seemed obvious when none of the bits overlap between the unique number and the rest. What if they do though: <br />
+      <span class="inline-code">[4, 13, 6, 13, 6]</span><br />
+      <span class="inline-code">[0100, 1101, 0110, 1101, 0110]</span> - ok, I can see just by writing that out that the '4' bit is going to be turned 
+      off and on an odd number of times. That makes much more sense - way different from adding or multiplying bits<br />
+      <span class="inline-code">[1001, 0110, 1101, 0110]</span><br />
+      <span class="inline-code">[1111, 1101, 0110]</span><br />
+      <span class="inline-code">[0010, 0110]</span><br />
+      <span class="inline-code">[0100]</span><br />
+    </p>
+    <p>
+      Nice! So to answer the original problem:
+    </p>
+    <pre><code class="language-javascript">
+  var singleNumber = function(nums) {
+    return nums.reduce((res, val) => res ^ val, 0);
+  };
+    </code></pre>
+
+
+</div>
