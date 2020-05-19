@@ -1,0 +1,256 @@
+<div class="update">
+  <div class="update_header">
+    <a name='05-19-2020'></a>
+    <span class="update_title">Bit Manipulation (Part 2)</span>
+    <span class="update_date">May 19, 2020</span>
+  </div>
+  <main>
+    <p>
+      Trying to wrap my head around using, and use-cases of bit manipulation.
+      Maybe this is a huge waste of time, who knows.
+    </p>
+
+    <h3>
+      <a href="https://leetcode.com/problems/reverse-bits/">
+        <u>Leetcode - Reverse Bits</u>
+      </a><br /><br />
+      Reverse bits of a given 32 bits unsigned integer
+      <br /><br />
+      <strong>Example 1:</strong>
+      <pre><code>
+  Input: 00000010100101000001111010011100
+  Output: 00111001011110000010100101000000
+  Explanation: The input binary string 00000010100101000001111010011100 represents the unsigned integer 43261596, 
+  so return 964176192 which its binary representation is 00111001011110000010100101000000.
+      </code></pre>
+      <strong>Example 2:</strong>
+      <pre><code>
+  Input: 11111111111111111111111111111101
+  Output: 10111111111111111111111111111111
+  Explanation: The input binary string 11111111111111111111111111111101 represents the unsigned integer 4294967293, 
+  so return 3221225471 which its binary representation is 10111111111111111111111111111111.
+      </code></pre>
+    </h3>
+    <p>
+      I think I can do this one on my own using that algorithm from yesterday.
+    </p>
+    <pre><code class="language-javascript">
+  var reverseBits = function(n) {
+    let result = 0;
+
+    for(let i = 0; i < 32; i++) {             // loop through each bit
+      if(n & 1 << i) result |= 1 << (31 - i); // if n has a 1 at that bit, union it with result from the opposite side
+    }
+
+    return result >>> 0; // turn signed bit into unsigned bit
+  };
+    </code></pre>
+
+  <p>
+    Looked at some of the other solutions, and saw this one:
+    <pre><code class="language-javascript">
+  var reverseBits = function(n) {
+    let result = 0;
+
+    for(let i = 0; i < 32; i++) {    
+        result <<= 1;  
+        result |= n & 1;  
+        n >>= 1;
+    }
+  
+    return result >>> 0;
+  }
+    </code></pre>
+
+    Apparently this is faster. Looks like they're adding 0s from the right side of <span class="inline-code">result</span>, 
+    and left size of <span class="inline-code">n</span>, then, unioning 1s onto <span class="inline-code">result</span> if 
+    <span class="inline-code">n</span> has them in that position. I guess this makes sense, but I don't know why it's faster - maybe because 
+    doing operations like <span class="inline-code"><< i</span> adds avg 16 0s each time, while this solution only adds 1. Good to know!
+  </p>
+
+  <h3>
+    <a href="https://leetcode.com/problems/number-of-1-bits/">
+      Leetcode - Number of 1 Bits
+    </a>
+    <br /><br />
+    Write a function that takes an unsigned integer and return the number of '1' bits it has (also known as the Hamming weight).
+    <br /><br />
+    <strong>Example 1:</strong>
+    <pre><code>
+  Input: 00000000000000000000000000001011
+  Output: 3
+  Explanation: The input binary string 00000000000000000000000000001011 has a total of three '1' bits.
+    </code></pre>
+    <strong>Example 2:</strong>
+    <pre><code>
+  Input: 00000000000000000000000010000000
+  Output: 1
+  Explanation: The input binary string 00000000000000000000000010000000 has a total of one '1' bit.
+    </code></pre>
+    <strong>Example 3:</strong>
+    <pre><code>
+  Input: 11111111111111111111111111111101
+  Output: 31
+  Explanation: The input binary string 11111111111111111111111111111101 has a total of thirty one '1' bits.
+    </code></pre>
+  </h3>
+  <p>
+    Bam, exactly why I read other people's answers. Learn a little and apply it later.
+  </p>
+  <pre><code class="language-javascript">
+  var hammingWeight = function(n) {
+    let count = 0;
+
+    for(let i = 0; i < 32; i++) {
+      count += n & 1;
+      n >>= 1;
+    }
+
+    return count;
+  };
+  </code></pre>
+  <p>
+    Better yet though, apparently you can do: <span class="inline-code">n &= (n - 1)</span>, and the <span class="inline-code">(n - 1)</span> 
+    part will remove the least significant bit from the number, so an even simpler algorithm would be:
+  </p>
+  <pre><code class="language-javascript">
+  var hammingWeight = function(n) {
+    let count = 0;
+
+    while(n) {
+      n &= (n - 1);
+      count++;
+    }
+
+    return count;
+  };
+  </code></pre>
+
+  <h3>
+    Cracking the Coding Interview - Flip Bit to Win
+    <br /><br />
+    You have an integer and you can flip exactly one bit from a 0 to a 1. Write code to find the length of the longest 
+    sequence of 1s you could create.
+    <br /><br />
+    <strong>Example:</strong>
+    <pre><code>
+  Input: 1775 (or: 11011101111)
+  Output: 8
+    </code></pre>
+  </h3>
+  <p>
+    Interesting. I feel like it would be more intuitive to figure out how to solve this if they provided a string instead of a number. 
+    This is sort of dynamic programmingish (I guess I don't know the true definition of what's considered a DP problem).
+  </p>
+  <pre><code class="language-javascript">
+  const flipBit = (str) => {
+    let currPosition, lastPosition;
+    let maxCount = 0;
+    let currCount = 0;
+
+    for(let i = 0; i < str.length; i++) {
+      if(str[i] === 0) {
+          lastPosition = currPosition;
+          currPosition = i;
+          currCount = lastPosition
+            ? currPosition - lastPosition
+            : currPosition + 1;
+      } else {
+        currCount++;
+      }
+
+      maxCount = Math.max(maxCount, currCount);
+    }
+
+    return maxCount;
+  }
+  </code></pre>
+  <p>
+    So that gives a linear time complexity and constant space complexity, which seems to be as good as we can get unless there's 
+    some bit manipulation magic to be done. So I just need to translate this into bit manipulation.
+  </p>
+  <pre><code class="language-javascript">
+      const flipBit = (n) => {
+        let currBit, lastBit;
+        let maxCount = 0;
+        let currCount = 0;
+    
+        for(let i = 0; i < 32; i++) {
+          if(!(n & 1)) {
+              lastBit = currBit;
+              currBit = i;
+              currCount = lastBit
+                ? currBit - lastBit
+                : currBit + 1; // since currBit is the index
+          } else {
+            currCount++;
+          }
+    
+          maxCount = Math.max(maxCount, currCount);
+
+          n >>>= 1;
+        }
+    
+        return maxCount;
+      }
+      </code></pre>
+      <p>
+        Ok that doesn't seem too difficult, and I think it works for the example. Should test it out on a few examples:
+      </p>
+      <pre><code class="language-javascript">
+  for(let i = 0; i < 10; i++) {
+    let num = Math.floor(Math.random() * 1000000000);
+    console.log("Num: ", num, "Binary: ", num.toString(2), "Max: ", flipBit(num));
+  }
+  // Num:  719168673 Binary:  101010110111011010010010100001  Max:  6
+  // Num:  518216244 Binary:  11110111000110101101000110100   Max:  8
+  // Num:  156257877 Binary:  1001010100000100111001010101    Max:  4
+  // Num:  988660373 Binary:  111010111011011100001010010101  Max:  6
+  // Num:  237503279 Binary:  1110001010000000001100101111    Max:  6
+  // Num:  888028160 Binary:  110100111011100011110000000000  Max:  7
+  // Num:  701366474 Binary:  101001110011100000000011001010  Max:  4
+  // Num:  172016201 Binary:  1010010000001100001001001001    Max:  3
+  // Num:  151914206 Binary:  1001000011100000011011011110    Max:  8
+  // Num:  290686875 Binary:  10001010100111000011110011011   Max:  5
+      </code></pre>
+      <p>
+        Sweet! The book has a similar solution.
+      </p>
+
+  <h3>
+    Cracking the Coding Interview - Next Number
+    <br /><br />
+    Given a positive integer, print the next smallest and the next largest number that have the 
+    same number of 1 bits in their binary representation.
+  </h3>
+  <p>
+    I guess to get the next largest number, I would turn on the first 0 that comes after a 1, and turn off that 1. 
+    To get the next smallest number, I think I'd need to turn off the first 1 that comes after a 0, and turn on that 0.
+  </p>
+  <pre><code class="language-javascript">
+  const nextLargestSmallestNums = (n) => {
+    let largest, smallest;
+
+    for(let i = 0; i < 32; i++) {
+      if(n & 1 << i) { // if the current bit is 1
+        if(!largest && !(n & 1 << (i + 1))) {   // if next bit is 0
+          largest = (n & ~(1 << i));            // set largest to n with i-th bit turned off
+          largest |= (1 << (i + 1));            // turn on next bit in largest
+        }
+      } else {
+        if(!smallest && (n & 1 << (i + 1)))  {  // if next bit is 1
+          smallest = (n | 1 << i);              // set smallest to n with i-th bit turned on
+          smallest &= ~(1 << (i + 1));          // turn off next bit in smallest
+        }
+          
+      }
+    }
+
+    return [largest, smallest];
+  }
+  </code></pre>
+  <p>
+    That's kinda ugly. 
+  </p>
+  </main>
+</div>
