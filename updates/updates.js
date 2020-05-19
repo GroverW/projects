@@ -1,4 +1,5 @@
 const updateList = [
+    '05-19-2020.html',
     '05-18-2020.html',
     '05-05-2020.html',
     '05-04-2020.html',
@@ -14,7 +15,7 @@ const updateList = [
     '11-22-2019.html',
     '11-18-2019.html',
     '11-05-2019.html',
-    '11-04-2019.html'
+    '11-04-2019.html',
 ]
 
 const updateContent = document.querySelector('#update_content');
