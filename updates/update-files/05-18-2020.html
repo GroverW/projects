@@ -12,7 +12,7 @@
 
     <h3>
       <a href="https://leetcode.com/problems/single-number/">
-        Leetcode - Single Number
+        <u>Leetcode - Single Number</u>
       </a><br /><br />
       Given a <strong>non-empty</strong> array of integers, every element appears <i>twice</i> except
       for one. Find that single one.
@@ -61,8 +61,8 @@
     <p>
       Seems like it's obviously going to work when none of the bits overlap between the unique number and the rest. What if they do though: <br />
       <span class="inline-code">[4, 13, 6, 13, 6]</span><br />
-      <span class="inline-code">[0100, 1101, 0110, 1101, 0110]</span> - ok, I can see just by writing that out that the '4' bit is going to be turned 
-      off and on an odd number of times. That makes much more sense - way different from adding or multiplying bits<br />
+      <span class="inline-code">[0100, 1101, 0110, 1101, 0110]</span> - ok, I can already see by writing it out, the '4' bit is going to be turned 
+      off-and-on an odd number of times. That makes much more sense - way different from adding or multiplying bits<br />
       <span class="inline-code">[1001, 0110, 1101, 0110]</span><br />
       <span class="inline-code">[1111, 1101, 0110]</span><br />
       <span class="inline-code">[0010, 0110]</span><br />
@@ -77,5 +77,56 @@
   };
     </code></pre>
 
+  <h3>
+    <a href="https://leetcode.com/problems/majority-element/">
+      Leetcode - Majority Element
+    </a>
+    <br /><br />
+    Given an array of size <i>n</i>, find the majority element. The majority element is the element that 
+    appears <strong>more than</strong> <span class="inline-code">n / 2</span> times.
+    <br /><br />
+    You may assume that the array is non-empty and the majority element always exists in the array.
+    <br /><br />
+    <strong>Example 1:</strong>
+    <pre><code>
+  Input: [3,2,3]
+  Output: 3
+    </code></pre>
+    <strong>Example 2:</strong>
+    <pre><code>
+  Input: [2,2,1,1,1,2,2]
+  Output: 2
+    </code></pre>
+  </h3>
+  <p>
+    The answer to this one is very silly. So basically I have to go through all 32 bits, and for each number 
+    in <span class="inline-code">nums</span>, see if it has that bit. Then, I see if the amount of numbers that 
+    have that bit is greater than the ones that don't. If so, that bit is part of the answer. The reasoning is 
+    much simpler to understand than the previous problem - basically even if all other numbers had a different bit turned on, it wouldn't 
+    be greater than half of the total numbers since they're in the minority.
+  </p>
+  <p>
+    I don't think I could ever see a reason to use this algorithm, especially considering there's a much better one 
+    that has the same time and space complexity - <strong>Boyer-Moore Voting Algorithm</strong> (which actually seems 
+    useful). In any case, here goes:
+  </p>
+  <pre><code class="language-javascript">
+  var majorityElement = function(nums) {
+    let candidate = 0;
 
+    for(let i = 0; i < 32; i++) { // since we don't know the max num, we check all possible bits
+      let count = 0;
+
+      for(let num of nums) {
+        if(num & 1 << i) count++; // if num has the i-th digit, increase count
+      }
+
+      if(count - (nums.length - count) > 0) // if count is the majority
+        candidate |= 1 << i; // union the current bit to the candidate number
+    }
+
+    return candidate;
+  };
+  </code></pre>
+  </main>
 </div>
