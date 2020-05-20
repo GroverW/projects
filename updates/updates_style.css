@@ -18,7 +18,7 @@
     border-radius: 7px;
 }
 
-.update h3 li {
+.update h3 li, .update h3 strong {
     color: rgb(50, 151, 223);
 }
 
@@ -70,10 +70,17 @@
     color: rgb(65, 177, 0);
 }
 
+pre.wrapping {
+    white-space: pre-wrap;
+}
+
 code {
     margin: 5px 0px;
     display:block;
-    background-color: #DEDEDE;
+    background-color: #EBEBEB;
+    font-family: monospace;
+    color: rgb(50, 151, 223);
+    font-size: .9em;
 }
 
 .small_code {
