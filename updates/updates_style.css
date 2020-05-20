@@ -99,3 +99,27 @@ code {
     font-size: .9em;
     color: salmon;
 }
+
+#updates_nav {
+    margin: 20px 0px;
+    padding: 0px 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#updates_nav a {
+    color: rgb(24, 124, 196);
+}
+
+#updates_nav a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+a.right {
+    margin-left: auto;
+}
+
+a.left {
+    margin-right: auto;
+}
