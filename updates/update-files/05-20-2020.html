@@ -1,0 +1,352 @@
+<div class="update">
+  <div class="update_header">
+    <a name='05-20-2020'></a>
+    <span class="update_title">Bit Manipulation (Part 3)</span>
+    <span class="update_date">May 20, 2020</span>
+  </div>
+  <main>
+    <p>
+      Trying to wrap my head around using, and use-cases of bit manipulation.
+      Maybe this is a huge waste of time, who knows.
+    </p>
+
+    <h3>
+      <a href="https://leetcode.com/problems/bitwise-and-of-numbers-range/">
+        <u>Leetcode - Bitwise AND of numbers range</u>
+      </a><br /><br />
+      Given a range [m, n] where 0 <= m <= n <= 2147483647, return the bitwise AND of all numbers in this range, inclusive.
+      <br /><br />
+      <strong>Example 1:</strong>
+      <pre><code>
+  Input: [5,7]
+  Output: 4
+      </code></pre>
+      <strong>Example 2:</strong>
+      <pre><code>
+  Input: [0,1]
+  Output: 0
+      </code></pre>
+    </h3>
+    <p>
+      Getting into the mediums - I came up with a pretty bad solution for this. Should have spent more time looking at some examples for a pattern. Basically, 
+      I just came up with some rules and otherwise did the actual comparison - If m is 0, then obviously there will be no matching bits, 
+      and if there's a power of 2 within the range there will also be no matching bits, since a power of 2 doesn't match any bits 
+      with the number previous to it.
+    </p>
+    <pre><code class="language-javascript">
+  var rangeBitwiseAnd = function(m, n) {
+    if(!m) return 0;
+    
+    for(let i = 0; i < 32; i++) {
+        let num = 1 << i;
+        if (num > m && num < n) return 0;
+    }
+    
+    let result = m;
+    for(let i = m + 1; i <= n; i++) {
+        result &= i;
+    }
+    
+    return result;
+  };
+    </code></pre>
+
+  <p>
+    Could have put more thought into that... A better idea would be to look at some sample numbers, 
+    let's say between 17 - 31:
+  </p>
+  <p>
+    <span class="inline-code">1 0 0 0 1</span> - 17<br />
+    <span class="inline-code">1 0 0 1 0</span> - 18<br />
+    <span class="inline-code">1 0 0 1 1</span> - 19<br />
+    <span class="inline-code">1 0 1 0 0</span> - 20<br />
+    <span class="inline-code">1 0 1 0 1</span> - 21<br />
+    <span class="inline-code">1 0 1 1 0</span> - 22<br />
+    <span class="inline-code">1 0 1 1 1</span> - 23<br />
+    <span class="inline-code">1 1 0 0 0</span> - 24<br />
+    <span class="inline-code">1 1 0 0 1</span> - 25<br />
+    <span class="inline-code">1 1 0 1 0</span> - 26<br />
+    <span class="inline-code">1 1 0 1 1</span> - 27<br />
+    <span class="inline-code">1 1 1 0 0</span> - 28<br />
+    <span class="inline-code">1 1 1 0 1</span> - 29<br />
+    <span class="inline-code">1 1 1 1 0</span> - 30<br />
+    <span class="inline-code">1 1 1 1 1</span> - 31
+  </p>
+  <p>
+    Looks like the only bits common between any two ranges are the starting bits, 
+    so it appears I need to turn the right-most bits into 0s until the numbers are the same. One way 
+    to do that would be to set them to 0 with like <span class="inline-code">m & ~(1 << i)</span>, and the other 
+    way would be something like pushing them off and adding 0s back on.
+    
+    <pre><code class="language-javascript">
+  var rangeBitwiseAnd = function(m, n) {
+    let numZeros = 0;
+
+    while(m !== n) {
+      m >>= 1;
+      n >>= 1;
+      numZeros++;
+    }
+
+    return m <<= numZeros;
+  };
+    </code></pre>
+  </p>
+
+  <h3>
+    <a href="https://leetcode.com/problems/maximum-product-of-word-lengths/">
+      Leetcode - Maximum Product of Word Lengths
+    </a>
+    <br /><br />
+    Given a string array <span class="inline-code">words</span>, find the maximum value of 
+    <span class="inline-code">length(word[i]) * length(word[j])</span> where the two words do not
+    share common letters. You may assume that each word will contain only lower case letters. 
+    If no such two words exist, return 0.
+    <br /><br />
+    <strong>Example 1:</strong>
+    <pre><code>
+  Input: ["abcw","baz","foo","bar","xtfn","abcdef"]
+  Output: 16
+  Explanation: The two words can be "abcw", "xtfn".
+    </code></pre>
+    <strong>Example 2:</strong>
+    <pre><code>
+  Input: ["a","ab","abc","d","cd","bcd","abcd"]
+  Output: 4
+  Explanation: The two words can be "ab", "cd".
+    </code></pre>
+    <strong>Example 3:</strong>
+    <pre><code>
+  Input: ["a","aa","aaa","aaaa"]
+  Output: 0
+  Explanation: No such pair of words.
+    </code></pre>
+  </h3>
+  <p>
+    Gotta figure out what letters / strings look like in binary. 
+    <a href="https://stackoverflow.com/questions/14430633/how-to-convert-text-to-binary-code-in-javascript">
+      Stack Overflow
+    </a>
+    says I gotta do basically <span class="inline-code">letter.charCodeAt(0)</span>. If I were using regular JS methods 
+    to compare them, I'd probably use a hash map for each string which would be O(m) to create, O(m) to compare, and O(n^2) 
+    to compare each of them with each other??? That seems bad.
+  </p>
+  <p>
+    I can't think of a reason you wouldn't have to compare each word with each other letter by letter, so here goes.
+  </p>
+
+  <pre><code class="language-javascript">
+  var maxProduct = function(words) {
+    let lookup = {};
+    let maxProd = 0;
+
+    for(let word of words) {
+      lookup[word] = new Set([...word])
+    }
+
+    for(let i = 0; i < words.length - 1; i++) {
+      for(let j = i + 1; j < words.length; j++) {
+        const prod = words[i].length * words[j].length;
+        if (prod > maxProd) {
+          if(different(words[i], words[j], lookup)) maxProd = prod;
+        }
+      }
+    }
+
+    return maxProd;
+  };
+
+  var different = function(word1, word2, lookup) {
+    let shorter = word1.length < word2.length ? word1 : word2;
+    let longer = word1.length < word2.length ? word2 : word1;
+
+    for(let char of shorter) {
+      if(lookup[longer].has(char)) return false;
+    }
+
+    return true;
+  };
+  </code></pre>
+  
+  <p>
+    How the hell do I translate this into bit manipulation... I can <span class="inline-code">XOR</span> to check if 
+    two letters are the same. If I union one word with itself, I could <span class="inline-code">AND</span> a letter 
+    with it to see if those bits all exist, but couldn't the bits for a letter be created by different letters combined?
+  </p>
+  <p>
+    <span class="inline-code">1100001</span> - a<br />
+    <span class="inline-code">1100010</span> - b<br />
+    <span class="inline-code">1100011</span> - c<br />
+  </p>
+  <p>So yea, that won't work. Ok, I've spent too much time on this</p>
+  <p>HAH! Ok the solution is super clever. A letter could be represented by a number from 0-25, which could represent 
+    one of the first 26 bits of a 32-bit number. Then, to see if two words have any commonality, you can 
+    <span class="inline-code">AND</span> their bit representations.
+  </p>
+  <pre><code class="language-javascript">
+  var maxProduct = function(words) {
+    let lookup = {};
+    let maxProd = 0;
+    
+    const aCharCode = 'a'.charCodeAt(0);
+
+    for(let word of words) {
+      let combinedBits = 0;
+      
+      for(let char of word) {
+        combinedBits |= 1 << (char.charCodeAt(0) - aCharCode);
+      }
+      lookup[word] = combinedBits;
+    }
+
+    for(let i = 0; i < words.length - 1; i++) {
+      const word1Bits = lookup[words[i]];
+      
+      for(let j = i + 1; j < words.length; j++) {
+        const prod = words[i].length * words[j].length;
+        
+        if (prod > maxProd) {
+          const word2Bits = lookup[words[j]]
+          
+          if(!(word1Bits & word2Bits)) maxProd = prod;
+        }
+      }
+    }
+
+    return maxProd;
+  };
+  </code></pre>
+
+  <p>
+    Wow, that's also way faster than using strict string comparison. Really interesting to know. 
+    It's like a super efficient set or something.
+  </p>
+
+  <h3>
+    Cracking the Coding Interview - Flip Bit to Win
+    <br /><br />
+    You have an integer and you can flip exactly one bit from a 0 to a 1. Write code to find the length of the longest 
+    sequence of 1s you could create.
+    <br /><br />
+    <strong>Example:</strong>
+    <pre><code>
+  Input: 1775 (or: 11011101111)
+  Output: 8
+    </code></pre>
+  </h3>
+  <p>
+    Interesting. I feel like it would be more intuitive to figure out how to solve this if they provided a string instead of a number. 
+    This is sort of dynamic programmingish (I guess I don't know the true definition of what's considered a DP problem).
+  </p>
+  <pre><code class="language-javascript">
+  const flipBit = (str) => {
+    let currPosition, lastPosition;
+    let maxCount = 0;
+    let currCount = 0;
+
+    for(let i = 0; i < str.length; i++) {
+      if(str[i] === 0) {
+          lastPosition = currPosition;
+          currPosition = i;
+          currCount = lastPosition
+            ? currPosition - lastPosition
+            : currPosition + 1;
+      } else {
+        currCount++;
+      }
+
+      maxCount = Math.max(maxCount, currCount);
+    }
+
+    return maxCount;
+  }
+  </code></pre>
+  <p>
+    So that gives a linear time complexity and constant space complexity, which seems to be as good as we can get unless there's 
+    some bit manipulation magic to be done. So I just need to translate this into bit manipulation.
+  </p>
+  <pre><code class="language-javascript">
+      const flipBit = (n) => {
+        let currBit, lastBit;
+        let maxCount = 0;
+        let currCount = 0;
+    
+        for(let i = 0; i < 32; i++) {
+          if(!(n & 1)) {
+              lastBit = currBit;
+              currBit = i;
+              currCount = lastBit
+                ? currBit - lastBit
+                : currBit + 1; // since currBit is the index
+          } else {
+            currCount++;
+          }
+    
+          maxCount = Math.max(maxCount, currCount);
+
+          n >>>= 1;
+        }
+    
+        return maxCount;
+      }
+      </code></pre>
+      <p>
+        Ok that doesn't seem too difficult, and I think it works for the example. Should test it out on a few examples:
+      </p>
+      <pre><code class="language-javascript">
+  for(let i = 0; i < 10; i++) {
+    let num = Math.floor(Math.random() * 1000000000);
+    console.log("Num: ", num, "Binary: ", num.toString(2), "Max: ", flipBit(num));
+  }
+  // Num:  719168673 Binary:  101010110111011010010010100001  Max:  6
+  // Num:  518216244 Binary:  11110111000110101101000110100   Max:  8
+  // Num:  156257877 Binary:  1001010100000100111001010101    Max:  4
+  // Num:  988660373 Binary:  111010111011011100001010010101  Max:  6
+  // Num:  237503279 Binary:  1110001010000000001100101111    Max:  6
+  // Num:  888028160 Binary:  110100111011100011110000000000  Max:  7
+  // Num:  701366474 Binary:  101001110011100000000011001010  Max:  4
+  // Num:  172016201 Binary:  1010010000001100001001001001    Max:  3
+  // Num:  151914206 Binary:  1001000011100000011011011110    Max:  8
+  // Num:  290686875 Binary:  10001010100111000011110011011   Max:  5
+      </code></pre>
+      <p>
+        Sweet! The book has a similar solution.
+      </p>
+
+  <h3>
+    Cracking the Coding Interview - Next Number
+    <br /><br />
+    Given a positive integer, print the next smallest and the next largest number that have the 
+    same number of 1 bits in their binary representation.
+  </h3>
+  <p>
+    I guess to get the next largest number, I would turn on the first 0 that comes after a 1, and turn off that 1. 
+    To get the next smallest number, I think I'd need to turn off the first 1 that comes after a 0, and turn on that 0.
+  </p>
+  <pre><code class="language-javascript">
+  const nextLargestSmallestNums = (n) => {
+    let largest, smallest;
+
+    for(let i = 0; i < 32; i++) {
+      if(n & 1 << i) { // if the current bit is 1
+        if(!largest && !(n & 1 << (i + 1))) {   // if next bit is 0
+          largest = (n & ~(1 << i));            // set largest to n with i-th bit turned off
+          largest |= (1 << (i + 1));            // turn on next bit in largest
+        }
+      } else {
+        if(!smallest && (n & 1 << (i + 1)))  {  // if next bit is 1
+          smallest = (n | 1 << i);              // set smallest to n with i-th bit turned on
+          smallest &= ~(1 << (i + 1));          // turn off next bit in smallest
+        }
+          
+      }
+    }
+
+    return [largest, smallest];
+  }
+  </code></pre>
+  <p>
+    That's kinda ugly. They have a slightly cleaner solution, which I'll need to go over.
+  </p>
+  </main>
+</div>
