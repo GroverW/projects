@@ -1,4 +1,5 @@
 const updateList = [
+    '05-21-2020.html',
     '05-20-2020.html',
     '05-19-2020.html',
     '05-18-2020.html',
