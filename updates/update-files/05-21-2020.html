@@ -1,0 +1,287 @@
+<div class="update">
+    <div class="update_header">
+      <a name='05-21-2020'></a>
+      <span class="update_title">Bellman-Ford and Heap Implementation</span>
+      <span class="update_date">May 21, 2020</span>
+    </div>
+    <main>
+      <p>
+        Been doing some Leetcode mock tests. Here are a couple of interesting learnings.
+      </p>
+  
+      <h3>
+        <a href="https://leetcode.com/problems/network-delay-time/">
+          <u>Leetcode - Network Delay Time</u>
+        </a><br /><br />
+        There are <span class="inline-code">N</span> network nodes, labelled <span class="inline-code">1</span> to 
+        <span class="inline-code">N</span>.
+        <br /><br />
+        Given <span class="inline-code">times</span>, a list of travel times as <strong>directed</strong> edges 
+        <span class="inline-code">times[i] = (u, v, w)</span>, where <span class="inline-code">u</span> is the source 
+        node, <span class="inline-code">v</span> is the target node, and <span class="inline-code">w</span> is the time 
+        it takes for a signal to travel from source to target.
+        <br /><br />
+        Now, we send a signal from a certain node <span class="inline-code">K</span>. How long will it takee for all 
+        nodes to receive the signal? If it is impossible, return <span class="inline-code">-1</span>.
+        <br /><br />
+        <strong>Example 1:</strong>
+        <pre><code>
+    Input: times = [[2,1,1],[2,3,1],[3,4,1]], N = 4, K = 2
+    Output: 2
+        </code></pre>
+      </h3>
+      <p>
+        I failed this one during the mock. I was switching between BFS and DFS to solve this, and kept running into issues. 
+        I worked on it afterwards, and my solution was pretty inefficient: create node list, recursively loop through nodes 
+        (adding the time to reach the current node to the time spent reaching that node), return the max distance. I end up going 
+        over the same paths many times... not sure on the time complexity.
+      </p>
+      <pre><code class="language-javascript">
+  var networkDelayTime = function(times, N, K) {
+    let nodeList = new Array(N + 1).fill(null).map(() => []);
+    
+    for(let [u, v, w] of times) {
+        nodeList[u].push([v,w]);
+    }
+    
+    let timeToNode = {};
+    
+    const helper = (node, timeSum) => {
+        if(timeSum >= timeToNode[node]) return;
+        
+        timeToNode[node] = timeSum;
+        
+        for(let [nextNode, nextTime] of nodeList[node]) {
+            helper(nextNode, timeSum + nextTime);
+        }
+    }
+    
+    helper(K, 0);
+    
+    let vals = Object.values(timeToNode);
+    
+    return vals.length === N ? Math.max(...vals) : -1;
+  };
+      </code></pre>
+  
+    <p>
+      <strong>Bellman-Ford:</strong> This is a really nice algorithm. Of course, this problem is right in line 
+      with Dijkstra's, but since JS doesn't have a built-in Heap I'm not going to try implementing that. 
+      Here's now Bellman-Ford works:
+      <ul>
+        <li>
+          Create an array to hold the time to each node. Since the nodes are listed 1 - N, I can just create 
+          an array with length N + 1 so that the indices match with the node numbers.
+          <br />
+          <pre><code class="language-javascript">
+  let timeToNode = new Array(N + 1).fill(Infinity);
+          </code></pre>
+        </li>
+        <li>
+          The initial times for each node are set to Infinity per the previous code, and the starting node (K) should 
+          be set to 0 since it doesn't take time to get to the starting position - 
+          <span class="inline-code">timeToNode[K] = 0</span>. The Infinity part comes into play in two ways later.
+        </li>
+        <li>
+          Ok now we're going to start revealing a path through the nodes. Start looping through each of the 
+          <span class="inline-code">times</span>. For each <span class="inline-code">time</span> we get the 
+          source node, destination node, and amount of time it takes to get there. If the source node in our 
+          <span class="inline-code">timeToNode</span> array is currently Infinity, we haven't found a path 
+          to that node yet and we need to skip it. Otherwise, we can update the time it would take to get to 
+          the destination node. Set the time to the destination node to be the minimum of it's current 
+          <span class="inline-code">timeToNode</span>, or the time to the source node + the time it 
+          takes to get to the destination node.
+          <pre><code class="language-javascript">
+  // ... initialization etc.
+  for(let i = 1; i < N - 1; i++) {
+    for(let [u, v, w] of times) {
+      if(timeToNode[u] === Infinity) continue;
+      timeToNode[v] = Math.min(timeToNode[v], timeToNode[u] + w)]
+    }
+  }
+          </code></pre>
+        </li>
+        <li>
+          The number of times you need to run this loop should be less than or equal to N - 1. The reason being, first, 
+          you already revealed the starting node (K), so you have N - 1 remaining to reveal. Second, if you don't reveal 
+          any new nodes on a subsequent loop, then the <span class="inline-code">times</span> list doesn't contain 
+          enough information to reach all the nodes from the starting node. So at a minimum, you need to reveal 1 each 
+          loop. Now we have our time complexity - <span class="inline-code">O(N * t.length)</span>.
+        </li>
+        <li>
+          One small piece of optimization - if you didn't update any of the nodes during one of the loops, then you're 
+          either done or can't finish, which in either case means you can stop looping.
+          <pre><code class="language-javascript">
+  // ... initialization etc.
+  for(let i = 1; i <= N; i++) {
+    let changes = false;
+    for(let [u, v, w] of times) {
+      if(timeToNode[u] === Infinity) continue;
+      if(timeToNode[u] + w < timeToNode[v]) {
+        timeToNode[v] = timeToNode[u] + w;
+        changes = true;
+      }
+    }
+    if(!changes) break;
+  }
+        </code></pre>
+        </li>
+        <li>
+          Now you have a list of the minimum amounts of time required to get to each node. The time it takes for the signal 
+          to reach each node should be the maximum of this list. If any of them are still set to Infinity, then you know 
+          you never reached that node and you can return <span class="inline-code">-1</span> per the problem.
+        <pre><code class="language-javascript">
+  // ... initialization, looping etc.
+  let maxTime = 0;
+
+  for(let i = 1; i <= N; i++) {
+    maxTime = Math.max(maxTime, timeToNode[i]);
+  }
+        </code></pre>
+        </li>
+        <li>
+          Bam, now just return the max time if it's not Infinity, else -1. The whole thing:
+        <pre><code class="language-javascript">
+  var networkDelayTime = function(times, N, K) {
+    let timeToNode = new Array(N + 1).fill(Infinity);
+
+    timeToNode[K] = 0;
+    
+    for(let i = 1; i < N; i++) {
+        let changes = false;
+        for(let [u, v, w] of times) {
+            if(timeToNode[u] === Infinity) continue;
+            if(timeToNode[u] + w < timeToNode[v]) {
+                timeToNode[v] = timeToNode[u] + w;
+                changes = true;
+            }
+        }
+        if(!changes) break;
+    }
+    
+    let maxTime = 0;
+    
+    for(let i = 1; i <= N; i++) {
+        maxTime = Math.max(maxTime, timeToNode[i]);
+    }
+    
+    return maxTime === Infinity ? -1 : maxTime;
+  };
+        </code></pre>
+        </li>
+      </ul>
+    </p>
+  
+    <h3>
+      Implement a Heap
+    </h3>
+    <p>
+      Since this comes up enough on leetcode, may as well try it out.
+    </p>
+    <p>
+      Whaaaat the heck do I know about a heap. Lets go with a max-heap
+      <ul>
+        <li>
+          Should be represented by an array.
+        </li>
+        <li>
+          Children to the root node are indices 1 and 2. Children to index 1 are 3 and 4. Childrene to index 2 are 
+          5 and 6. So <span class="inline-code">[2n + 1, 2n + 2]</span>.
+        </li>
+        <li>
+          Should be built in O(n) time. But how to build? Do I start from the end and sift up? I think I have to, because 
+          if I swap the root node and sift down like I'm popping from the heap, the root node loses its spot. So if I'm at the 
+          end of the array, how do I find the parent nodes of the current position? Looks like if the end is an odd index, I 
+          do <span class="inline-code">(n - 1) / 2</span>, otherwise <span class="inline-code">(n - 2) / 2</span> if it's even. 
+          So if the current node being added is greater than its parent, swap them until it's no longer true. Ok, I just realized 
+          the parent index is <span class="inline-code">Math.floor((n - 1) / 2)</span>.
+        </li>
+        <li>
+          How to remove a node? Swap the root node with the last one, and pop it off the heap. Then I have to check the current 
+          root against its children, if it's less than them, swap with the larger, and keep doing that until its in its correct 
+          position.
+        </li>
+      </ul>
+    </p>
+  
+    <pre><code class="language-javascript">
+  class MaxHeap {
+    constructor(data) {
+      this.data = data;
+      this.heapify();
+    }
+
+    heapify() {
+      for(let i = 1; i < this.data.length; i++) {
+        this.siftUp(i);
+      }
+    }
+
+    siftUp(idx) {
+      let arr = this.data;
+      
+      // compare with parent node and swap until either root node or parent is larger
+      while(idx > 0) {
+        const parentIdx = Math.floor((idx - 1) / 2);
+        if (arr[idx] > arr[parentIdx]) {
+          [arr[idx], arr[parentIdx]] = [arr[parentIdx], arr[idx]];
+          idx = parentIdx;
+        } else {
+          break;
+        }
+      }
+    }
+
+    siftDown() {
+      let arr = this.data;
+      let idx = 0;
+
+      while(true) {
+        let lChild = 2 * idx + 1;
+        let rChild = 2 * idx + 2;
+        let nextIdx;
+
+        // compare with child nodes, swap with largest if required
+        if(arr[idx] < arr[lChild] && arr[lChild] >= arr[rChild]) {
+          nextIdx = lChild;
+        } else if(arr[idx] < arr[rChild] && arr[rChild] > arr[lChild]) {
+          nextIdx = rChild;
+        }
+
+        // do actual swap or break out of loop
+        if(nextIdx) {
+          [arr[idx], arr[nextIdx]] = [arr[nextIdx], arr[idx]];
+          idx = nextIdx;
+        } else {
+          break;
+        }
+      }
+    }
+
+    pop() {
+      // swap first and last nodes, then sift down - O(log n) runtime
+      let arr = this.data;
+      let last = arr.length - 1;
+
+      [arr[0], arr[last]] = [arr[last], arr[0]];
+
+      const result = arr.pop();
+
+      this.siftDown();
+
+      return result;
+    }
+
+    push(val) {
+      // push new node, then sift up - O(log n) runtime
+      this.data.push(val);
+
+      this.siftUp(this.data.length - 1);
+    }
+  }
+    </code></pre>
+    <p>
+      Awesome! That works. No chance I'll use this in a Leetcode problem.
+    </p>
+    </main>
+  </div>
