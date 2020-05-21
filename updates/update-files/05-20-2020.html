@@ -223,130 +223,75 @@
   </p>
 
   <h3>
-    Cracking the Coding Interview - Flip Bit to Win
+    Cracking the Coding Interview - Conversion
     <br /><br />
-    You have an integer and you can flip exactly one bit from a 0 to a 1. Write code to find the length of the longest 
-    sequence of 1s you could create.
+    Write a function to determine the number of bits you would need to flip to convert integer A to integer B.
     <br /><br />
     <strong>Example:</strong>
     <pre><code>
-  Input: 1775 (or: 11011101111)
-  Output: 8
+  Input: 29 (or: 11101), 15 (or: 01111)
+  Output: 2
     </code></pre>
   </h3>
   <p>
-    Interesting. I feel like it would be more intuitive to figure out how to solve this if they provided a string instead of a number. 
-    This is sort of dynamic programmingish (I guess I don't know the true definition of what's considered a DP problem).
+    I hope this is pretty straightforward. <span class="inline-code">XOR</span> the two, and then remove the leftover 
+    1s until you have no bits left.
   </p>
   <pre><code class="language-javascript">
-  const flipBit = (str) => {
-    let currPosition, lastPosition;
-    let maxCount = 0;
-    let currCount = 0;
+  const conversion = (a, b) => {
+    let numBits = 0;
+    let difference = (a ^ b);
 
-    for(let i = 0; i < str.length; i++) {
-      if(str[i] === 0) {
-          lastPosition = currPosition;
-          currPosition = i;
-          currCount = lastPosition
-            ? currPosition - lastPosition
-            : currPosition + 1;
-      } else {
-        currCount++;
-      }
-
-      maxCount = Math.max(maxCount, currCount);
+    while(difference) {
+      difference &= (difference - 1);
+      numBits++;
     }
 
-    return maxCount;
+    return numBits;
   }
   </code></pre>
   <p>
-    So that gives a linear time complexity and constant space complexity, which seems to be as good as we can get unless there's 
-    some bit manipulation magic to be done. So I just need to translate this into bit manipulation.
+    They have a more elegant looking answer. I'm not sure this would be easier to read though.
   </p>
   <pre><code class="language-javascript">
-      const flipBit = (n) => {
-        let currBit, lastBit;
-        let maxCount = 0;
-        let currCount = 0;
+      const conversion = (a, b) => {
+        let numBits = 0;
     
-        for(let i = 0; i < 32; i++) {
-          if(!(n & 1)) {
-              lastBit = currBit;
-              currBit = i;
-              currCount = lastBit
-                ? currBit - lastBit
-                : currBit + 1; // since currBit is the index
-          } else {
-            currCount++;
-          }
-    
-          maxCount = Math.max(maxCount, currCount);
-
-          n >>>= 1;
+        for(let c = a ^ b; c > 0; c &= (c - 1)) {
+          numBits++;
         }
     
-        return maxCount;
+        return numBits;
       }
       </code></pre>
-      <p>
-        Ok that doesn't seem too difficult, and I think it works for the example. Should test it out on a few examples:
-      </p>
-      <pre><code class="language-javascript">
-  for(let i = 0; i < 10; i++) {
-    let num = Math.floor(Math.random() * 1000000000);
-    console.log("Num: ", num, "Binary: ", num.toString(2), "Max: ", flipBit(num));
-  }
-  // Num:  719168673 Binary:  101010110111011010010010100001  Max:  6
-  // Num:  518216244 Binary:  11110111000110101101000110100   Max:  8
-  // Num:  156257877 Binary:  1001010100000100111001010101    Max:  4
-  // Num:  988660373 Binary:  111010111011011100001010010101  Max:  6
-  // Num:  237503279 Binary:  1110001010000000001100101111    Max:  6
-  // Num:  888028160 Binary:  110100111011100011110000000000  Max:  7
-  // Num:  701366474 Binary:  101001110011100000000011001010  Max:  4
-  // Num:  172016201 Binary:  1010010000001100001001001001    Max:  3
-  // Num:  151914206 Binary:  1001000011100000011011011110    Max:  8
-  // Num:  290686875 Binary:  10001010100111000011110011011   Max:  5
-      </code></pre>
-      <p>
-        Sweet! The book has a similar solution.
-      </p>
 
   <h3>
-    Cracking the Coding Interview - Next Number
+    Cracking the Coding Interview - Pairwise Swap
     <br /><br />
-    Given a positive integer, print the next smallest and the next largest number that have the 
-    same number of 1 bits in their binary representation.
+    Write a program to swap odd and even bits in an integer with as few instructions as possible 
+    (e.g., bit 0 and bit 1 are swapped, bit 2 and bit 3 are swapped, and so on).
   </h3>
-  <p>
-    I guess to get the next largest number, I would turn on the first 0 that comes after a 1, and turn off that 1. 
-    To get the next smallest number, I think I'd need to turn off the first 1 that comes after a 0, and turn on that 0.
-  </p>
-  <pre><code class="language-javascript">
-  const nextLargestSmallestNums = (n) => {
-    let largest, smallest;
 
-    for(let i = 0; i < 32; i++) {
-      if(n & 1 << i) { // if the current bit is 1
-        if(!largest && !(n & 1 << (i + 1))) {   // if next bit is 0
-          largest = (n & ~(1 << i));            // set largest to n with i-th bit turned off
-          largest |= (1 << (i + 1));            // turn on next bit in largest
-        }
-      } else {
-        if(!smallest && (n & 1 << (i + 1)))  {  // if next bit is 1
-          smallest = (n | 1 << i);              // set smallest to n with i-th bit turned on
-          smallest &= ~(1 << (i + 1));          // turn off next bit in smallest
-        }
-          
-      }
+  <pre><code class="language-javascript">
+  const swapBits = n => {
+    const res = 0;
+    
+    while(n) {
+      res |= (n & (1 << 1) === 0 ? 1 : 0) << 2;
+      res |= (n & (1 << 2) === 0 ? 1 : 0) << 1;
+      n >>= 2;
     }
 
-    return [largest, smallest];
+    return res;
   }
   </code></pre>
   <p>
-    That's kinda ugly. They have a slightly cleaner solution, which I'll need to go over.
+    Well apparently you should know hex to do this cleanly. Mask all the odd bits with 10101010, 
+    which is 0xaaaaaaaa in hex, then mask the even bits with 01010101 which is 0x555555. Thanks, I won't 
+    remember this.
   </p>
+  <pre><code class="language-javascript">
+  const swapBits = n => ((n & 0xaaaaaaaa) >>> 1) | ((n & 0x55555555) << 1);
+  </code></pre>
   </main>
 </div>
