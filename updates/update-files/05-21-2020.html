@@ -93,7 +93,7 @@
           takes to get to the destination node.
           <pre><code class="language-javascript">
   // ... initialization etc.
-  for(let i = 1; i < N - 1; i++) {
+  for(let i = 1; i < N; i++) {
     for(let [u, v, w] of times) {
       if(timeToNode[u] === Infinity) continue;
       timeToNode[v] = Math.min(timeToNode[v], timeToNode[u] + w)]
@@ -113,7 +113,7 @@
           either done or can't finish, which in either case means you can stop looping.
           <pre><code class="language-javascript">
   // ... initialization etc.
-  for(let i = 1; i <= N; i++) {
+  for(let i = 1; i < N; i++) {
     let changes = false;
     for(let [u, v, w] of times) {
       if(timeToNode[u] === Infinity) continue;
