@@ -1,0 +1,199 @@
+<div class="update">
+  <div class="update_header">
+    <a name='06-09-2020'></a>
+    <span class="update_title">Bucketing</span>
+    <span class="update_date">June 9, 2020</span>
+  </div>
+  <main>
+    <p>
+      An interesting Leetcode algorithm.
+    </p>
+
+    <h3>
+      <a href="https://leetcode.com/problems/contains-duplicate-iii/">
+        <u>Leetcode - Contains Duplicates III</u>
+      </a><br /><br />
+      Given an array of integers, find out whether there are two distinct indices <i>i</i> and 
+      <i>j</i> in the array such that the <strong>absolute</strong> difference beteween <strong>nums[i]</strong>
+      and <strong>nums[j]</strong> is at most <i>t</i> and the <strong>absolute</strong> difference between <i>i</i> 
+      and <i>j</i> is at most <i>k</i>.
+      <br /><br />
+      <strong>Example 1:</strong>
+      <pre><code>
+  Input: nums = [1,2,3,1], k = 3, t = 0
+  Output: true
+      </code></pre>
+      <strong>Example 2:</strong>
+      <pre><code>
+  Input: nums = [1,0,1,1], k = 1, t = 2
+  Output: true
+      </code></pre>
+      <strong>Example 3:</strong>
+      <pre><code>
+  Input: nums = [1,5,9,1,5,9], k = 2, t = 3
+  Output: false
+      </code></pre>
+    </h3>
+    <p>
+      I tried to think about how I might approach this from a dynamic programming perspective. Could I use 
+      the differences between each element and the target and compare them with the previous difference? Doesn't seem 
+      like it. How about a sliding dictionary? I can see how you'd create one, but I'm not sure how you'd look 
+      up a value when the criteria is a range. So I went with the naive solution, which 
+      works pretty well but becomes <span class="inline-code">O(n^2)</span> for some inputs, though 
+      would probably be considered <span class="inline-code">O(n * m)</span>.
+    </p>
+    <pre><code class="language-javascript">
+  var containsNearbyAlmostDuplicate = function(nums, k, t) {
+    for(let i = 1; i < nums.length; i++) {
+        for(let j = Math.max(i - k, 0); j < i; j++) {
+            if(Math.abs(nums[i] - nums[j]) <= t) return true;
+        }
+    }
+    
+    return false;
+  };
+    </code></pre>
+  <p>
+    Pretty straightforward. Look through each value and look back <i>k</i> steps to see if there 
+    exists a pair that fits the criteria.
+  </p>
+  
+  <p>
+    <strong>Bucketing:</strong> There's a way we can transform the values to put neighboring entries into buckets 
+    and see if we find one close enough. Totally a sliding window dictionary solution.
+    <pre><code class="language-javascript">
+  var containsNearbyAlmostDuplicate = function(nums, k, t) {
+    if (k < 1 || t < 0) return false;
+    
+    let min = Math.min(Infinity, ...nums);
+    let buckets = {};
+    
+    for (let i = 0; i < nums.length; i++) {
+      const curr = nums[i] - min;
+      const currIdx = Math.floor(curr / (t + 1));
+      
+      if (
+        buckets[currIdx] !== undefined || 
+        Math.abs(buckets[currIdx - 1] - curr) <= t || 
+        Math.abs(buckets[currIdx + 1] - curr) <= t
+      ) return true;
+
+      buckets[currIdx] = curr;
+
+      if (i - k >= 0) {
+        const last = nums[i - k] - min;
+        const lastIdx = Math.floor(last / (t + 1));
+        delete buckets[lastIdx];
+      }
+    }
+  
+    return false;
+  };
+    </code></pre>
+
+    <p>Going through the interesting parts:</p>
+
+    <ul>
+      <li>
+        I need to figure out why we need a min as per the following code. We'll be comparing each value to this min value, 
+        but couldn't we just pick 0 or something?
+        <pre><code class="language-javascript">
+  let min = Math.min(Infinity, ...nums);
+        </code></pre>
+      </li>
+      <li>
+        Loop through the array. The current value we're comparing with the min value.
+        <pre><code class="language-javascript">
+  for (let i = 0; i < nums.length; i++) {
+    const curr = nums[i] - min;
+        </code></pre>
+      </li>
+      <li>
+        Gotta pause at this point. This is the magic that creates and compares the buckets, so I need to see why 
+        this works:
+        <pre><code class="language-javascript">
+  const currIdx = Math.floor(curr / (t + 1));
+
+  if (
+    buckets[currIdx] !== undefined || 
+    Math.abs(buckets[currIdx - 1] - curr) <= t || 
+    Math.abs(buckets[currIdx + 1] - curr) <= t
+  ) return true;
+        </code></pre>
+        I actually think the examples used weren't super great, so I'll make my own:
+        <br /><br />
+        <span class="inline-code">[1, 5, 104, 9, 101, 3, 16, 12] k = 2 t = 3</span>
+        <br /><br />
+        So if I map out each one to its <span class="inline-code">curr</span> value, I get: 
+        <br /><br />
+        <span class="inline-code">[0, 4, 103, 8, 100, 2, 15, 11]</span>
+        <br /><br />
+        Then do the <span class="inline-code">currIdx</span> math:
+        <br /><br />
+        <span class="inline-code">[0, 1, 25, 2, 25, 0, 3, 2]</span>
+      </li>
+      <li>
+        This is actually really simple and makes good sense. A "bucket" captures every increment of (t + 1). 
+        So if you're in the same bucket as another number, the furthest away your actual value could be 
+        would be something like 104 and 101. If it were 105 and 101 or 104 and 100 they'd end up in diffent buckets and 
+        we'd still need to check, but if they're in the same bucket we know they're within the range.
+        <br /><br />
+        So then we need to check the buckets before and after the current one, because there could be values 
+        near the borders.
+        <br /><br />
+        But why did I need to do <span class="inline-code">nums[i] - min</span>... OK! I tested it out and I don't need to do that at all. 
+        The only thing it really changes is that the buckets I'm creating won't be so "normalized", and I guess I'll use slightly more memory.
+      </li>
+      <li>
+        Continuing on, we set the current bucket to be the current value.
+        <pre><code class="language-javascript">
+  buckets[currIdx] = curr;
+      </code></pre>
+      You're overwriting any values that might already be in that bucket, but that's fine because if there's something there you're done.
+      </li>
+      <li>
+        Last, we gotta remove the first value that we lose from the sliding dictionary as we go past.
+      <pre><code class="language-javascript">
+  if (i - k >= 0) {
+    const last = nums[i - k] - min;
+    const lastIdx = Math.floor(last / (t + 1));
+    delete buckets[lastIdx];
+  }
+      </code></pre>
+      </li>
+    </ul>
+  </p>
+  <p>
+    Cool! I hope I remember this one as it seems super useful. Just to add - simplifying my code:
+    <pre><code class="language-javascript">
+  var containsNearbyAlmostDuplicate = function(nums, k, t) {
+    if (k < 1 || t < 0) return false;
+    
+    let buckets = {};
+    
+    for (let i = 0; i < nums.length; i++) {
+      const curr = nums[i];
+      const currIdx = Math.floor(curr / (t + 1));
+      
+      if (
+        buckets[currIdx] !== undefined || 
+        Math.abs(buckets[currIdx - 1] - curr) <= t || 
+        Math.abs(buckets[currIdx + 1] - curr) <= t
+      ) return true;
+
+      buckets[currIdx] = curr;
+
+      if (i - k >= 0) {
+        const last = nums[i - k];
+        const lastIdx = Math.floor(last / (t + 1));
+        delete buckets[lastIdx];
+      }
+    }
+  
+    return false;
+  };
+    </code></pre>
+  </p>
+
+  </main>
+</div>
