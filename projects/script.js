@@ -39,8 +39,8 @@ ProjectThumbNail.prototype.addToProjects = function (selector) {
     selector.appendChild(thumbnail);
 }
 
-const numCols = gridCols.length;
 let gridCols = document.querySelectorAll('.grid_col');
+const numCols = gridCols.length;
 let currCol = 0;
 
 for (let project of projectList) {
