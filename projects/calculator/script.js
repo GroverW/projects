@@ -25,7 +25,7 @@ class Calculator {
             }
         };
     }
-    
+
     isNum(val) {
         let numCheck = /^-{0,1}\d+\.{0,1}\d{0,}$/;
 
@@ -38,17 +38,17 @@ class Calculator {
 
     convertToPolish(inputArr) {
         let opStack = [];
-    
+
         for(let val of inputArr) {
             if(this.isNum(val)) {
                 this.polishList.push(+val)
-    
+
             } else if (val === '(') {
                 opStack.push(val);
-    
+
             } else if (val === ')') {
                 let next = opStack.pop();
-                
+
                 while(next !== '(') {
                     this.polishList.push(next);
                     next = opStack.pop();
@@ -57,22 +57,22 @@ class Calculator {
                 while(opStack.length > 0 && this.precedence[opStack[opStack.length - 1]] >= this.precedence[val]) {
                     this.polishList.push(opStack.pop());
                 }
-    
+
                 opStack.push(val);
             }
-    
+
         }
-    
+
         while(opStack.length > 0) {
             this.polishList.push(opStack.pop());
         }
-    
+
         return this;
     }
-    
+
     evaluatePolish() {
         let evalStack = [];
-        
+
         for(let val of this.polishList) {
             if(val in this.functions["oneVar"]) {
                 evalStack.push(this.functions["oneVar"][val](evalStack.pop()));
@@ -87,7 +87,7 @@ class Calculator {
         }
 
         this.resetPolishList();
-    
+
         return evalStack.pop();
     }
 }
@@ -249,7 +249,7 @@ class calculatorInputProcessor {
                 this.setLastInput(this.currInput);
 
             } else {
-                this.setDisplayInput('-' + this.displayInput);
+                this.setDisplayInput(-1 * +this.displayInput);
                 this.setLastInput(this.displayInput);
             }
 
@@ -298,7 +298,7 @@ class calculatorInputProcessor {
 
             } else if(this.peakInputList() === ')') {
                 this.inputList.push(this.currInput);
-            
+
             }
 
             this.setLastInput(this.currInput);
@@ -326,7 +326,7 @@ class calculatorInputProcessor {
                 if(this.peakInputList() === ')') {
                     this.inputList.push('×');
                 }
-                
+
                 this.inputList.push(this.currInput);
                 this.resetDisplayInput();
 
@@ -338,7 +338,7 @@ class calculatorInputProcessor {
                 } else {
                     this.inputList.push(this.convertToNum(this.displayInput),this.currInput);
                 }
-                
+
                 this.setDisplayInput(this.evaluateCurrent());
                 this.setLastInput(this.currInput);
             }
@@ -346,7 +346,7 @@ class calculatorInputProcessor {
         } else if(this.currInputType === 'value') {
             if(this.lastInputType === 'value' || this.lastInput === '.') {
                 if(this.displayInput === '0' || this.currInput === 'π') {
-                    this.setDisplayInput(this.currInput);  
+                    this.setDisplayInput(this.currInput);
                 } else {
                     this.setDisplayInput(this.displayInput + this.currInput);
                 }
@@ -360,7 +360,7 @@ class calculatorInputProcessor {
                 if(this.lastInput === ')') {
                     this.removeLast('paren');
                 }
-                
+
                 this.setDisplayInput(this.currInput);
             }
 
@@ -425,7 +425,7 @@ class calculatorInputProcessor {
         }
 
         this.setDisplayInput(this.evaluate(this.inputList));
-        
+
         this.inputList.push('=');
 
         this.pushToMemory();
@@ -448,7 +448,7 @@ class calculatorInputProcessor {
         } else {
             this.pushInputToList();
         }
-        
+
         if(this.displayInput === 'error') {
             this.processError();
         } else if(this.peakInputList() === '=') {
@@ -500,7 +500,7 @@ function updateHistory(historySelector,calcObj) {
         let calcElement = document.createElement('div');
         calcElement.setAttribute('class','calc_history');
         calcElement.innerText = element['calc'].join(' ');
-        
+
         let resultElement = document.createElement('div');
         resultElement.setAttribute('class','result_history')
         resultElement.innerText = element['result'];
@@ -520,7 +520,7 @@ calcButttons.forEach((obj) => {
         if(obj.value === '=' || !(calcTest.getLastInput())) {
             updateHistory(historyDisplay,calcTest);
         }
-        
+
     });
 });
 
@@ -529,10 +529,10 @@ addEventListener('keydown',(event) => {
 
     if(event.which in keyMap) {
         calcTest.processInput(keyMap[event.which]);
-        
+
         primaryDisplay.innerText = calcTest.getDisplayInput();
         secondaryDisplay.innerText = calcTest.getInputList().join(' ');
-        
+
         if(keyMap[event.which] === '=' || !(calcTest.getLastInput())) {
             updateHistory(historyDisplay,calcTest);
         }
