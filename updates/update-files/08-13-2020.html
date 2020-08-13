@@ -1,0 +1,158 @@
+<div class="update">
+  <div class="update_header">
+    <a name='08-13-2020'></a>
+    <span class="update_title">Interview Prep (Back at it)</span>
+    <span class="update_date">August 13, 2020</span>
+  </div>
+  <main>
+    <p>
+      Aswering questions from: <a href="https://github.com/30-seconds/30-seconds-of-interviews">30 Seconds of Interviews</a>
+    </p>
+
+    <h3>
+      What is a stateless component?
+    </h3>
+    <p>
+      A stateless component is one that does not depend on any other "state" to produce a result, like the functional programming paradigm.
+    </p>
+
+    <h3>
+      What is the difference between the equality operators <span class="inline-code">==</span> and <span class="inline-code">===</span>?
+    </h3>
+    <p>
+      <span class="inline-code">==</span> will try to coerce the right side of the expression into the same type as the left side, so
+      <span class="inline-code">1 == '1'</span> will be true, while <span class="inline-code">===</span> is strict equals and returns false.
+      <span class="inline-code">==</span> is also what people seem to mostly make jokes about JavaScript for.
+    </p>
+
+    <h3>
+      What is the difference between an element and a component in React?
+    </h3>
+    <p>
+      <b>My Answer:</b> what is an element?? hahah oops. Is that what a dumb component is considered? I only know components and containers.
+    </p>
+    <p>
+      <b>Their Answer:</b> It's a plain JavaScript object that represents a DOM node or component. They're pure and never mutated.
+    </p>
+    <p>
+      Ok, I don't know how I feel about that question.
+    </p>
+
+    <h3>
+      What is a stateful component in React?
+    </h3>
+    <p>
+      I guess it must be one that utilizes state via <span class="inline-code">useState</span> or <span class="inline-code">this.state</span> or
+      the redux store or whatever.
+    </p>
+
+    <h3>
+      In which states can a Promise be?
+    </h3>
+    <p>
+      Pending, Resolved or Rejected
+    </p>
+
+    <h3>
+      What is the difference between the postfix <span class="inline-code">i++</span> and prefix <span class="inline-code">++i</span> increment operators?
+    </h3>
+    <p>
+      Order of operations. <span class="inline-code">i++</span> happens after the expression it's apart of is executed, while <span class="inline-code">++i</span>
+      is the same as saying <span class="inline-code">i += 1</span>. And Douglas Crockford says don't use either.
+    </p>
+
+    <h3>
+      Create a function <span class="inline-code">batches</span> that returns the maximum number of whole batches that can be cooked from a recipe.
+    </h3>
+    <p>
+      Ok so basically return either the smallest <span class="inline-code">Math.floor(availableIngredient / recipeIngredient)</span> or 0 if you don't have one of them.
+    </p>
+    <pre><code class="language-javascript">
+  const batches = (recipe, available) => {
+    let maxBatches = Infinity;
+
+    for(let ingredient in recipe) {
+      if(!available[ingredient]) return 0;
+
+      const numBatches = Math.floor(available[ingredient] / recipe[ingredient]);
+      maxBatches = Math.min(maxBatches, numBatches);
+    }
+
+    return maxBatches;
+  }
+    </code></pre>
+    <p>
+      <b>Their Answer:</b> Wow theirs is much more concise.
+    </p>
+    <pre><code class="language-javascript">
+  const batches = (recipe, available) => {
+    Math.floor(
+      Math.min(...Object.keys(recipe).map(k => available[k] / recipe[k] || 0));
+    )
+  }
+    </code></pre>
+
+    <h3>
+      What does the following code evaluate to? <br />
+      <span class="inline-code">typeof typeof 0</span>
+    </h3>
+    <p>
+      <span class="inline-code">typeof 0</span> should be <span class="inline-code">'number'</span> which is string, so
+      <span class="inline-code">typeof 'number'</span> should be <span class="inline-code">'string'</span>.
+    </p>
+
+    <h3>
+      How do you clone an object in JavaaScript?
+    </h3>
+    <p>
+      <b>My Answer:</b> Two ways I can think of (there are probably more) - for shallow copies either do
+      <span class="inline-code">const obj2 = { ...obj1 }</span> or <span class="inline-code">Object.assign({}, obj1)</span>.
+      If you want a deep copy you gotta do it recursively.
+    </p>
+    <p>
+      <b>Their Answer:</b> I forgot about <span class="inline-code">JSSON.parse(JSON.stringify(obj))</span>, but as they point out,
+      you can't copy functions or circular references. Another route is
+      <span class="inline-code">Object.keys(obj).reduce((acc, key) => (acc[key] = obj[key], acc), {})</span>.
+    </p>
+    <p>
+      Interesting, I gotta look into this part <span class="inline-code">= obj[key], acc)</span>. I had always done it like
+      <span class="inline-code">({ ...acc, key: obj[key] }), {}</span>.
+    </p>
+
+    <h3>
+      What is the difference between synchronous and asynchronous code in JavaScript?
+    </h3>
+    <p>
+      Synchronous code gets executed in a blocking manner off the call-stack. So when the interpreter reaches a line of code (like a function), it places
+      it on the call-stack, executes until it reaches another function or callback or whatever, pushes that one to the call-stack, and continues
+      until it reaches the end of the function on top of the stack, which gets popped off and executed until the stack is empty.
+    </p>
+    <p>
+      Asynchronous code starts on the call-stack, but gets immediately popped off and moved to the event loop, where any asynchronous calls (like api calls) are
+      handled by web workers. Once complete, it gets moved to the event queue which waits until the call-stack is empty before popping functions from the queue
+      back to the call-stack for execution.
+    </p>
+
+    <h3>
+      How do you compare two objects in JavaScript?
+    </h3>
+    <p>
+      Three ways I can think of - use <span class="inline-code">===</span> to see if it's literally the same object, use <span class="inline-code">JSON.stringify</span>
+      to see if they have the same structure, or iterate through recursively to check each value against one another.
+    </p>
+
+    <h3>
+      What is a cross-site scripting attack (XSS) and how do you prevent it?
+    </h3>
+    <p>
+      XSS is when someone is able to inject JavaScript on your site to run on other people's computers. Generally I think it requires you allowing them to post
+      data to the DB so that it can be viewed by others.
+    </p>
+    <p>
+      <b>My Answer:</b> Preventing it - sanitize input / output! I don't know much beyond escaping strings
+    </p>
+    <p>
+      <b>Their Answer:</b> Should have mentioned <span class="inline-code">textContent</span> over <span class="inline-code">innerHTML</span>
+    </p>
+  </main>
+</div>
