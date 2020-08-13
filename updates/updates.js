@@ -1,4 +1,5 @@
 const updateList = [
+    '08-13-2020.html',
     '06-09-2020.html',
     '05-21-2020.html',
     '05-20-2020.html',
@@ -29,7 +30,7 @@ const loadUpdates = async list => {
     try {
         const updatePromises = list.map(item => fetch(`update-files/${item}`))
         const updates = await Promise.all(updatePromises)
-        
+
         updates.forEach(async element => {
             const text = await element.text();
             const parser = new DOMParser();
