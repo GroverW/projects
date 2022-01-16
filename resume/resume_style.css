@@ -1,0 +1,61 @@
+html {
+  background-color: #EFEFEF;
+}
+
+body {
+  background-color: white;
+  box-sizing: border-box;
+  width: 8.5in;
+  height: 11in;
+  margin: 0px auto;
+  padding: .5in;
+  font-family: Calibri, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+header ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  text-transform: uppercase;
+  border-bottom: 2px solid #999;
+  font-size: 16px;
+  margin-top: 24px;
+}
+
+.technical-skills {
+  display: grid;
+  grid-template-columns: 145px 1fr;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sub-section-sub-heading {
+  color: #555;
+}
+
+ul {
+  margin-block-start: .5em;
+  padding-inline-start: 25px;
+}
+
+a {
+  color: #1155cc;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.education {
+  margin-bottom: 10px;
+}
